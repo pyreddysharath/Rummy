@@ -595,6 +595,7 @@
   .clock.ended .clock-state { background: var(--red-soft); color: var(--red-text); }
   .clock-btns { display: grid; grid-template-columns: minmax(96px, 2fr) 3fr; gap: 8px; width: 100%; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
+  .pp-ico { width: 13px; height: 13px; fill: currentColor; vertical-align: -2px; margin-right: 6px; }
   .start-box { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
     padding: 10px 12px; border: 1px solid #cfe3d6; border-radius: 12px; background: #f2f8f4; font-size: .88rem; }
   .start-box .sb-btns { display: flex; gap: 8px; }
@@ -2475,7 +2476,10 @@
     $('timeChip').title = { idle: 'Game clock – not started', running: 'Game clock – running', paused: 'Game clock – paused', ended: 'Game clock – ended' }[st] + '. Tap to go to Play / Pause / End Game';
     const pp = $('btnPause');
     pp.disabled = st === 'ended';
-    pp.textContent = st === 'running' ? '⏸ Pause' : st === 'paused' ? '▶ Resume' : '▶ Play';
+    // Drawn icons in the text colour (the ⏸ / ▶ characters show as coloured emoji on many phones)
+    const icoPause = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+    const icoPlay = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
+    pp.innerHTML = st === 'running' ? icoPause + 'Pause' : (icoPlay + (st === 'paused' ? 'Resume' : 'Play'));
     pp.className = st === 'running' ? 'btn-outline' : 'btn-primary';
     const ended = !!gameResult();
     $('btnEndGame').disabled = !ended && state.players.length < 2;
