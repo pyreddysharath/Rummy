@@ -444,20 +444,28 @@
   }
 
   /* Edit Players mode: Select all + actions inside the Player heading */
-  table.board thead th.ph-edit { text-transform: none; letter-spacing: 0; text-align: left; vertical-align: top; padding: 8px; }
-  .ph-title { text-align: center; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  /* Edit Players: light green panel, the PLAYER title keeps the dark heading colour */
+  table.board thead th.ph-edit { text-transform: none; letter-spacing: 0; text-align: left; vertical-align: top; padding: 0;
+    background: #e3f1e9; color: var(--text); }
+  .ph-edit .ph-title { background: var(--felt); color: #f6e7b0; padding: 8px; margin: 0; }
+  .ph-body { padding: 10px 8px 10px; }
+  .ph-title { text-align: center; text-transform: uppercase; letter-spacing: .05em; }
   .ph-top { display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font-weight: 700; cursor: pointer; }
-  table.board thead input.ph-all { width: 20px; height: 20px; margin: 0; accent-color: var(--gold); }
-  .ph-count { text-transform: none; letter-spacing: 0; font-weight: 400; color: #cfe7d8; }
-  .ph-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 7px; }
+  table.board thead input.ph-all { width: 20px; height: 20px; margin: 0; accent-color: var(--felt); }
+  .ph-count { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
+  .ph-acts { display: grid; grid-template-columns: repeat(4, auto); gap: 4px; }
+  /* Section label at the start of a separator line */
+  .ph-lbl { display: flex; align-items: center; gap: 8px; margin: 14px 0 8px; font-size: .72rem; font-weight: 800; color: var(--primary-dark); text-transform: uppercase; letter-spacing: .05em; }
+  .ph-lbl::after { content: ""; flex: 1; height: 1px; background: #a9cdb8; }
   .pa {
     min-height: 0; padding: 4px 6px; border-radius: 7px; font-size: .74rem; font-weight: 700; white-space: nowrap;
-    background: #fff; color: var(--text); border: 1px solid rgba(255,255,255,.4);
+    background: #fff; color: var(--text); border: 1px solid #c4dccd;
     display: inline-flex; align-items: center; justify-content: center; gap: 3px;
   }
   .pa .dicon { width: 16px; height: 19px; vertical-align: 0; }
   .pa.act { background: var(--primary-soft); color: var(--primary-dark); }
   .pa.out { background: var(--red-soft); color: var(--red-text); }
+  .pa { padding: 5px 7px; font-size: .74rem; }
   .pa.win { grid-column: 1 / -1; background: #b8860b; color: #fff; border-color: #b8860b; }
   #btnSetDealer { background: #b8860b; color: #fff; border-color: #b8860b; }
   .pa:disabled { opacity: .45; }
@@ -465,13 +473,13 @@
   .ph-add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px; }
   table.board thead .ph-add input { width: 100%; min-width: 0; min-height: 30px; padding: 4px 8px; font-size: .85rem; font-weight: 400;
     text-transform: none; letter-spacing: 0; border-radius: 7px; }
-  table.board thead .ph-add button { min-height: 0; padding: 4px 9px; font-size: .78rem; white-space: nowrap; background: #fff; }
-  .edit-done { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  table.board thead .ph-add button { min-height: 0; padding: 4px 9px; font-size: .78rem; white-space: nowrap; background: #fff; border-color: #c4dccd; }
+  .edit-done { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 16px; }
   .edit-done button { min-height: 0; padding: 6px 8px; font-size: .82rem; }
   /* On the green heading: Done in the page's gold, Cancel as a light outline */
   table.board thead .edit-done .btn-primary { background: #b8860b; color: #fff; border: 1px solid #b8860b; }
   table.board thead .edit-done .btn-primary:hover { filter: brightness(1.06); }
-  table.board thead .edit-done .btn-outline { background: #fff; color: var(--text); border: 1px solid #fff; }
+  table.board thead .edit-done .btn-outline { background: #fff; color: var(--text); border: 1px solid #c4dccd; }
   table.board thead .edit-done .btn-outline:hover { background: #f1efe8; }
 
   /* Edit Players mode */
@@ -1674,24 +1682,23 @@
     const pEdit = '<button class="hbtn" type="button" data-editplayers title="Edit players – rename, reorder, add or remove" aria-label="Edit players">✎</button>';
     // While editing players, the Player heading holds Select all and the actions for the ticked players
     const pHead = arrangeMode
-      ? `<th class="sticky ph-edit"><div class="ph-title">Player</div>` +
+      ? `<th class="sticky ph-edit"><div class="ph-title">Player</div><div class="ph-body">` +
           `<label class="ph-top"><input type="checkbox" id="selAll" class="ph-all">` +
           `<span id="selAllText">Select all Players</span><span class="ph-count" id="selCount"></span></label>` +
-          `<div class="ph-sep"></div>` +
+          `<div class="ph-lbl"><span>Mark as</span></div>` +
           `<div class="ph-acts">` +
           `<button class="pa act" type="button" id="btnMarkActive" data-bulk="active" title="Mark the ticked players as Active – also removes a win and reopens the game">Active</button>` +
           `<button class="pa out" type="button" id="btnMarkOut" data-bulk="out" title="Mark the ticked players as OUT">Out</button>` +
-          `<button class="pa" type="button" id="btnRejoin" data-bulk="rejoin" title="Bring a ticked OUT player back in at the highest score of the players still in">↺ Rejoin</button>` +
-          `<button class="pa" type="button" id="btnSetDealer" data-bulk="dealer" title="Make the ticked player deal this round">${DEALER_ICON} Dealer</button>` +
+          `<button class="pa dl" type="button" id="btnSetDealer" data-bulk="dealer" title="Make the ticked player deal this round">${DEALER_ICON} Dealer</button>` +
+          `<button class="pa rj" type="button" id="btnRejoin" data-bulk="rejoin" title="Bring a ticked OUT player back in at the highest score of the players still in">↺ Rejoin</button>` +
           `</div>` +
-          `<div class="ph-sep"></div>` +
+          `<div class="ph-lbl"><span>Add player</span></div>` +
           `<div class="add-player ph-add"><input type="text" id="newPlayer" maxlength="30" placeholder="New player name" autocomplete="off" aria-label="New player name">` +
           `<button class="btn-outline" type="button" data-addplayer>＋ Add</button></div>` +
-          `<div class="ph-sep"></div>` +
           `<div class="edit-done">` +
           `<button class="btn-primary" type="button" id="btnEditDone" data-editdone>Done</button>` +
           `<button class="btn-outline" type="button" id="btnEditCancel" data-editcancelp>Cancel</button></div>` +
-          `</th>`
+          `</div></th>`
       : `<th class="sticky">Player${pEdit}</th>`;
     let head = `<thead><tr>${pHead}<th class="th-total">Total</th>`;
     if (showEntry) head += `<th class="entry">R${nextN}</th>`;
