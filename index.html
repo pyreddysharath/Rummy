@@ -116,13 +116,17 @@
   .foot-actions .fa-lbl::before, .foot-actions .fa-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,.25); }
   .foot-actions .ico { flex: none; }
   .info-note .rules { margin-bottom: 6px; line-height: 1.5; }
-  .info-note .ns { padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,.12); }
-  .info-note .ns-h { font-weight: 800; font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; opacity: .75; margin-bottom: 3px; }
+  .info-note .ns { padding-bottom: 4px; margin-bottom: 8px; }
+  .info-note .ns-h { display: inline-block; font-weight: 800; font-size: .74rem; letter-spacing: .05em; text-transform: uppercase; color: #1d2330;
+    background: var(--gold); border: 1px solid #c99a1e; border-radius: 999px; padding: 2px 10px; margin-bottom: 6px; }
   .info-note .ns ul { margin: 0; padding-left: 1.15em; list-style: disc; }
   .info-note .ns li { margin: 1px 0; }
-  .info-note .ns-sub { font-weight: 700; font-size: .78rem; margin: 8px 0 4px; color: var(--text); }
+  .info-note .ns-sub { display: inline-block; font-weight: 800; font-size: .74rem; margin: 10px 0 6px; color: #1d2330;
+    background: #fdf0c8; border: 1px solid #e6c766; border-radius: 999px; padding: 2px 10px; }
   .info-note .ns-note { font-size: .76rem; color: var(--muted); margin: 4px 0 2px; }
   .info-note .ns-hint { color: var(--muted); font-size: .72rem; }
+  .info-note .rules > .ns-h:last-child { margin-bottom: 0; }
+  .info-note .rules + .ns-sub { margin-top: 2px; }
   .info-note .legend span.lg-full { flex-basis: 100%; display: block; line-height: 1.5; }
   .info-note .lg-pill { font-size: .66rem; padding: 1px 6px; margin-right: 4px; }
   .info-note .o { color: var(--orange-text); font-weight: 700; }
@@ -326,7 +330,7 @@
   /* small "Dealer" label on hover or tap */
   .dealer::after {
     content: attr(data-tip); position: absolute; left: 50%; top: calc(100% + 3px); transform: translate(-50%, -3px);
-    background: #b8860b; color: #fff; border: 1px solid #9a7009;
+    background: var(--gold); color: #1d2330; border: 1px solid #c99a1e;
     font-size: .68rem; font-weight: 800; letter-spacing: .03em;
     padding: 3px 8px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,.18); white-space: nowrap; pointer-events: none;
     opacity: 0; transition: opacity .15s, transform .15s; z-index: 5;
@@ -470,7 +474,7 @@
   .pa.out { background: var(--red-soft); color: var(--red-text); }
   .pa { padding: 5px 7px; font-size: .74rem; }
   .pa.win { grid-column: 1 / -1; background: #b8860b; color: #fff; border-color: #b8860b; }
-  #btnSetDealer { background: #b8860b; color: #fff; border-color: #b8860b; }
+  #btnSetDealer { background: var(--gold); color: #1d2330; border-color: var(--gold); }
   .pa:disabled { opacity: .45; }
   .ph-sep { height: 1px; background: rgba(255,255,255,.35); margin: 8px 0; }
   .ph-add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px; }
@@ -480,7 +484,7 @@
   .edit-done { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 16px; }
   .edit-done button { min-height: 0; padding: 6px 8px; font-size: .82rem; }
   /* On the green heading: Done in the page's gold, Cancel as a light outline */
-  table.board thead .edit-done .btn-primary { background: #b8860b; color: #fff; border: 1px solid #b8860b; }
+  table.board thead .edit-done .btn-primary { background: var(--gold-soft); color: #1d2330; border: 1px solid var(--gold); }
   table.board thead .edit-done .btn-primary:hover { filter: brightness(1.06); }
   table.board thead .edit-done .btn-outline { background: #fff; color: var(--text); border: 1px solid #c4dccd; }
   table.board thead .edit-done .btn-outline:hover { background: #f1efe8; }
@@ -602,8 +606,8 @@
   #shareGroup { margin-top: 22px; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
-  .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #b8860b; color: #1d2330; }
-  .calc-btn:hover { background: #a0750a; }
+  .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: var(--gold); color: #1d2330; }
+  .calc-btn:hover { background: #e2b33a; }
   .calc-btn .chev { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .calc-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
   .share-box { width: calc(100% + 20px); margin: 0 -10px; padding: 10px 10px 12px; border: 1px solid #e4cf94; border-radius: 12px; background: #fffaf0; }
