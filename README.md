@@ -6,8 +6,7 @@ A mobile-friendly Rummy score keeper. It works fully offline on one phone, and �
 
 | File | What it is |
 |---|---|
-| `Rummy.html` | The whole app (page, styles and code) |
-| `index.html` | Opens `Rummy.html` when someone visits the site's main address |
+| `index.html` | The whole app (page, styles and code) |
 | `firebase-config.js` | Your Firebase project settings – fill this in (step B6). Empty = offline only |
 | `firestore.rules` | Database security rules – paste into Firebase (step B5) |
 | `config/OurOtherSites.json` | The "Our Other Sites" list in the footer – edit freely |
@@ -23,7 +22,7 @@ A mobile-friendly Rummy score keeper. It works fully offline on one phone, and �
    - Visibility: **Public** (GitHub Pages on a free account needs a public repository)
    - Tick **Add a README file** is not needed – leave it unticked.
    - Click **Create repository**.
-3. **Upload the files**: on the new repository page click **uploading an existing file** (or **Add file → Upload files**). Drag in `Rummy.html`, `index.html`, `firebase-config.js`, `firestore.rules`, `README.md` **and the `config` folder** (drag the folder itself so `config/OurOtherSites.json` keeps its folder). Click **Commit changes**.
+3. **Upload the files**: on the new repository page click **uploading an existing file** (or **Add file → Upload files**). Drag in `index.html`, `firebase-config.js`, `firestore.rules`, `README.md` **and the `config` folder** (drag the folder itself so `config/OurOtherSites.json` keeps its folder). Click **Commit changes**.
 4. **Turn on Pages**: repository **Settings** → **Pages** (left menu) → under *Build and deployment*, Source: **Deploy from a branch**, Branch: **main**, folder **/ (root)** → **Save**.
 5. Wait 1–2 minutes and open `https://USERNAME.github.io/rummy/`. Until step B6 is done the app works offline only – that's expected.
 
