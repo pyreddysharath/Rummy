@@ -1712,7 +1712,7 @@
           `</div></th>`
       : `<th class="sticky">Player${pEdit}</th>`;
     let head = `<thead><tr>${pHead}<th class="th-total">Total</th>`;
-    if (showEntry) head += `<th class="entry">R${nextN}</th>`;
+    if (showEntry) head += `<th class="entry">Round ${nextN}</th>`;
     let undoPlaced = false;
     const undoBefore = r => pendingUndo && !undoPlaced && (r.n - 1) < pendingUndo.idx;
     roundsDesc.forEach(r => {
