@@ -543,7 +543,8 @@
   .iv-n { font-weight: 700; color: var(--text); }
   .iv-empty { margin-top: 6px; }
   /* Table footer: add player + Save under the new round */
-  table.board tfoot td { border: none !important; background: var(--card); padding: 8px 6px; vertical-align: middle; }   /* Save row: no grid lines */
+  table.board tfoot td { border: none !important; background: var(--card); padding: 8px 6px; vertical-align: middle; }
+  table.board tfoot td.save-cell { padding: 7px 3px 6px; }   /* equal space above and below Save */   /* Save row: no grid lines */
   table.board:has(tfoot) tbody tr:last-child td { border-bottom: 1px solid var(--border); }   /* keep the line under the last player */
   .table-scroll:has(tfoot) { border-bottom-color: transparent; }
   table.board tfoot td.save-cell button { width: 100%; min-width: 0; min-height: 0; padding: 7px 4px; }
