@@ -541,7 +541,9 @@
   .time-details > summary { cursor: pointer; list-style: none; }
   .time-details b { color: var(--text); }
   .iv-n { font-weight: 700; color: var(--text); }
-  .rt-row { margin-top: 4px; }
+  .rt-row { margin-top: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }   /* separator after Game time */
+  .rtimes { list-style: none; margin: 6px 0 0; padding: 0; }
+  .rtimes li { margin: 2px 0; }
   .rtime { display: block; margin-top: 2px; font-size: .64rem; font-weight: 600; letter-spacing: .02em; opacity: .75; text-transform: none; }
   .iv-empty { margin-top: 6px; }
   /* Table footer: add player + Save under the new round */
@@ -2412,7 +2414,7 @@
   function roundTimesHtml(rounds) {
     const known = roundDurations(rounds).map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
     if (!known.length) return '';
-    return `<ul class="intervals">${known.map(x => `<li><span class="iv-n">Round ${x.n}</span> – ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
+    return `<ul class="rtimes">${known.map(x => `<li><span class="iv-n">Round ${x.n}</span> – ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
   }
 
   function fmtTime(ms) {
