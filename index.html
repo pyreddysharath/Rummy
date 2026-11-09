@@ -2409,15 +2409,11 @@
   function roundTimeTag(ms) {
     return ms == null ? '' : `<span class="rtime" title="Time this round took">${fmtShort(ms)}</span>`;
   }
-  function roundTimesHtml(rounds) {
-    const d = roundDurations(rounds);
-    const known = d.map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
+  function roundTimesHtml(rounds, t) {
+    const known = roundDurations(rounds).map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
     if (!known.length) return '';
-    const avg = known.reduce((a, x) => a + x.ms, 0) / known.length;
-    const fastest = known.reduce((a, x) => (x.ms < a.ms ? x : a)), longest = known.reduce((a, x) => (x.ms > a.ms ? x : a));
-    return `<div class="rt-head"><b>Round times</b> · average ${fmtDuration(avg)}` +
-      (known.length > 1 ? ` · quickest R${fastest.n} · longest R${longest.n}` : '') + `</div>` +
-      `<ul class="intervals">${known.map(x => `<li><span class="iv-n">R${x.n}</span> ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
+    return `<div class="rt-head"><b>Total game time:</b> ${fmtDuration(playedMs(t))}</div>` +
+      `<ul class="intervals">${known.map(x => `<li><span class="iv-n">Round ${x.n}</span> – ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
   }
 
   function fmtTime(ms) {
@@ -2476,7 +2472,7 @@
     if (st !== 'idle') {
       $('timeSum').innerHTML = `<b>Start</b> ${fmtTime(t.startedAt)}` + (t.endedAt ? ` · <b>End</b> ${fmtTime(t.endedAt)}` : '') +
         ` · <b>Game time</b> ${fmtDuration(playedMs(t))}`;
-      $('timeBody').innerHTML = intervalsHtml(t) + roundTimesHtml(state.rounds);
+      $('timeBody').innerHTML = intervalsHtml(t) + roundTimesHtml(state.rounds, t);
     }
     syncWakeLock(keepAwake && (st === 'running' || st === 'paused'));
     if (st !== 'running' || keepAwake) $('startBox').hidden = true;
