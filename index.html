@@ -595,6 +595,13 @@
   .clock.ended .clock-state { background: var(--red-soft); color: var(--red-text); }
   .clock-btns { display: grid; grid-template-columns: minmax(96px, 2fr) 3fr; gap: 8px; width: 100%; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
+  .start-box { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    padding: 10px 12px; border: 1px solid #cfe3d6; border-radius: 12px; background: #f2f8f4; }
+  .start-box[hidden], .awake-chk[hidden] { display: none; }
+  .awake-chk { display: flex; align-items: center; gap: 8px; font-size: .88rem; cursor: pointer; }
+  .awake-chk input { width: 16px; height: 16px; margin: 0; accent-color: var(--felt); }
+  .awake-chk.small { font-size: .78rem; color: var(--muted); }
+  .start-ok { min-height: 0; padding: 6px 14px; }
   .calc-btn { min-height: 30px; padding: 4px 10px; font-size: .8rem; white-space: nowrap; }
   .time-chip { min-height: 0; padding: 3px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; font-variant-numeric: tabular-nums;
     background: #eef0f4; color: var(--muted); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 2px; }
@@ -1069,6 +1076,11 @@
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       </div>
+      <div class="start-box" id="startBox" hidden>
+        <label class="awake-chk"><input type="checkbox" class="awakeChk"> Keep the screen on during the game</label>
+        <button class="btn-primary start-ok" id="btnStartOk" type="button">▶ Start game</button>
+      </div>
+      <label class="awake-chk small" id="awakeLine" hidden><input type="checkbox" class="awakeChk"> Keep screen on</label>
       <div class="share-box" id="shareBox" hidden>
         <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
         <p class="share-pot" id="sharePot"></p>
@@ -2475,7 +2487,9 @@
         ` · <b>Game time</b> ${fmtDuration(playedMs(t))}`;
       $('timeBody').innerHTML = intervalsHtml(t);
     }
-    syncWakeLock(st === 'running');
+    syncWakeLock(keepAwake && (st === 'running' || st === 'paused'));
+    $('awakeLine').hidden = !(st === 'running' || st === 'paused') || !canEdit();
+    if (st !== 'idle') $('startBox').hidden = true;
   }
 
   function startClock() {
@@ -2498,8 +2512,8 @@
       state.timer.intervals.push({ start: now, end: null });
       toast('Game resumed');
     } else if (st === 'idle') {
-      startClock();
-      renderHeader();
+      $('startBox').hidden = !$('startBox').hidden;   // choose screen-on, then Start game
+      syncAwakeBoxes();
       return;
     } else return;
     saveState();
@@ -2536,6 +2550,10 @@
 
   /* Keep the phone screen on while the game clock is running (where the browser supports it) */
   let wakeLock = null, wakePending = false;
+  // Keep-the-screen-on choice: off unless chosen, remembered on this device
+  let keepAwake = false;
+  try { keepAwake = localStorage.getItem('rummy-keep-awake') === '1'; } catch (e) { /* ignore */ }
+  function syncAwakeBoxes() { document.querySelectorAll('.awakeChk').forEach(c => { c.checked = keepAwake; }); }
   async function syncWakeLock(want) {
     if (!('wakeLock' in navigator)) return;
     try {
@@ -2552,7 +2570,7 @@
   }
   // The browser drops the lock when the page is hidden; take it again on return
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') syncWakeLock(timerState() === 'running');
+    if (document.visibilityState === 'visible') { const st = timerState(); syncWakeLock(keepAwake && (st === 'running' || st === 'paused')); }
   });
 
   // Start the clock by itself when the first score of the game is entered
@@ -3140,6 +3158,19 @@
   });
 
   $('btnPause').addEventListener('click', togglePause);
+  $('btnStartOk').addEventListener('click', () => {
+    if (!canEdit()) return;
+    $('startBox').hidden = true;
+    startClock();
+    renderHeader();
+    toast(keepAwake ? 'Game started – screen stays on' : 'Game started');
+  });
+  document.querySelectorAll('.awakeChk').forEach(c => c.addEventListener('change', () => {
+    keepAwake = c.checked;
+    try { localStorage.setItem('rummy-keep-awake', keepAwake ? '1' : '0'); } catch (e) { /* ignore */ }
+    syncAwakeBoxes();
+    renderTimer();
+  }));
   $('btnEndGame').addEventListener('click', endGame);
   $('btnExportData').addEventListener('click', exportData);
   $('btnImportData').addEventListener('click', () => $('importFile').click());
@@ -4582,6 +4613,7 @@
   try { if (window.fetch && location.protocol !== 'file:') fetch('config/OurOtherSites.json').then(r => (r.ok ? r.json() : null)).then(d => { if (d) renderOtherSites(d); }).catch(() => {}); } catch (e) { /* keep the built-in list */ }
 
   /* ---------- Init ---------- */
+  syncAwakeBoxes();
   renderSettings();
   renderAll();
   cloudStartup();
