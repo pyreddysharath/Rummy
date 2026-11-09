@@ -1674,7 +1674,8 @@
     const pHead = arrangeMode
       ? `<th class="sticky ph-edit"><div class="ph-title">Player</div>` +
           `<label class="ph-top"><input type="checkbox" id="selAll" class="ph-all">` +
-          `<span id="selAllText">Select all</span><span class="ph-count" id="selCount"></span></label>` +
+          `<span id="selAllText">Select all Players</span><span class="ph-count" id="selCount"></span></label>` +
+          `<div class="ph-sep"></div>` +
           `<div class="ph-acts">` +
           `<button class="pa act" type="button" id="btnMarkActive" data-bulk="active" title="Mark the ticked players as Active – also removes a win and reopens the game">Active</button>` +
           `<button class="pa out" type="button" id="btnMarkOut" data-bulk="out" title="Mark the ticked players as OUT">Out</button>` +
@@ -1785,7 +1786,7 @@
     selectedIds = new Set([...selectedIds].filter(id => playerById(id)));
     const n = selectedIds.size, total = state.players.length;
     $('selCount').textContent = n ? `· ${n} of ${total} selected` : '';
-    $('selAllText').textContent = total > 0 && n === total ? 'Deselect all' : 'Select all';
+    $('selAllText').textContent = total > 0 && n === total ? 'Deselect all Players' : 'Select all Players';
     $('selAll').checked = total > 0 && n === total;
     $('selAll').indeterminate = n > 0 && n < total;
     $('btnMarkActive').disabled = n === 0;
