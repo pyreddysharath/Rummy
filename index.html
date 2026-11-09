@@ -589,21 +589,43 @@
   .share-row { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: end; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
-  .share-dlg { max-width: 460px; }
-  .split-opts { display: grid; gap: 4px; margin-bottom: 10px; }
-  .split-opt { border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; }
-  .split-opt:has(input:checked) { border-color: var(--felt); background: #f2f9f5; }
+  .share-box { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fcfbf7; }
+  .share-pot { margin: 0 0 10px; font-size: .88rem; color: var(--muted); }
+  .share-pot b { color: var(--text); }
+  .split-opts { display: grid; gap: 6px; margin-bottom: 12px; }
+  .split-opt { border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; background: #fff; }
+  .split-opt.on { border-color: var(--felt); background: #f2f9f5; box-shadow: inset 3px 0 0 var(--felt); }
   .so-top { display: flex; align-items: center; gap: 8px; }
-  .so-top label { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; font-size: .9rem; }
-  .so-top input { width: 18px; height: 18px; accent-color: var(--felt); }
-  .so-rec { font-size: .66rem; font-weight: 800; background: #b8860b; color: #fff; padding: 1px 6px; border-radius: 999px; }
-  .so-info { font-size: .8rem; color: #3d4455; margin: 4px 0 2px 26px; }
-  table.shares { border-collapse: collapse; width: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
-  table.shares th, table.shares td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: right; }
-  table.shares th { font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
-  table.shares th:first-child, table.shares td:first-child { text-align: left; }
-  table.shares td.amt { font-weight: 800; color: var(--primary-dark); }
-  table.shares tfoot td { border-bottom: none; font-weight: 800; }
+  .so-name { flex: 1; text-align: left; background: none; border: 0; padding: 0; min-height: 0; font-size: .9rem; font-weight: 600; color: var(--text); }
+  .split-opt.on .so-name { font-weight: 800; color: var(--primary-dark); }
+  .so-info { font-size: .8rem; color: #3d4455; margin: 6px 0 2px; line-height: 1.5; }
+  .share-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.shares td small { display: block; font-size: .7rem; color: var(--muted); font-weight: 400; }
+  table.shares td.na { color: #b9bfcb; }
+  table.shares tr.potrow td { color: var(--muted); font-size: .76rem; border-bottom: none; }
+  .share-send { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; }
+  .share-scroll { border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+  table.shares { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  table.shares th, table.shares td { padding: 7px 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); text-align: center; white-space: nowrap; }
+  table.shares th:last-child, table.shares td:last-child { border-right: none; }
+  table.shares thead th { background: var(--felt); color: #f6e7b0; font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
+  table.shares thead th:first-child { border-top-left-radius: 9px; }
+  table.shares thead th:last-child { border-top-right-radius: 9px; }
+  table.shares:not(.drops-split) thead th:last-child, table.shares thead th.sh { background: #b8860b; color: #fff; }
+  table.shares.drops-split td:first-child, table.shares.drops-split th:first-child { position: sticky; left: 0; z-index: 1; background: inherit; }
+  table.shares.drops-split tbody td:first-child { background: #fff; }
+  table.shares.drops-split tbody tr:nth-child(even):not(.potrow) td:first-child { background: #faf8f2; }
+  table.shares.drops-split thead th:first-child { background: var(--felt); }
+  table.shares.drops-split tfoot td:first-child { background: var(--gold-soft); }
+  table.shares tr.potrow td:first-child { font-weight: 400; text-align: right; }
+  table.shares th:first-child, table.shares td:first-child { text-align: left; font-weight: 600; }
+  table.shares tbody tr:nth-child(even):not(.potrow) td { background: #faf8f2; }
+  table.shares td .pay { display: inline-block; min-width: 46px; padding: 1px 7px; border-radius: 999px; background: var(--primary-soft); color: var(--primary-dark); font-weight: 700; }
+  table.shares td.amt .pay { background: #b8860b; color: #fff; font-weight: 800; }
+  table.shares td.rest .pay { background: #e8ecf3; color: #3d4455; }
+  table.shares tfoot td { border-bottom: none; font-weight: 800; background: var(--gold-soft); color: var(--gold-text); }
+  table.shares tfoot td:last-child { border-bottom-right-radius: 9px; }
+  table.shares tfoot td:first-child { border-bottom-left-radius: 9px; }
   .share-note { font-size: .78rem; color: var(--muted); margin: 6px 0 0; }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
@@ -868,6 +890,17 @@
       </div>
     </div>
     </fieldset>
+    <fieldset class="opt-group nums" id="shareGroup">
+      <legend>Share amount</legend>
+      <div class="share-row">
+        <div>
+          <label class="field" for="setShare">Each player's share (₹)</label>
+          <input type="number" id="setShare" min="1" step="1" inputmode="numeric" placeholder="e.g. 100">
+        </div>
+        <p class="opt-help">Used by <b>₹ Calculate Shares</b> under the scoreboard. Saved as you type.</p>
+      </div>
+      <div class="msg" id="shareMsg"></div>
+    </fieldset>
 
     <!-- Dealer rules (saved straight away, can be changed at any point in the game) -->
     <fieldset class="opt-group">
@@ -881,17 +914,6 @@
       <legend>When the next dealer is OUT</legend>
       <label class="opt"><input type="radio" name="dealerOut" value="keep"> <span><b>Previous player still in</b> deals again, so the next player doesn't miss their turn to start</span></label>
       <label class="opt"><input type="radio" name="dealerOut" value="next"> <span><b>Next player still in</b> deals</span></label>
-    </fieldset>
-    <fieldset class="opt-group nums" id="shareGroup">
-      <legend>Share amount</legend>
-      <div class="share-row">
-        <div>
-          <label class="field" for="setShare">Each player's share (₹)</label>
-          <input type="number" id="setShare" min="1" step="1" inputmode="numeric" placeholder="e.g. 100">
-        </div>
-        <p class="opt-help">Used by <b>₹ Calculate Shares</b> under the scoreboard. Saved as you type.</p>
-      </div>
-      <div class="msg" id="shareMsg"></div>
     </fieldset>
     <div class="settings-apply">
       <button class="btn-primary apply" id="btnApplySettings" type="button">Apply</button>
@@ -978,7 +1000,13 @@
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="btn-end" id="btnEndGame" type="button">⏹ End Game</button>
       </div>
-      <button class="btn-gold calc-btn" id="btnShares" type="button">₹ Calculate Shares</button>
+      <button class="btn-gold calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares</button>
+      <div class="share-box" id="shareBox" hidden>
+        <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
+        <p class="share-pot" id="sharePot"></p>
+        <div id="shareResult"></div>
+        <button class="btn-wa share-send" id="shareWa" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg> Share</button>
+      </div>
     </div>
 
 
@@ -1025,7 +1053,7 @@
       <details><summary>Playing online with friends</summary><p>Open <b>Play Online</b>, give the room a name and tap <b>Create Room</b>. Share the <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch – on WhatsApp or anywhere. Scores update on every phone straight away, no refresh needed. Nobody needs to log in.</p></details>
       <details><summary>Keeping your rooms</summary><p>As a guest, your rooms are listed on this device. Keep each room's <b>Owner link</b> (WhatsApp it to yourself) – it brings back full control after clearing the browser or on a new phone. Or sign in with Google once, and your rooms follow your account on every device.</p></details>
       <details><summary>When rooms are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner chooses the period in <b>Room Settings</b>. Use <b>Export Data</b> to keep a copy for longer.</p></details>
-      <details><summary>Calculating shares</summary><p>Set <b>Each player's share</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard. Pick how to split the pot among the players still in – the <b>i</b> next to each option explains it – and copy or WhatsApp the result.</p></details>
+      <details><summary>Calculating shares</summary><p>Set <b>Each player's share</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard. Pick how to split the pot among the players still in – the <b>i</b> next to each option explains it – and tap <b>Share</b> to send the result.</p></details>
       <details><summary>Backups</summary><p><b>Export Data</b> saves a file with the games on this device and any rooms you tick. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
     </div>
 
@@ -1092,21 +1120,6 @@
     <div class="dlg-actions">
       <button class="btn-outline" id="pickCancel" type="button">Cancel</button>
       <button class="btn-primary" id="pickOk" type="button">Export</button>
-    </div>
-  </div>
-</div>
-
-<!-- Share calculator -->
-<div class="overlay" id="shareDlg" hidden>
-  <div class="dialog share-dlg" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
-    <h3 id="shareTitle">₹ Calculate Shares</h3>
-    <p id="sharePot"></p>
-    <div class="split-opts" id="splitOpts"></div>
-    <div id="shareResult"></div>
-    <div class="dlg-actions">
-      <button class="btn-outline" id="shareCopy" type="button">Copy</button>
-      <button class="btn-wa" id="shareWa" type="button">WhatsApp</button>
-      <button class="btn-primary" id="shareClose" type="button">Close</button>
     </div>
   </div>
 </div>
@@ -1841,6 +1854,7 @@
     renderTimer();
     renderArchive();
     renderBackupNote();
+    if (typeof renderShares === 'function') renderShares();
   }
 
   /* ---------- Player actions ---------- */
@@ -3028,7 +3042,6 @@
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (!$('declareDlg').hidden) closeDeclare();
-    if (!$('shareDlg').hidden) $('shareDlg').hidden = true;
   });
   $('banner').addEventListener('click', e => { if (e.target.id === 'btnUndoDeclare') undoDeclare(); });
 
@@ -4228,24 +4241,24 @@
 
   /* ---------- Share calculator: split the pot among the players still in ---------- */
   const SPLIT_METHODS = [
-    { id: 'moneyback', name: 'Money back, then by chances', rec: true,
-      info: 'Each player still in first gets their own share back. The rest of the pot is split by chances (drops left + 1). Nobody still in loses money, and whoever is ahead gets the most.' },
-    { id: 'chances', name: 'By chances (drops left + 1)',
-      info: 'The whole pot is split in proportion to drops left + 1. The +1 counts the hand a player with 0 drops can still play, so everyone still in gets something.' },
     { id: 'drops', name: 'By drops left',
-      info: 'The whole pot is split in proportion to drops left. A player with 0 drops gets nothing.' },
+      info: s => `Drop by drop. In each column, every player who still has a drop left gets one share (${rupees(s.share)}) from the pot, and their score goes up by one drop (${s.drop} points) – the small number under each amount. Columns continue until everyone is at 0 drops. They stop early when the pot left can't pay a share to everyone in the next column: what's left is then split equally among the players in that column. If money is left after all drops are used, it's split equally among everyone still in (the "Rest" column).` },
     { id: 'points', name: 'By points left',
-      info: 'The whole pot is split in proportion to points left before OUT (limit − 1 − total). The most precise, as it also counts part of a drop.' },
+      info: () => 'The whole pot is split in proportion to points left before OUT (limit − 1 − total), so it also counts part of a drop.' },
+    { id: 'moneyback', name: 'Money back, then by chances',
+      info: () => 'Each player still in first gets their own share back. The rest of the pot is split in proportion to chances: drops left + 1 (the +1 is the hand a player with 0 drops can still play).' },
     { id: 'equal', name: 'Equal split',
-      info: 'Everyone still in gets the same amount, whatever their score.' }
+      info: () => 'Everyone still in gets the same amount, whatever their score.' }
   ];
-  let splitMethod = 'moneyback';
+  let splitMethod = 'drops';
   try { const m = localStorage.getItem('rummy-split-method'); if (SPLIT_METHODS.some(x => x.id === m)) splitMethod = m; } catch (e) { /* ignore */ }
+  const openInfo = new Set();
+  const rupees = n => '₹' + Number(n).toLocaleString('en-IN');
 
-  // Whole rupees that always add up to the pot (largest remainder)
+  // Whole rupees that always add up to the amount (largest remainder)
   function splitByWeights(amount, weights) {
-    const sum = weights.reduce((a, b) => a + b, 0);
-    if (sum <= 0) weights = weights.map(() => 1);
+    if (!weights.length) return [];
+    if (weights.reduce((a, b) => a + b, 0) <= 0) weights = weights.map(() => 1);
     const total = weights.reduce((a, b) => a + b, 0);
     const raw = weights.map(w => amount * w / total);
     const out = raw.map(Math.floor);
@@ -4255,39 +4268,52 @@
   }
 
   function shareData(method) {
-    const share = state.settings.share;
+    const share = state.settings.share, drop = state.settings.drop;
     const rejoins = Object.values(state.rejoins || {}).reduce((a, b) => a + (Number(b) || 0), 0);
     const buyIns = state.players.length + rejoins;
     const pot = share * buyIns;
     const rows = state.players.filter(p => playerStatus(p.id) !== 'out').map(p => {
       const total = totalOf(p.id);
-      const drops = Math.max(0, dropsLeft(total) || 0);
-      return { p, total, drops, pts: pointsLeft(total) };
+      return { p, total, drops: Math.max(0, dropsLeft(total) || 0), pts: pointsLeft(total), cells: [], rest: 0, amount: 0 };
     });
-    let amounts = [];
-    if (rows.length === 1) amounts = [pot];
-    else if (rows.length > 1) {
-      if (method === 'equal') amounts = splitByWeights(pot, rows.map(() => 1));
-      else if (method === 'drops') amounts = splitByWeights(pot, rows.map(r => r.drops));
-      else if (method === 'points') amounts = splitByWeights(pot, rows.map(r => r.pts));
-      else if (method === 'chances') amounts = splitByWeights(pot, rows.map(r => r.drops + 1));
-      else {   // money back first, then the rest by chances
-        const back = share * rows.length;
-        if (pot >= back) amounts = splitByWeights(pot - back, rows.map(r => r.drops + 1)).map(a => a + share);
-        else amounts = splitByWeights(pot, rows.map(r => r.drops + 1));
+    const out = { share, drop, buyIns, rejoins, pot, rows, cols: 0, potLeft: [], hasRest: false };
+    if (!rows.length) return out;
+    if (rows.length === 1) { rows[0].amount = pot; return out; }
+    if (method === 'drops') {
+      let left = pot, k = 0;
+      while (left > 0) {
+        const elig = rows.filter(r => r.drops > k);
+        if (!elig.length) break;
+        const pay = left >= share * elig.length ? elig.map(() => share) : splitByWeights(left, elig.map(() => 1));
+        rows.forEach(r => { r.cells[k] = null; });
+        elig.forEach((r, i) => { r.cells[k] = { amt: pay[i], score: r.total + (k + 1) * drop }; r.amount += pay[i]; left -= pay[i]; });
+        out.potLeft.push(left);
+        k += 1;
       }
+      out.cols = k;
+      if (left > 0) {   // all drops used: the rest is shared equally by everyone still in
+        out.hasRest = true;
+        splitByWeights(left, rows.map(() => 1)).forEach((a, i) => { rows[i].rest = a; rows[i].amount += a; });
+      }
+      return out;
     }
-    rows.forEach((r, i) => { r.amount = amounts[i] || 0; });
-    return { share, buyIns, rejoins, pot, rows };
+    let amounts;
+    if (method === 'equal') amounts = splitByWeights(pot, rows.map(() => 1));
+    else if (method === 'points') amounts = splitByWeights(pot, rows.map(r => r.pts));
+    else {
+      const back = share * rows.length;
+      amounts = pot >= back ? splitByWeights(pot - back, rows.map(r => r.drops + 1)).map(a => a + share) : splitByWeights(pot, rows.map(r => r.drops + 1));
+    }
+    rows.forEach((r, i) => { r.amount = amounts[i]; });
+    return out;
   }
 
-  const rupees = n => '₹' + Number(n).toLocaleString('en-IN');
-
-  function openShares() {
+  function toggleShares() {
+    const box = $('shareBox');
+    if (!box.hidden) { box.hidden = true; $('btnShares').setAttribute('aria-expanded', 'false'); return; }
     if (!state.settings.share) {
       if (!canEdit()) { setMsg('boardMsg', 'The share amount isn\'t set yet – ask someone with the edit link to set it in Game Settings.', 'err'); return; }
-      // Take them to the field
-      $('settingsBox').open = true;
+      $('settingsBox').open = true;   // take them to the field
       setMsg('shareMsg', 'Enter each player\'s share to calculate the split.', 'err');
       $('setShare').classList.add('need');
       $('shareGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -4295,32 +4321,44 @@
       return;
     }
     if (state.players.length < 2) { setMsg('boardMsg', 'Add at least two players first.', 'err'); return; }
+    box.hidden = false;
+    $('btnShares').setAttribute('aria-expanded', 'true');
     renderShares();
-    $('shareDlg').hidden = false;
   }
 
+  // Redrawn whenever the board changes, so the split stays up to date
   function renderShares() {
-    $('splitOpts').innerHTML = SPLIT_METHODS.map(m => `<div class="split-opt">
-      <div class="so-top"><label><input type="radio" name="splitMethod" value="${m.id}" ${m.id === splitMethod ? 'checked' : ''}> ${m.name}
-        ${m.rec ? '<span class="so-rec">Suggested</span>' : ''}</label>
-        <button type="button" class="info-btn" data-soinfo="${m.id}" aria-expanded="false" title="How this works">i</button></div>
-      <div class="so-info" id="soi-${m.id}" hidden>${m.info}</div></div>`).join('');
-    renderShareResult();
-  }
-
-  function renderShareResult() {
+    const box = $('shareBox');
+    if (!box || box.hidden) return;
+    if (!state.settings.share) { box.hidden = true; $('btnShares').setAttribute('aria-expanded', 'false'); return; }
     const d = shareData(splitMethod);
-    $('sharePot').innerHTML = `Pot: <b>${rupees(d.pot)}</b> = ${d.buyIns} share${d.buyIns === 1 ? '' : 's'} × ${rupees(d.share)}` +
+    $('sharePot').innerHTML = `Pot: <b>${rupees(d.pot)}</b> = ${d.buyIns} × ${rupees(d.share)}` +
       (d.rejoins ? ` (${state.players.length} players + ${d.rejoins} rejoin${d.rejoins === 1 ? '' : 's'})` : ` (${state.players.length} players)`);
+    $('splitOpts').innerHTML = SPLIT_METHODS.map(m => `<div class="split-opt ${m.id === splitMethod ? 'on' : ''}">
+        <div class="so-top"><button type="button" class="so-name" data-split="${m.id}" role="radio" aria-checked="${m.id === splitMethod}">${m.name}</button>
+          <button type="button" class="info-btn" data-soinfo="${m.id}" aria-expanded="${openInfo.has(m.id)}" title="How this works">i</button></div>
+        <div class="so-info" ${openInfo.has(m.id) ? '' : 'hidden'}>${m.info(d)}</div></div>`).join('');
     const unsaved = Object.values(state.draft || {}).some(v => String(v).trim() !== '');
-    $('shareResult').innerHTML = d.rows.length ? `<table class="shares">
+    const notes = (d.rows.length === 1 ? '<p class="share-note">Only one player is left, so they get the whole pot.</p>' : '') +
+      (unsaved ? '<p class="share-note">Scores typed for the current round but not saved yet aren\'t counted.</p>' : '');
+    if (!d.rows.length) { $('shareResult').innerHTML = '<p class="share-note">Everyone is OUT – there\'s nobody to share with.</p>'; return; }
+    const sum = d.rows.reduce((a, r) => a + r.amount, 0);
+    if (splitMethod === 'drops' && d.rows.length > 1) {
+      const heads = Array.from({ length: d.cols }, (_, k) => `<th>Drop ${k + 1}</th>`).join('') + (d.hasRest ? '<th>Rest</th>' : '');
+      const extra = d.cols + (d.hasRest ? 1 : 0);
+      $('shareResult').innerHTML = `<div class="share-scroll"><table class="shares drops-split">
+        <thead><tr><th>Player</th><th>Drops</th><th class="sh">Share</th>${heads}</tr></thead>
+        <tbody>${d.rows.map(r => `<tr><td>${esc(r.p.name)}</td><td>${r.drops}</td><td class="amt"><span class="pay">${rupees(r.amount)}</span></td>` +
+          Array.from({ length: d.cols }, (_, k) => r.cells[k] ? `<td><span class="pay">${rupees(r.cells[k].amt)}</span><small>${r.cells[k].score}</small></td>` : '<td class="na">–</td>').join('') +
+          (d.hasRest ? `<td class="rest"><span class="pay">${rupees(r.rest)}</span></td>` : '') + '</tr>').join('')}
+          <tr class="potrow"><td colspan="3">Pot left after each drop</td>${d.potLeft.map(x => `<td>${rupees(x)}</td>`).join('')}${d.hasRest ? `<td>${rupees(0)}</td>` : ''}</tr></tbody>
+        <tfoot><tr><td colspan="2">Total</td><td class="amt">${rupees(sum)}</td>${extra ? `<td colspan="${extra}"></td>` : ''}</tr></tfoot></table></div>${notes}`;
+    } else {
+      $('shareResult').innerHTML = `<div class="share-scroll"><table class="shares">
         <thead><tr><th>Player</th><th>Total</th><th>Drops</th><th>Pts left</th><th>Share</th></tr></thead>
-        <tbody>${d.rows.map(r => `<tr><td>${esc(r.p.name)}</td><td>${r.total}</td><td>${r.drops}</td><td>${r.pts}</td><td class="amt">${rupees(r.amount)}</td></tr>`).join('')}</tbody>
-        <tfoot><tr><td colspan="4">Total</td><td>${rupees(d.rows.reduce((a, r) => a + r.amount, 0))}</td></tr></tfoot></table>
-        ${d.rows.length === 1 ? '<p class="share-note">Only one player is left, so they get the whole pot.</p>' : ''}
-        ${unsaved ? '<p class="share-note">Scores typed for the current round but not saved yet aren\'t counted.</p>' : ''}
-        <p class="share-note">Players who are OUT get nothing. Each rejoin counts as one more share in the pot.</p>`
-      : '<p class="share-note">Everyone is OUT – there\'s nobody to share with.</p>';
+        <tbody>${d.rows.map(r => `<tr><td>${esc(r.p.name)}</td><td>${r.total}</td><td>${r.drops}</td><td>${r.pts}</td><td class="amt"><span class="pay">${rupees(r.amount)}</span></td></tr>`).join('')}</tbody>
+        <tfoot><tr><td colspan="4">Total</td><td>${rupees(sum)}</td></tr></tfoot></table></div>${notes}`;
+    }
   }
 
   function shareText() {
@@ -4330,26 +4368,21 @@
       d.rows.map(r => `${r.p.name}: ${rupees(r.amount)} (${r.drops} drop${r.drops === 1 ? '' : 's'} left)`).join('\n');
   }
 
-  $('btnShares').addEventListener('click', openShares);
-  $('splitOpts').addEventListener('change', e => {
-    if (e.target.name !== 'splitMethod') return;
-    splitMethod = e.target.value;
-    try { localStorage.setItem('rummy-split-method', splitMethod); } catch (err) { /* ignore */ }
-    renderShareResult();
-  });
+  $('btnShares').addEventListener('click', toggleShares);
   $('splitOpts').addEventListener('click', e => {
-    const b = e.target.closest('[data-soinfo]');
-    if (!b) return;
-    const box = $('soi-' + b.dataset.soinfo);
-    box.hidden = !box.hidden;
-    b.setAttribute('aria-expanded', String(!box.hidden));
+    const info = e.target.closest('[data-soinfo]');
+    if (info) { const id = info.dataset.soinfo; if (openInfo.has(id)) openInfo.delete(id); else openInfo.add(id); renderShares(); return; }
+    const pick = e.target.closest('[data-split]');
+    if (!pick) return;
+    splitMethod = pick.dataset.split;
+    try { localStorage.setItem('rummy-split-method', splitMethod); } catch (err) { /* ignore */ }
+    renderShares();
   });
-  $('shareClose').addEventListener('click', () => { $('shareDlg').hidden = true; });
-  $('shareDlg').addEventListener('click', e => { if (e.target === e.currentTarget) $('shareDlg').hidden = true; });
-  $('shareCopy').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(shareText()); toast('Shares copied'); } catch (e) { prompt('Copy the shares:', shareText()); }
+  $('shareWa').addEventListener('click', async () => {
+    const text = shareText();
+    if (navigator.share) { try { await navigator.share({ title: 'Rummy – shares', text }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
   });
-  $('shareWa').addEventListener('click', () => window.open('https://wa.me/?text=' + encodeURIComponent(shareText()), '_blank', 'noopener'));
 
   // Share amount: saved as it's typed (whole rupees, 1 or more; empty clears it)
   $('setShare').addEventListener('input', () => {
@@ -4362,6 +4395,7 @@
     state.settings = { ...state.settings, share: n };
     saveState();
     setMsg('shareMsg', '', '');
+    renderShares();
   });
 
   // Time chip in the Scoreboard heading: tap to jump to the clock controls
