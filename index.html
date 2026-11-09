@@ -110,7 +110,8 @@
   .hero.compact .wm-small { font-size: .95rem; margin-top: 3px; }
   .foot-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 360px; margin: 6px auto 22px; padding: 0 12px; }
   .foot-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 0; padding: 8px 10px; }
-  .foot-actions .fa-share { grid-column: 1 / -1; padding: 10px 12px; font-size: .95rem; }
+  .foot-actions .fa-share { grid-column: 1 / -1; padding: 10px 12px; font-size: .95rem; background: #b8860b; color: #fff; }
+  .foot-actions .fa-share:hover { background: #a0750a; }
   .foot-actions .fa-lbl { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 6px;
     color: rgba(255,255,255,.7); font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .foot-actions .fa-lbl::before, .foot-actions .fa-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,.25); }
@@ -445,7 +446,8 @@
 
   /* Edit Players mode: Select all + actions inside the Player heading */
   table.board thead th.ph-edit { text-transform: none; letter-spacing: 0; text-align: left; vertical-align: top; padding: 8px; }
-  .ph-top { display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: .05em; }
+  .ph-title { text-align: center; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .ph-top { display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font-weight: 700; cursor: pointer; }
   table.board thead input.ph-all { width: 20px; height: 20px; margin: 0; accent-color: var(--gold); }
   .ph-count { text-transform: none; letter-spacing: 0; font-weight: 400; color: #cfe7d8; }
   .ph-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 7px; }
@@ -470,8 +472,8 @@
   /* On the green heading: Done in the page's gold, Cancel as a light outline */
   table.board thead .edit-done .btn-primary { background: #b8860b; color: #fff; border: 1px solid #b8860b; }
   table.board thead .edit-done .btn-primary:hover { filter: brightness(1.06); }
-  table.board thead .edit-done .btn-outline { background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.55); }
-  table.board thead .edit-done .btn-outline:hover { background: rgba(255,255,255,.18); }
+  table.board thead .edit-done .btn-outline { background: #fff; color: var(--text); border: 1px solid #fff; }
+  table.board thead .edit-done .btn-outline:hover { background: #f1efe8; }
 
   /* Edit Players mode */
   table.board td input.psel {
@@ -589,7 +591,8 @@
   .share-row { display: grid; grid-template-columns: 150px; padding-top: 4px; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
-  .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+  .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #b8860b; color: #fff; }
+  .calc-btn:hover { background: #a0750a; }
   .calc-btn .chev { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .calc-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
   .share-box { width: 100%; }
@@ -618,8 +621,6 @@
   /* Player column stays put while the rest scrolls */
   table.shares th.stk, table.shares td.stk { position: sticky; left: 0; z-index: 2; text-align: left; font-weight: 600; box-shadow: 1px 0 0 var(--border); }
   table.shares thead th.stk { background: var(--felt); z-index: 3; }
-  table.shares .stk2 { position: sticky; z-index: 2; box-shadow: 2px 0 0 #c9c3b0; }
-  table.shares thead th.stk2 { z-index: 3; }
   table.shares td .pay { display: inline-block; min-width: 46px; padding: 1px 7px; border-radius: 999px; background: var(--primary-soft); color: var(--primary-dark); font-weight: 700; }
   table.shares td.amt .pay { background: #b8860b; color: #fff; font-weight: 800; }
   table.shares td.na { color: #c3c8d2; }
@@ -628,10 +629,8 @@
   table.shares tr.potrow td.stk { font-weight: 700; color: var(--muted); }
   table.shares tfoot td { border-bottom: none; font-weight: 800; background: var(--gold-soft); color: var(--gold-text); }
   .share-note { font-size: .78rem; color: var(--muted); margin: 6px 0 0; }
-  .prize-line { margin: 10px 0 0; padding: 8px 10px; border-radius: 10px; background: var(--gold-soft); border: 1px solid var(--gold); color: var(--gold-text); font-size: .9rem; }
-  .prize-line b { font-size: 1rem; }
-  .prize-line span { display: block; font-size: .78rem; color: var(--muted); margin-top: 2px; }
-  .share-send { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; }
+  .share-send { margin: 14px auto 0; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--felt); color: #fff; padding: 8px 22px; }
+  .share-send:hover { background: var(--felt-light); }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
   .btn-end:hover:not(:disabled) { background: #062e1d; }
@@ -1001,12 +1000,12 @@
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="btn-end" id="btnEndGame" type="button">⏹ End Game</button>
       </div>
-      <button class="btn-gold calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
+      <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       <div class="share-box" id="shareBox" hidden>
         <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
         <p class="share-pot" id="sharePot"></p>
         <div id="shareResult"></div>
-        <button class="btn-wa share-send" id="shareWa" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg> Share</button>
+        <button class="share-send" id="shareWa" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg> Share</button>
       </div>
     </div>
 
@@ -1654,9 +1653,9 @@
     const pEdit = '<button class="hbtn" type="button" data-editplayers title="Edit players – rename, reorder, add or remove" aria-label="Edit players">✎</button>';
     // While editing players, the Player heading holds Select all and the actions for the ticked players
     const pHead = arrangeMode
-      ? `<th class="sticky ph-edit"><div class="ph-top">` +
-          `<input type="checkbox" id="selAll" class="ph-all" aria-label="Select all players">` +
-          `<span>Player</span><span class="ph-count" id="selCount"></span></div>` +
+      ? `<th class="sticky ph-edit"><div class="ph-title">Player</div>` +
+          `<label class="ph-top"><input type="checkbox" id="selAll" class="ph-all">` +
+          `<span id="selAllText">Select all</span><span class="ph-count" id="selCount"></span></label>` +
           `<div class="ph-acts">` +
           `<button class="pa act" type="button" id="btnMarkActive" data-bulk="active" title="Mark the ticked players as Active – also removes a win and reopens the game">Active</button>` +
           `<button class="pa out" type="button" id="btnMarkOut" data-bulk="out" title="Mark the ticked players as OUT">Out</button>` +
@@ -1767,7 +1766,8 @@
     // drop selections of players that no longer exist
     selectedIds = new Set([...selectedIds].filter(id => playerById(id)));
     const n = selectedIds.size, total = state.players.length;
-    $('selCount').textContent = n ? `${n} selected` : '';
+    $('selCount').textContent = n ? `· ${n} of ${total} selected` : '';
+    $('selAllText').textContent = total > 0 && n === total ? 'Deselect all' : 'Select all';
     $('selAll').checked = total > 0 && n === total;
     $('selAll').indeterminate = n > 0 && n < total;
     $('btnMarkActive').disabled = n === 0;
@@ -4243,7 +4243,7 @@
   /* ---------- Share calculator: split the pot among the players still in ---------- */
   const SPLIT_METHODS = [
     { id: 'drops', name: 'By drops left',
-      info: s => `Drop by drop. The first group of columns shows each player now: Total, Drops and Pts left. In each "After drop" group, every player who still has a drop left takes one entry (${rupees(s.share)}) from the pot, and their score goes up by one drop (${s.drop} points). A drop is only taken if the pot left afterwards is still more than one entry, so there is always a prize worth playing for – even the players with no drops left can still win more than their entry. Everyone then plays on (one more game, or carrying on with the scores) for the prize left.` },
+      info: s => `Drop by drop. The first group of columns shows each player now: Total, Drops and Pts left. In each "After drop" group, every player who still has a drop left takes one entry (${rupees(s.share)}) from the pot, and their score goes up by one drop (${s.drop} points). A drop is only taken if the pot left afterwards is still more than one entry. Each "After drop" group is a separate option: its Share column shows what each player takes if you split at that point, and the pot left is what everyone still in plays on for – so even players with no drops left can still win more than their entry.` },
     { id: 'points', name: 'By points left',
       info: () => 'The whole pot is split in proportion to points left before OUT (limit − 1 − total), so it also counts part of a drop.' },
     { id: 'moneyback', name: 'Money back, then by chances',
@@ -4292,6 +4292,7 @@
           r.amount += share;
           left -= share;
         });
+        rows.forEach(r => { r.cum = r.cum || []; r.cum[k] = r.amount; });   // what each would take if split after this drop
         out.potLeft.push(left);
         k += 1;
       }
@@ -4348,24 +4349,22 @@
     const pay = n => `<span class="pay">${rupees(n)}</span>`;
     if (splitMethod === 'drops' && d.rows.length > 1) {
       const groups = Array.from({ length: d.steps }, (_, k) => k);
-      const sub = '<th class="gs-start">Total</th><th>Drops</th><th>Pts left</th>';
-      const trio = (t, dr, pt, cls) => `<td class="gs-start ${cls || ''}">${t}</td><td class="${cls || ''}">${dr}</td><td class="${cls || ''}">${pt}</td>`;
+      const sub3 = '<th class="gs-start">Total</th><th>Drops</th><th>Pts left</th>';
+      const sub4 = '<th class="gs-start sh">Share</th><th>Total</th><th>Drops</th><th>Pts left</th>';
+      const trio = (t, dr, pt, cls, first) => `<td class="${first ? 'gs-start ' : ''}${cls || ''}">${t}</td><td class="${cls || ''}">${dr}</td><td class="${cls || ''}">${pt}</td>`;
       $('shareResult').innerHTML = `<div class="share-scroll"><table class="shares">
         <thead>
-          <tr><th class="stk" rowspan="2">Player</th><th class="sh stk2" rowspan="2">Share</th>
+          <tr><th class="stk" rowspan="2">Player</th>
             <th class="grp gs-start" colspan="3">Current</th>
-            ${groups.map(k => `<th class="grp gs-start" colspan="3">After drop ${k + 1}<small>${rupees(d.share)} each</small></th>`).join('')}</tr>
-          <tr>${sub}${groups.map(() => sub).join('')}</tr>
+            ${groups.map(k => `<th class="grp gs-start" colspan="4">After drop ${k + 1}<small>split here: ${rupees(d.share)} per drop</small></th>`).join('')}</tr>
+          <tr>${sub3}${groups.map(() => sub4).join('')}</tr>
         </thead>
-        <tbody>${d.rows.map(r => `<tr><td class="stk">${esc(r.p.name)}</td><td class="amt stk2">${pay(r.amount)}</td>${trio(r.total, r.drops, r.pts)}` +
-            groups.map(k => r.steps[k] ? trio(r.steps[k].total, r.steps[k].drops, r.steps[k].pts, 'up') : trio('–', '–', '–', 'na')).join('') + '</tr>').join('')}
-          <tr class="potrow"><td class="stk">Pot left</td><td class="stk2"></td><td class="gs-start" colspan="3">${rupees(d.pot)}</td>
-            ${d.potLeft.map(x => `<td class="gs-start" colspan="3">${rupees(x)}</td>`).join('')}</tr></tbody>
-        <tfoot><tr><td class="stk">Taken</td><td class="stk2">${rupees(sum)}</td><td colspan="${3 * (d.steps + 1)}"></td></tr></tfoot></table></div>
-        <p class="prize-line">🏆 Prize left to play for: <b>${rupees(d.prize)}</b><span>Everyone still in plays on – one more game, or carrying on with the scores.</span></p>${d.steps ? '' : '<p class="share-note">No drop can be taken without leaving one entry or less in the pot, so the whole pot is played for.</p>'}${notes}`;
-      // Share sits right after the frozen Player column
-      const w = $('shareResult').querySelector('th.stk').getBoundingClientRect().width;
-      $('shareResult').querySelectorAll('.stk2').forEach(el => { el.style.left = w + 'px'; });
+        <tbody>${d.rows.map(r => `<tr><td class="stk">${esc(r.p.name)}</td>${trio(r.total, r.drops, r.pts, '', true)}` +
+            groups.map(k => `<td class="gs-start amt">${pay(r.cum[k])}</td>` +
+              (r.steps[k] ? trio(r.steps[k].total, r.steps[k].drops, r.steps[k].pts, 'up') : trio('–', '–', '–', 'na'))).join('') + '</tr>').join('')}
+          <tr class="potrow"><td class="stk">Pot left</td><td class="gs-start" colspan="3">${rupees(d.pot)}</td>
+            ${d.potLeft.map(x => `<td class="gs-start" colspan="4">${rupees(x)}</td>`).join('')}</tr></tbody>
+        </table></div>${d.steps ? '' : '<p class="share-note">No drop can be taken without leaving one entry or less in the pot.</p>'}${notes}`;
     } else {
       $('shareResult').innerHTML = `<div class="share-scroll"><table class="shares">
         <thead><tr><th class="stk">Player</th><th class="sh">Share</th><th>Total</th><th>Drops</th><th>Pts left</th></tr></thead>
@@ -4377,9 +4376,12 @@
   function shareText() {
     const d = shareData(splitMethod);
     const m = SPLIT_METHODS.find(x => x.id === splitMethod);
-    return `Rummy – shares (${m.name})\nPot ${rupees(d.pot)} (${d.buyIns} × ${rupees(d.share)} entry)\n` +
-      d.rows.map(r => `${r.p.name}: ${rupees(r.amount)} (${r.drops} drop${r.drops === 1 ? '' : 's'} left)`).join('\n') +
-      (splitMethod === 'drops' && d.rows.length > 1 ? `\nPrize left to play for: ${rupees(d.prize)}` : '');
+    const head = `Rummy – shares (${m.name})\nPot ${rupees(d.pot)} (${d.buyIns} × ${rupees(d.share)} entry)\n`;
+    if (splitMethod === 'drops' && d.rows.length > 1) {
+      return head + Array.from({ length: d.steps }, (_, k) => `\nSplit after drop ${k + 1}: ` +
+        d.rows.map(r => `${r.p.name} ${rupees(r.cum[k])}`).join(', ') + ` · pot left ${rupees(d.potLeft[k])}`).join('');
+    }
+    return head + d.rows.map(r => `${r.p.name}: ${rupees(r.amount)} (${r.drops} drop${r.drops === 1 ? '' : 's'} left)`).join('\n');
   }
 
   $('btnShares').addEventListener('click', toggleShares);
