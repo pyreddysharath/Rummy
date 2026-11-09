@@ -596,12 +596,10 @@
   .clock-btns { display: grid; grid-template-columns: minmax(96px, 2fr) 3fr; gap: 8px; width: 100%; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
   .start-box { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
-    padding: 10px 12px; border: 1px solid #cfe3d6; border-radius: 12px; background: #f2f8f4; }
-  .start-box[hidden], .awake-chk[hidden] { display: none; }
-  .awake-chk { display: flex; align-items: center; gap: 8px; font-size: .88rem; cursor: pointer; }
-  .awake-chk input { width: 16px; height: 16px; margin: 0; accent-color: var(--felt); }
-  .awake-chk.small { font-size: .78rem; color: var(--muted); }
-  .start-ok { min-height: 0; padding: 6px 14px; }
+    padding: 10px 12px; border: 1px solid #cfe3d6; border-radius: 12px; background: #f2f8f4; font-size: .88rem; }
+  .start-box .sb-btns { display: flex; gap: 8px; }
+  .start-box button { min-height: 0; padding: 5px 14px; font-size: .82rem; }
+  .start-box[hidden] { display: none; }
   .calc-btn { min-height: 30px; padding: 4px 10px; font-size: .8rem; white-space: nowrap; }
   .time-chip { min-height: 0; padding: 3px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; font-variant-numeric: tabular-nums;
     background: #eef0f4; color: var(--muted); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 2px; }
@@ -832,7 +830,7 @@
   /* View-only visitors: everything that changes the game is hidden */
   body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly #firstDeal .fd-row, body.readonly .settings-apply { display: none !important; }
-  body.readonly .settings-card fieldset { pointer-events: none; opacity: .6; }
+  body.readonly .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
 
   /* Export / import chooser */
   .pick-tree { max-height: 50vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
@@ -991,6 +989,11 @@
       <label class="opt"><input type="radio" name="dealerOut" value="keep"> <span><b>Previous player still in</b> deals again, so the next player doesn't miss their turn to start</span></label>
       <label class="opt"><input type="radio" name="dealerOut" value="next"> <span><b>Next player still in</b> deals</span></label>
     </fieldset>
+    <fieldset class="opt-group" id="screenGroup">
+      <legend>Screen</legend>
+      <label class="opt"><input type="checkbox" id="setAwake"> <span><b>Keep the screen on</b> while a game is in progress</span></label>
+      <p class="opt-help">Saved on this phone for every game. Takes effect straight away.</p>
+    </fieldset>
     <div class="settings-apply">
       <button class="btn-primary apply" id="btnApplySettings" type="button">Apply</button>
       <div class="msg" id="settingsMsg"></div>
@@ -1076,11 +1079,10 @@
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       </div>
-      <div class="start-box" id="startBox" hidden>
-        <label class="awake-chk"><input type="checkbox" class="awakeChk"> Keep the screen on during the game</label>
-        <button class="btn-primary start-ok" id="btnStartOk" type="button">▶ Start game</button>
+      <div class="start-box" id="startBox" role="status" hidden>
+        <span>Game started · Keep the screen on?</span>
+        <span class="sb-btns"><button class="btn-primary" id="btnAwakeYes" type="button">Yes</button><button class="btn-outline" id="btnAwakeNo" type="button">No</button></span>
       </div>
-      <label class="awake-chk small" id="awakeLine" hidden><input type="checkbox" class="awakeChk"> Keep screen on</label>
       <div class="share-box" id="shareBox" hidden>
         <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
         <p class="share-pot" id="sharePot"></p>
@@ -2488,8 +2490,7 @@
       $('timeBody').innerHTML = intervalsHtml(t);
     }
     syncWakeLock(keepAwake && (st === 'running' || st === 'paused'));
-    $('awakeLine').hidden = !(st === 'running' || st === 'paused') || !canEdit();
-    if (st !== 'idle') $('startBox').hidden = true;
+    if (st !== 'running' || keepAwake) $('startBox').hidden = true;
   }
 
   function startClock() {
@@ -2499,6 +2500,8 @@
     saveState();
     renderTimer();
     toast(`Game started at ${fmtTime(now)}`);
+    // One question per game, whether Play was tapped or the clock started by itself
+    if (!keepAwake && 'wakeLock' in navigator) $('startBox').hidden = false;
   }
 
   function togglePause() {
@@ -2512,8 +2515,8 @@
       state.timer.intervals.push({ start: now, end: null });
       toast('Game resumed');
     } else if (st === 'idle') {
-      $('startBox').hidden = !$('startBox').hidden;   // choose screen-on, then Start game
-      syncAwakeBoxes();
+      startClock();
+      renderHeader();
       return;
     } else return;
     saveState();
@@ -2553,7 +2556,12 @@
   // Keep-the-screen-on choice: off unless chosen, remembered on this device
   let keepAwake = false;
   try { keepAwake = localStorage.getItem('rummy-keep-awake') === '1'; } catch (e) { /* ignore */ }
-  function syncAwakeBoxes() { document.querySelectorAll('.awakeChk').forEach(c => { c.checked = keepAwake; }); }
+  function setKeepAwake(on) {
+    keepAwake = on;
+    try { localStorage.setItem('rummy-keep-awake', on ? '1' : '0'); } catch (e) { /* ignore */ }
+    $('setAwake').checked = on;
+    renderTimer();
+  }
   async function syncWakeLock(want) {
     if (!('wakeLock' in navigator)) return;
     try {
@@ -3158,19 +3166,13 @@
   });
 
   $('btnPause').addEventListener('click', togglePause);
-  $('btnStartOk').addEventListener('click', () => {
-    if (!canEdit()) return;
+  $('btnAwakeYes').addEventListener('click', () => {
+    setKeepAwake(true);
     $('startBox').hidden = true;
-    startClock();
-    renderHeader();
-    toast(keepAwake ? 'Game started – screen stays on' : 'Game started');
+    toast('Screen stays on · change it in Game Settings');
   });
-  document.querySelectorAll('.awakeChk').forEach(c => c.addEventListener('change', () => {
-    keepAwake = c.checked;
-    try { localStorage.setItem('rummy-keep-awake', keepAwake ? '1' : '0'); } catch (e) { /* ignore */ }
-    syncAwakeBoxes();
-    renderTimer();
-  }));
+  $('btnAwakeNo').addEventListener('click', () => { $('startBox').hidden = true; });
+  $('setAwake').addEventListener('change', e => setKeepAwake(e.target.checked));
   $('btnEndGame').addEventListener('click', endGame);
   $('btnExportData').addEventListener('click', exportData);
   $('btnImportData').addEventListener('click', () => $('importFile').click());
@@ -4613,7 +4615,7 @@
   try { if (window.fetch && location.protocol !== 'file:') fetch('config/OurOtherSites.json').then(r => (r.ok ? r.json() : null)).then(d => { if (d) renderOtherSites(d); }).catch(() => {}); } catch (e) { /* keep the built-in list */ }
 
   /* ---------- Init ---------- */
-  syncAwakeBoxes();
+  $('setAwake').checked = keepAwake;
   renderSettings();
   renderAll();
   cloudStartup();
