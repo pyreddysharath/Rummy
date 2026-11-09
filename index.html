@@ -10,7 +10,7 @@
     --felt: #0e5a3a;
     --felt-dark: #083d27;
     --felt-light: #17784e;
-    --felt-head-light: #3d936b;   /* lighter green for the current-round heading */
+    --felt-head-light: #2e7d58;   /* lighter green for the current-round heading */
     --gold: #d6a62c;
     --gold-dark: #a87d12;
     --gold-soft: #fff6db;
@@ -543,7 +543,7 @@
   .iv-n { font-weight: 700; color: var(--text); }
   .iv-empty { margin-top: 6px; }
   /* Table footer: add player + Save under the new round */
-  table.board tfoot td { border: none !important; background: var(--card); padding: 8px 6px; }   /* Save row: no grid lines */
+  table.board tfoot td { border: none !important; background: var(--card); padding: 8px 6px 2px; }   /* Save row: no grid lines */
   table.board:has(tfoot) tbody tr:last-child td { border-bottom: 1px solid var(--border); }   /* keep the line under the last player */
   .table-scroll:has(tfoot) { border-bottom-color: transparent; }
   table.board tfoot td.save-cell button { width: 100%; min-width: 0; min-height: 0; padding: 7px 4px; }
@@ -562,7 +562,7 @@
 
   /* Game clock */
   .game-clock {
-    margin: 14px 0 0; padding: 14px 0 2px; border-top: 1px dashed var(--border);   /* separator after the table */
+    margin: 6px 0 0; padding: 12px 0 2px; border-top: 1px dashed var(--border);   /* separator after the table */
     display: flex; flex-direction: column; gap: 8px; align-items: center;
   }
   .clock { display: flex; align-items: baseline; justify-content: center; gap: 10px; }
