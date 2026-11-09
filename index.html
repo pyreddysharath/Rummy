@@ -452,10 +452,6 @@
   #btnSetDealer { background: #fff; color: var(--text); border-color: #c4dccd; }
   .pa:disabled { opacity: .45; }
   .ph-sep { height: 1px; background: rgba(255,255,255,.35); margin: 8px 0; }
-  .ph-add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px; }
-  table.board thead .ph-add input { width: 100%; min-width: 0; min-height: 30px; padding: 4px 8px; font-size: .85rem; font-weight: 400;
-    text-transform: none; letter-spacing: 0; border-radius: 7px; }
-  table.board thead .ph-add button { min-height: 0; padding: 4px 9px; font-size: .78rem; white-space: nowrap; background: #fff; border-color: #c4dccd; }
   .edit-done { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 16px; }
   .edit-done button { min-height: 0; padding: 6px 8px; font-size: .82rem; }
   /* On the green heading: Done in the page's gold, Cancel as a light outline */
@@ -551,11 +547,18 @@
   table.board:has(tfoot) tbody tr:last-child td { border-bottom: 1px solid var(--border); }   /* keep the line under the last player */
   .table-scroll:has(tfoot) { border-bottom-color: transparent; }
   table.board tfoot td.save-cell button { width: 100%; min-width: 0; min-height: 0; padding: 7px 4px; }
-  table.board tfoot td.add-cell { padding: 8px; }
-  .add-cell .add-player { display: flex; gap: 6px; }
-  table.board td.add-cell input#newPlayer { width: 130px; text-align: left; font-weight: 400; min-height: 32px; padding: 5px 8px; }
-  .add-cell .add-player button { white-space: nowrap; padding: 5px 10px; }
-  .add-first { margin-top: 10px; }
+  table.board tfoot td.add-cell { padding: 8px 6px 8px 8px; text-align: left; vertical-align: top; }
+  .add-open { min-height: 0; padding: 6px 4px; background: none; border: 0; color: var(--felt); font-weight: 800; font-size: .86rem;
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .add-open .plus { width: 22px; height: 22px; border-radius: 50%; background: var(--felt); color: #fff; display: inline-flex;
+    align-items: center; justify-content: center; font-size: 1.05rem; line-height: 1; }
+  .add-open:hover { text-decoration: underline; }
+  .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; }
+  table.board .add-form input#newPlayer { grid-column: 1 / -1; width: 100%; min-width: 0; text-align: left; font-weight: 400;
+    min-height: 32px; padding: 5px 8px; }
+  .add-form button { min-height: 0; padding: 5px 6px; font-size: .8rem; }
+  .empty .add-open { margin-top: 10px; }
+  .empty .add-form { max-width: 240px; margin: 12px auto 0; }
 
   /* Game clock */
   .game-clock {
@@ -1105,7 +1108,7 @@
 
     <div class="ft-sec" id="ft-help" hidden>
       <div class="ft-title">How it works</div>
-      <details open><summary>Scoring</summary><p>Add players with ✎ in the Player heading, type each round's points and tap <b>Save</b>. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
+      <details open><summary>Scoring</summary><p>Add players with <b>＋ Add player</b> under the list, type each round's points and tap <b>Save</b>. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
       <details><summary>Playing online with friends</summary><p>Open <b>Play Online</b>, give the room a name and tap <b>Create Room</b>. Share the <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch – on WhatsApp or anywhere. Scores update on every phone straight away, no refresh needed. Nobody needs to log in.</p></details>
       <details><summary>Keeping your rooms</summary><p>As a guest, your rooms are listed on this device. Keep each room's <b>Owner link</b> (WhatsApp it to yourself) – it brings back full control after clearing the browser or on a new phone. Or sign in with Google once, and your rooms follow your account on every device.</p></details>
       <details><summary>When rooms are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner chooses the period in <b>Room Settings</b>. Use <b>Export Data</b> to keep a copy for longer.</p></details>
@@ -1678,10 +1681,17 @@
 
   function renderBoard() {
     const table = $('board');
+    const keepName = $('newPlayer') ? $('newPlayer').value : '';            // keep a half-typed name across redraws
+    const hadFocus = document.activeElement && document.activeElement.id === 'newPlayer';
+    const restoreAdd = () => {
+      const np = $('newPlayer');
+      if (np) { np.value = keepName; if (hadFocus) np.focus(); }
+    };
     if (state.players.length === 0 && !arrangeMode) {
       table.innerHTML = `<tbody><tr><td class="empty">
         <span class="suits">♠<span class="rd">♥</span>♣<span class="rd">♦</span></span>
-        No players yet.<br><button class="btn-primary add-first" type="button" data-editplayers>＋ Add players</button></td></tr></tbody>`;
+        No players yet.<br>${canEdit() ? addPlayerHtml() : ''}</td></tr></tbody>`;
+      restoreAdd();
       return;
     }
     const showEntry = canEnterRound();
@@ -1690,7 +1700,7 @@
 
     // Column order: Player | Total | new round | latest saved round … R1
     const roundsDesc = state.rounds.slice().reverse();
-    const pEdit = '<button class="hbtn" type="button" data-editplayers title="Edit players – rename, reorder, add or remove" aria-label="Edit players">✎</button>';
+    const pEdit = '<button class="hbtn" type="button" data-editplayers title="Edit players – rename, reorder, mark or remove" aria-label="Edit players">✎</button>';
     // While editing players, the Player heading holds Select all and the actions for the ticked players
     const pHead = arrangeMode
       ? `<th class="sticky ph-edit"><div class="ph-title">Player</div><div class="ph-body">` +
@@ -1703,9 +1713,6 @@
           `<button class="pa dl" type="button" id="btnSetDealer" data-bulk="dealer" title="Make the ticked player deal this round">${DEALER_ICON} Dealer</button>` +
           `<button class="pa rj" type="button" id="btnRejoin" data-bulk="rejoin" title="Bring a ticked OUT player back in at the highest score of the players still in">↺ Rejoin</button>` +
           `</div>` +
-          `<div class="ph-lbl"><span>Add player</span></div>` +
-          `<div class="add-player ph-add"><input type="text" id="newPlayer" maxlength="30" placeholder="New player name" autocomplete="off" aria-label="New player name">` +
-          `<button class="btn-outline" type="button" data-addplayer>＋ Add</button></div>` +
           `<div class="edit-done">` +
           `<button class="btn-primary" type="button" id="btnEditDone" data-editdone>Done</button>` +
           `<button class="btn-outline" type="button" id="btnEditCancel" data-editcancelp>Cancel</button></div>` +
@@ -1783,19 +1790,21 @@
 
     // Footer row: add a player (while editing players) and Save under the new round's column
     let foot = '';
-    if (showEntry) {
+    const canAdd = canEdit() && !arrangeMode && !gameResult();
+    if (showEntry || canAdd) {
       const roundCols = roundsDesc.length + (pendingUndo ? 1 : 0);
-      foot = `<tfoot><tr><td class="sticky"></td><td></td>` +
-        `<td class="entry save-cell"><button class="btn-primary" id="btnSaveRound" type="button" data-saveround>Save</button></td>` +
+      foot = `<tfoot><tr><td class="sticky add-cell">${canAdd ? addPlayerHtml() : ''}</td><td></td>` +
+        (showEntry ? `<td class="entry save-cell"><button class="btn-primary" id="btnSaveRound" type="button" data-saveround>Save</button></td>` : '') +
         '<td></td>'.repeat(roundCols) + '</tr></tfoot>';
     }
     table.innerHTML = head + body + foot;
+    restoreAdd();
   }
 
   function renderActions() {
     const res = gameResult();
     if (!res && state.players.length === 1 && !arrangeMode && !$('boardMsg').textContent) {
-      setMsg('boardMsg', 'Add one more player to start: tap ✎ in the Player heading.', '');
+      setMsg('boardMsg', 'Add one more player to start: tap ＋ Add player under the list.', '');
     }
     renderBulkBar();
   }
@@ -1858,6 +1867,24 @@
   }
 
   /* ---------- Player actions ---------- */
+  // "＋ Add player" under the list; tapping it opens just a name box
+  let addOpen = false;
+  function addPlayerHtml() {
+    if (!addOpen) return '<button class="add-open" type="button" data-addopen><span class="plus" aria-hidden="true">+</span>Add player</button>';
+    return '<div class="add-form"><input type="text" id="newPlayer" maxlength="30" placeholder="Player name" autocomplete="off" enterkeyhint="done" aria-label="New player name">' +
+      '<button class="btn-primary" type="button" data-addplayer>Add</button><button class="btn-outline" type="button" data-addclose>Close</button></div>';
+  }
+  function openAddPlayer() {
+    addOpen = true;
+    renderBoard();
+    const np = $('newPlayer');
+    if (np) np.focus();
+  }
+  function closeAddPlayer() {
+    addOpen = false;
+    if ($('newPlayer')) $('newPlayer').value = '';
+    renderBoard();
+  }
   function addPlayer() {
     const input = $('newPlayer');
     const name = input.value.trim().replace(/\s+/g, ' ');
@@ -2340,7 +2367,7 @@
     setMsg('boardMsg', '', '');
     renderAll();
     toast(saved ? `${saved} saved · New game started` : 'New game started – Round 1');
-    if (!keepPlayers) { startEditPlayers(); const np = $('newPlayer'); if (np) np.focus(); }   // straight to adding players
+    if (!keepPlayers) openAddPlayer();   // straight to typing the first name
   }
 
   /* ---------- Game clock ---------- */
@@ -2953,6 +2980,7 @@
   // Add-player row lives in the table footer while editing players
   $('board').addEventListener('keydown', e => {
     if (e.target.id === 'newPlayer' && e.key === 'Enter') { e.preventDefault(); addPlayer(); }
+    if (e.target.id === 'newPlayer' && e.key === 'Escape') { e.preventDefault(); closeAddPlayer(); }
   });
 
   $('btnShare').addEventListener('click', shareScoreboard);
@@ -3010,6 +3038,8 @@
       return;
     }
     if (t.hasAttribute('data-addplayer')) { addPlayer(); return; }
+    if (t.hasAttribute('data-addopen')) { openAddPlayer(); return; }
+    if (t.hasAttribute('data-addclose')) { closeAddPlayer(); return; }
     if (t.hasAttribute('data-saveround')) { saveRound(); return; }
     if (t.dataset.move) movePlayer(Number(t.dataset.id), t.dataset.move);
     else if (t.dataset.remove) removePlayer(Number(t.dataset.remove));
