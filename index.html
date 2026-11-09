@@ -628,6 +628,9 @@
   table.shares tr.potrow td.stk { font-weight: 700; color: var(--muted); }
   table.shares tfoot td { border-bottom: none; font-weight: 800; background: var(--gold-soft); color: var(--gold-text); }
   .share-note { font-size: .78rem; color: var(--muted); margin: 6px 0 0; }
+  .prize-line { margin: 10px 0 0; padding: 8px 10px; border-radius: 10px; background: var(--gold-soft); border: 1px solid var(--gold); color: var(--gold-text); font-size: .9rem; }
+  .prize-line b { font-size: 1rem; }
+  .prize-line span { display: block; font-size: .78rem; color: var(--muted); margin-top: 2px; }
   .share-send { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
@@ -4240,7 +4243,7 @@
   /* ---------- Share calculator: split the pot among the players still in ---------- */
   const SPLIT_METHODS = [
     { id: 'drops', name: 'By drops left',
-      info: s => `Drop by drop. The first group of columns shows each player now: Total, Drops and Pts left. In each "After drop" group, every player who still has a drop left gets one entry (${rupees(s.share)}) from the pot, and their score goes up by one drop (${s.drop} points). This continues until everyone is at 0 drops, or until the pot left can't pay everyone in the next drop. Any amount left over goes to the player with the lowest total; players tied on the lowest total share it evenly, and an odd rupee goes to the player with the next-lowest total.` },
+      info: s => `Drop by drop. The first group of columns shows each player now: Total, Drops and Pts left. In each "After drop" group, every player who still has a drop left takes one entry (${rupees(s.share)}) from the pot, and their score goes up by one drop (${s.drop} points). A drop is only taken if the pot left afterwards is still more than one entry, so there is always a prize worth playing for – even the players with no drops left can still win more than their entry. Everyone then plays on (one more game, or carrying on with the scores) for the prize left.` },
     { id: 'points', name: 'By points left',
       info: () => 'The whole pot is split in proportion to points left before OUT (limit − 1 − total), so it also counts part of a drop.' },
     { id: 'moneyback', name: 'Money back, then by chances',
@@ -4265,19 +4268,6 @@
     return out;
   }
 
-  // Leftover goes to the lowest total; ties share evenly; an odd rupee goes to the next-lowest total
-  function giveLeftover(rows, amount) {
-    if (amount <= 0 || !rows.length) return;
-    const sorted = rows.slice().sort((a, b) => a.total - b.total);
-    const low = sorted[0].total;
-    const tied = sorted.filter(r => r.total === low);
-    const each = Math.floor(amount / tied.length);
-    const odd = amount - each * tied.length;
-    tied.forEach(r => { r.leftover += each; });
-    if (odd) (sorted.find(r => r.total > low) || tied[0]).leftover += odd;
-    rows.forEach(r => { r.amount += r.leftover; });
-  }
-
   function shareData(method) {
     const share = state.settings.share, drop = state.settings.drop;
     const rejoins = Object.values(state.rejoins || {}).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -4285,16 +4275,16 @@
     const pot = share * buyIns;
     const rows = state.players.filter(p => playerStatus(p.id) !== 'out').map(p => {
       const total = totalOf(p.id);
-      return { p, total, drops: Math.max(0, dropsLeft(total) || 0), pts: pointsLeft(total), steps: [], leftover: 0, amount: 0 };
+      return { p, total, drops: Math.max(0, dropsLeft(total) || 0), pts: pointsLeft(total), steps: [], amount: 0 };
     });
-    const out = { share, drop, buyIns, rejoins, pot, rows, steps: 0, potLeft: [], leftover: 0 };
+    const out = { share, drop, buyIns, rejoins, pot, rows, steps: 0, potLeft: [], prize: 0 };
     if (!rows.length) return out;
     if (rows.length === 1) { rows[0].amount = pot; return out; }
     if (method === 'drops') {
       let left = pot, k = 0;
       for (;;) {
         const elig = rows.filter(r => r.drops > k);
-        if (!elig.length || left < share * elig.length) break;   // stop when the pot can't pay everyone in this drop
+        if (!elig.length || left - share * elig.length <= share) break;   // the pot must stay above one entry: that's the prize played for
         rows.forEach(r => { r.steps[k] = null; });
         elig.forEach(r => {
           const t = r.total + (k + 1) * drop;
@@ -4306,8 +4296,7 @@
         k += 1;
       }
       out.steps = k;
-      out.leftover = left;
-      giveLeftover(rows, left);
+      out.prize = left;
       return out;
     }
     let amounts;
@@ -4359,23 +4348,21 @@
     const pay = n => `<span class="pay">${rupees(n)}</span>`;
     if (splitMethod === 'drops' && d.rows.length > 1) {
       const groups = Array.from({ length: d.steps }, (_, k) => k);
-      const hasLeft = d.leftover > 0;
       const sub = '<th class="gs-start">Total</th><th>Drops</th><th>Pts left</th>';
       const trio = (t, dr, pt, cls) => `<td class="gs-start ${cls || ''}">${t}</td><td class="${cls || ''}">${dr}</td><td class="${cls || ''}">${pt}</td>`;
       $('shareResult').innerHTML = `<div class="share-scroll"><table class="shares">
         <thead>
           <tr><th class="stk" rowspan="2">Player</th><th class="sh stk2" rowspan="2">Share</th>
             <th class="grp gs-start" colspan="3">Current</th>
-            ${groups.map(k => `<th class="grp gs-start" colspan="3">After drop ${k + 1}<small>${rupees(d.share)} each</small></th>`).join('')}
-            ${hasLeft ? '<th class="gs-start" rowspan="2">Left&shy;over<small>lowest total</small></th>' : ''}</tr>
+            ${groups.map(k => `<th class="grp gs-start" colspan="3">After drop ${k + 1}<small>${rupees(d.share)} each</small></th>`).join('')}</tr>
           <tr>${sub}${groups.map(() => sub).join('')}</tr>
         </thead>
         <tbody>${d.rows.map(r => `<tr><td class="stk">${esc(r.p.name)}</td><td class="amt stk2">${pay(r.amount)}</td>${trio(r.total, r.drops, r.pts)}` +
-            groups.map(k => r.steps[k] ? trio(r.steps[k].total, r.steps[k].drops, r.steps[k].pts, 'up') : trio('–', '–', '–', 'na')).join('') +
-            (hasLeft ? `<td class="gs-start">${r.leftover ? pay(r.leftover) : '<span class="na">–</span>'}</td>` : '') + '</tr>').join('')}
+            groups.map(k => r.steps[k] ? trio(r.steps[k].total, r.steps[k].drops, r.steps[k].pts, 'up') : trio('–', '–', '–', 'na')).join('') + '</tr>').join('')}
           <tr class="potrow"><td class="stk">Pot left</td><td class="stk2"></td><td class="gs-start" colspan="3">${rupees(d.pot)}</td>
-            ${d.potLeft.map(x => `<td class="gs-start" colspan="3">${rupees(x)}</td>`).join('')}${hasLeft ? `<td class="gs-start">${rupees(0)}</td>` : ''}</tr></tbody>
-        <tfoot><tr><td class="stk">Total</td><td class="stk2">${rupees(sum)}</td><td colspan="${3 * (d.steps + 1) + (hasLeft ? 1 : 0)}"></td></tr></tfoot></table></div>${notes}`;
+            ${d.potLeft.map(x => `<td class="gs-start" colspan="3">${rupees(x)}</td>`).join('')}</tr></tbody>
+        <tfoot><tr><td class="stk">Taken</td><td class="stk2">${rupees(sum)}</td><td colspan="${3 * (d.steps + 1)}"></td></tr></tfoot></table></div>
+        <p class="prize-line">🏆 Prize left to play for: <b>${rupees(d.prize)}</b><span>Everyone still in plays on – one more game, or carrying on with the scores.</span></p>${d.steps ? '' : '<p class="share-note">No drop can be taken without leaving one entry or less in the pot, so the whole pot is played for.</p>'}${notes}`;
       // Share sits right after the frozen Player column
       const w = $('shareResult').querySelector('th.stk').getBoundingClientRect().width;
       $('shareResult').querySelectorAll('.stk2').forEach(el => { el.style.left = w + 'px'; });
@@ -4391,7 +4378,8 @@
     const d = shareData(splitMethod);
     const m = SPLIT_METHODS.find(x => x.id === splitMethod);
     return `Rummy – shares (${m.name})\nPot ${rupees(d.pot)} (${d.buyIns} × ${rupees(d.share)} entry)\n` +
-      d.rows.map(r => `${r.p.name}: ${rupees(r.amount)} (${r.drops} drop${r.drops === 1 ? '' : 's'} left)`).join('\n');
+      d.rows.map(r => `${r.p.name}: ${rupees(r.amount)} (${r.drops} drop${r.drops === 1 ? '' : 's'} left)`).join('\n') +
+      (splitMethod === 'drops' && d.rows.length > 1 ? `\nPrize left to play for: ${rupees(d.prize)}` : '');
   }
 
   $('btnShares').addEventListener('click', toggleShares);
