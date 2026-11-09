@@ -228,7 +228,7 @@
   }
   table.board thead .sticky { background: var(--felt); z-index: 3; text-align: center; }   /* only the PLAYER heading is centred */
   /* TOTAL heading: mustard gold (the colour the current-round heading used to have) */
-  table.board thead th.th-total { background: #b8860b; color: #fff; }
+  table.board thead th.th-total { background: #b8860b; color: #1d2330; }
   table.board td.total { font-weight: 800; }   /* same font size as the other columns */
   table.board td.dash { color: #b3b9c6; }
 
@@ -409,17 +409,19 @@
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
   /* Dealer settings and first-dealer picker */
-  .opt-group { border: 1px solid #cfe3d6; border-radius: 10px; padding: 8px 12px 10px; margin: 12px 0 0; background: #f2f8f4; }
+  .opt-group { border: 1px solid #e6c766; border-radius: 10px; padding: 8px 12px 10px; margin: 12px 0 0; background: #fdf0c8; }
   .opt-group.nums { margin-top: 0; padding-top: 4px; }
   .settings-apply { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
   .settings-apply .msg { margin: 0; }
-  .opt-group legend { font-size: .74rem; font-weight: 800; color: var(--primary-dark); padding: 2px 8px; text-transform: uppercase; letter-spacing: .05em;
-    background: #fff; border: 1px solid #cfe3d6; border-radius: 999px; }
+  .opt-group legend { font-size: .74rem; font-weight: 800; color: #1d2330; padding: 2px 10px; text-transform: uppercase; letter-spacing: .05em;
+    background: var(--gold); border: 1px solid #c99a1e; border-radius: 999px; }
+  .settings-card label.field, .settings-card .opt-help { color: #1d2330; }
+  .settings-card .opt-group input[type=number] { background: #fff; }
   .opt-help { margin: 0 0 6px; font-size: .8rem; color: var(--muted); }
   .opt { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: .88rem; cursor: pointer; }
   .opt input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
   .card-order { margin-top: 6px; font-size: .84rem; }
-  .card-order > summary { cursor: pointer; color: var(--gold-dark); font-weight: 700; list-style: none; }
+  .card-order > summary { cursor: pointer; color: var(--felt); font-weight: 700; list-style: none; }
   .co-body { margin-top: 8px; }
   .co-line { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; margin-bottom: 6px; }
   .co-lbl { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; width: 36px; }
@@ -600,7 +602,7 @@
   #shareGroup { margin-top: 22px; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
-  .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #b8860b; color: #fff; }
+  .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #b8860b; color: #1d2330; }
   .calc-btn:hover { background: #a0750a; }
   .calc-btn .chev { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .calc-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
@@ -837,7 +839,7 @@
   .ng-box[hidden] { display: none; }
   .ng-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .ng-opt { min-height: 0; padding: 9px 8px; font-size: .9rem; font-weight: 800; border-radius: 10px; }
-  .ng-opt.same { background: var(--gold); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-shadow: 0 1px 1px rgba(0,0,0,.25); }
+  .ng-opt.same { background: var(--gold); color: #2b1f00; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
   .ng-opt.same:hover:not(:disabled) { background: #e2b33a; }
   .ng-opt.fresh { background: #fff; color: var(--felt); }
   .ng-opt.fresh:hover { background: #f2f8f4; }
