@@ -412,7 +412,7 @@
   .pick .pt { color: var(--muted); font-size: .85rem; }
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
-  /* Dealer settings and first-dealer picker */
+  /* Game Settings groups */
   .opt-group { border: 1px solid #e6c766; border-radius: 10px; padding: 8px 12px 10px; margin: 12px 0 0; background: #fdf0c8; }
   .opt-group.nums { margin-top: 0; padding-top: 4px; }
   .settings-apply { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
@@ -424,30 +424,6 @@
   .opt-help { margin: 0 0 6px; font-size: .8rem; color: var(--muted); }
   .opt { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: .88rem; cursor: pointer; }
   .opt input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
-  .card-order { margin-top: 6px; font-size: .84rem; }
-  .card-order > summary { cursor: pointer; color: var(--felt); font-weight: 700; list-style: none; }
-  .co-body { margin-top: 8px; }
-  .co-line { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; margin-bottom: 6px; }
-  .co-lbl { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; width: 36px; }
-  .co-card {
-    min-width: 24px; padding: 2px 4px; text-align: center; border: 1px solid #d8cfb4; border-radius: 4px;
-    background: #fff; font-family: Georgia, serif; font-weight: 700; font-size: .85rem;
-  }
-  .co-suit { display: inline-flex; flex-direction: column; align-items: center; font-size: 1.15rem; line-height: 1; padding: 2px 4px; }
-  .co-suit.red { color: #c62828; }
-  .co-suit small { font-size: .6rem; color: var(--muted); margin-top: 2px; }
-  .co-arrow { color: var(--muted); font-size: .8rem; }
-  .co-note { margin: 2px 0 0; font-size: .78rem; color: var(--muted); }
-  .first-deal {
-    margin: 0 0 10px; padding: 10px 12px; border: 1px dashed var(--felt-light); border-radius: 10px; background: #eef7f1;
-  }
-  .first-deal[hidden] { display: none; }
-  .fd-title { font-weight: 800; margin-bottom: 2px; }
-  .fd-text { font-size: .85rem; color: var(--text); }
-  .fd-row { display: flex; gap: 8px; margin: 8px 0 4px; }
-  .fd-row select {
-    flex: 1; min-width: 0; font: inherit; padding: 6px 10px; border: 1px solid #d9d3c3; border-radius: 8px; background: #fff;
-  }
 
   /* Edit Players mode: Select all + actions inside the Player heading */
   /* Edit Players: light green panel, the PLAYER title keeps the dark heading colour */
@@ -829,7 +805,7 @@
   .del-room { color: var(--red); border-color: #f5b5b5; }
   /* View-only visitors: everything that changes the game is hidden */
   body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
-  body.readonly #firstDeal .fd-row, body.readonly .settings-apply { display: none !important; }
+  body.readonly .settings-apply { display: none !important; }
   body.readonly .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
 
   /* Export / import chooser */
@@ -976,7 +952,13 @@
       <div class="msg" id="shareMsg"></div>
     </fieldset>
 
-    <!-- Dealer rule (saved straight away, can be changed at any point in the game) -->
+    <!-- Dealer rules (saved straight away) -->
+    <fieldset class="opt-group">
+      <legend>Who deals first</legend>
+      <label class="opt"><input type="radio" name="firstDealer" value="last"> <span><b>Last player</b> in the list deals the first round</span></label>
+      <label class="opt"><input type="radio" name="firstDealer" value="first"> <span><b>First player</b> in the list deals the first round</span></label>
+      <p class="opt-help">To pick someone else, select them in Edit Players and mark as Dealer.</p>
+    </fieldset>
     <fieldset class="opt-group">
       <legend>When the next dealer is OUT</legend>
       <label class="opt"><input type="radio" name="dealerOut" value="keep"> <span><b>Previous player still in</b> deals again, so the next player doesn't miss their turn to start</span></label>
@@ -1039,16 +1021,6 @@
       <div class="ns-note">To end a game, tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the ✕ on a Winner tag in ✎ Player edit.</div>
     </div>
 
-    <!-- Shown at the start of a game until the first dealer is chosen -->
-    <div class="first-deal" id="firstDeal" hidden>
-      <div class="fd-title"><svg class="dicon" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true"><g transform="rotate(10 10 12)"><rect x="3" y="2" width="14" height="20" rx="2.6" fill="#f5c12e" stroke="#0e5a3a" stroke-width="1.4"/><path transform="translate(5.6 7.2) scale(.88)" d="M5 0C5 0 0 4 0 6.3C0 8 1.8 9 3.4 8.2L3 10H7L6.6 8.2C8.2 9 10 8 10 6.3C10 4 5 0 5 0Z" fill="#1d2330"/></g></svg> Who deals first?</div>
-      <div class="fd-text" id="fdText"></div>
-      <div class="fd-row">
-        <select id="fdSelect" aria-label="Player who deals first"></select>
-        <button class="btn-primary" id="btnFdSet" type="button">Set Dealer</button>
-      </div>
-      <details class="card-order"><summary>Card order, lowest to highest</summary><div class="co-body" data-cardorder></div></details>
-    </div>
 
     <div class="table-scroll">
       <table class="board" id="board"></table>
@@ -1213,7 +1185,7 @@
 
   /* ---------- Storage ---------- */
   const STORAGE_KEY = 'rummy-scoreboard-v1';
-  const DEFAULT_SETTINGS = { limit: 201, drop: 20, full: 80, firstDealer: 'lowest', dealerOut: 'keep' };
+  const DEFAULT_SETTINGS = { limit: 201, drop: 20, full: 80, firstDealer: 'last', dealerOut: 'keep' };
 
   // Settings hold only limit and drop; older saves with upper/lower fall back to the default drop.
   function cleanSettings(raw) {
@@ -1222,7 +1194,7 @@
       limit: Number.isInteger(Number(s.limit)) && Number(s.limit) >= 1 ? Number(s.limit) : DEFAULT_SETTINGS.limit,
       drop: Number.isInteger(Number(s.drop)) && Number(s.drop) >= 1 ? Number(s.drop) : DEFAULT_SETTINGS.drop,
       full: Number.isInteger(Number(s.full)) && Number(s.full) >= 1 ? Number(s.full) : DEFAULT_SETTINGS.full,
-      firstDealer: s.firstDealer === 'highest' ? 'highest' : 'lowest',
+      firstDealer: s.firstDealer === 'first' ? 'first' : 'last',
       dealerOut: s.dealerOut === 'next' ? 'next' : 'keep',
       share: Number.isInteger(Number(s.share)) && Number(s.share) >= 1 && s.share !== null && s.share !== '' ? Number(s.share) : null
     };
@@ -1398,7 +1370,8 @@
     const act = activeInOrder();
     if (!act.length) return null;
     if (act.some(p => p.id === state.dealerId)) return state.dealerId;
-    if (state.dealerId == null) return act[0].id;
+    // Not picked by hand: the first round goes to the last (default) or first player still in
+    if (state.dealerId == null) return state.settings.firstDealer === 'first' ? act[0].id : act[act.length - 1].id;
     // stored dealer is OUT: previous player still in (keep starting order) or next player still in
     return stepActive(state.dealerId, state.settings.dealerOut === 'next' ? 1 : -1);
   }
@@ -1605,8 +1578,7 @@
       return `<td class="sticky"><div class="pcell pgrid edit">${sel}<span class="pno">${no}.</span><div class="pmain">` +
         `<div class="namecell"><span class="nmwrap">${nameInput}</span>${ctrl}</div><div class="pstatus">${statusHtml}</div></div></div></td>`;
     }
-    const choosingDealer = state.rounds.length === 0 && state.dealerId == null;   // first dealer not picked yet
-    const dealer = canEnterRound() && !choosingDealer && currentDealerId() === p.id
+    const dealer = canEnterRound() && currentDealerId() === p.id
       ? '<span class="dealer" data-tip="Dealer" tabindex="0" role="img" aria-label="Dealer"><svg class="dicon" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true"><g transform="rotate(10 10 12)"><rect x="3" y="2" width="14" height="20" rx="2.6" fill="#f5c12e" stroke="#0e5a3a" stroke-width="1.4"/><path transform="translate(5.6 7.2) scale(.88)" d="M5 0C5 0 0 4 0 6.3C0 8 1.8 9 3.4 8.2L3 10H7L6.6 8.2C8.2 9 10 8 10 6.3C10 4 5 0 5 0Z" fill="#1d2330"/></g></svg></span>' : '';
     const rj = state.rejoins[p.id] ? `<span class="rj" title="Rejoined ${state.rejoins[p.id]}×">↺${state.rejoins[p.id] > 1 ? state.rejoins[p.id] : ''}</span>` : '';
     // Number sits in its own column so the drops line lines up with the start of the name
@@ -1849,6 +1821,7 @@
     $('setFull').value = state.settings.full;
     if (document.activeElement !== $('setShare')) $('setShare').value = state.settings.share || '';
     document.querySelectorAll('input[name="dealerOut"]').forEach(i => { i.checked = i.value === state.settings.dealerOut; });
+    document.querySelectorAll('input[name="firstDealer"]').forEach(i => { i.checked = i.value === state.settings.firstDealer; });
     updateRangeNote(state.settings);
   }
 
@@ -1873,45 +1846,8 @@
       `<div class="ns-h">Colours and icons</div>`;
   }
 
-  /* ---------- Card order and first-dealer picker ---------- */
-  function cardOrderHtml() {
-    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-    const suits = [['♣', 'Clubs', 0], ['♦', 'Diamonds', 1], ['♥', 'Hearts', 1], ['♠', 'Spades', 0]];
-    return `<div class="co-line"><span class="co-lbl">Rank</span>${ranks.map(c => `<span class="co-card">${c}</span>`).join('<span class="co-arrow">›</span>')}</div>` +
-      `<div class="co-line"><span class="co-lbl">Suit</span>${suits.map(([sym, name, red]) =>
-        `<span class="co-suit${red ? ' red' : ''}" title="${name}">${sym}<small>${name}</small></span>`).join('<span class="co-arrow">›</span>')}</div>` +
-      `<p class="co-note">Ace is the lowest card and King the highest. If two players pick the same rank, the suit decides. ` +
-      `A Joker doesn't count: pick again.</p>`;
-  }
-
-  function renderFirstDeal() {
-    const show = !arrangeMode && canEnterRound() && state.rounds.length === 0 && state.dealerId == null;
-    $('firstDeal').hidden = !show;
-    if (!show) return;
-    $('fdText').innerHTML = `Spread the cards face down and let each player pick one. ` +
-      `The <b>lowest card</b> (or highest, as your group agrees) deals first; the next player starts.`;
-    const sel = $('fdSelect');
-    const keep = sel.value;
-    sel.innerHTML = state.players.filter(p => playerStatus(p.id) !== 'out')
-      .map(p => `<option value="${p.id}">${state.players.indexOf(p) + 1}. ${esc(p.name)}</option>`).join('');
-    if (keep && sel.querySelector(`option[value="${keep}"]`)) sel.value = keep;
-  }
-
-  function setFirstDealer() {
-    if (!canEdit()) return;
-    const id = Number($('fdSelect').value);
-    const p = playerById(id);
-    if (!p) return;
-    state.dealerId = id;
-    saveState();
-    renderAll();
-    const st = playerById(nextStarterId());
-    toast(`${p.name} deals${st ? ` · ${st.name} starts` : ''}`);
-  }
-
   function renderAll() {
     renderHeader();
-    renderFirstDeal();
     renderBanner();
     renderBoard();
     renderActions();
@@ -3132,17 +3068,17 @@
   $('btnApplySettings').addEventListener('click', applySettings);
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
   // Dealer rules save straight away and can change at any point in the game
-  document.querySelectorAll('input[name="dealerOut"]').forEach(inp => {
+  document.querySelectorAll('input[name="firstDealer"], input[name="dealerOut"]').forEach(inp => {
     inp.addEventListener('change', () => {
       if (!canEdit()) { renderSettings(); return; }
       state.settings = { ...state.settings, [inp.name]: inp.value };
       saveState();
       renderAll();
-      toast(`Next dealer OUT: ${inp.value === 'keep' ? 'previous player deals again' : 'next player deals'}`);
+      toast(inp.name === 'firstDealer'
+        ? `${inp.value === 'first' ? 'First' : 'Last'} player deals first`
+        : `Next dealer OUT: ${inp.value === 'keep' ? 'previous player deals again' : 'next player deals'}`);
     });
   });
-  $('btnFdSet').addEventListener('click', setFirstDealer);
-  document.querySelectorAll('[data-cardorder]').forEach(el => { el.innerHTML = cardOrderHtml(); });
   $('btnLegend').addEventListener('click', () => {
     const note = $('legendNote');
     note.hidden = !note.hidden;
