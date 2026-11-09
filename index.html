@@ -830,13 +830,18 @@
   .pk-items { padding-left: 26px; }
   .pk-group + .pk-group { border-top: 1px dashed var(--border); margin-top: 4px; padding-top: 4px; }
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+  #btnNewGame { display: inline-flex; align-items: center; gap: 8px; }
+  #btnNewGame .chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
+  #btnNewGame[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
+  .ng-box { width: 100%; max-width: 360px; padding: 10px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.18); }
+  .ng-box[hidden] { display: none; }
   .ng-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ng-opt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 8px; font-size: .95rem; font-weight: 800; border-radius: 12px; }
-  .ng-opt small { font-size: .74rem; font-weight: 500; opacity: .9; }
-  .ng-opt.same { background: var(--felt); color: #fff; }
-  .ng-opt.same:hover:not(:disabled) { background: var(--felt-light); }
-  .ng-opt.fresh { background: #fff; color: var(--felt); border: 2px solid var(--felt); }
+  .ng-opt { min-height: 0; padding: 9px 8px; font-size: .9rem; font-weight: 800; border-radius: 10px; }
+  .ng-opt.same { background: var(--gold); color: #2b1f00; }
+  .ng-opt.same:hover:not(:disabled) { background: #e2b33a; }
+  .ng-opt.fresh { background: #fff; color: var(--felt); }
   .ng-opt.fresh:hover { background: #f2f8f4; }
+  .ng-note { margin: 8px 2px 0; text-align: left; font-size: .72rem; color: rgba(255,255,255,.75); }
 
   /* 5-second Undo bar */
   .undo-bar {
@@ -917,7 +922,14 @@
         <span class="chip" id="hdrRound">Round 1</span>
         <span class="chip" id="hdrPlayers">0 players</span>
       </div>
-      <button class="btn-gold" id="btnNewGame" type="button">↻ New Game</button>
+      <button class="btn-gold" id="btnNewGame" type="button" aria-expanded="false" aria-controls="ngBox">↻ New Game <span class="chev" aria-hidden="true"></span></button>
+      <div class="ng-box" id="ngBox" hidden>
+        <div class="ng-opts">
+          <button class="ng-opt same" id="ngSame" type="button">👥 Same players</button>
+          <button class="ng-opt fresh" id="ngFresh" type="button">＋ New players</button>
+        </div>
+        <p class="ng-note" id="ngText"></p>
+      </div>
     </div>
   </header>
 
@@ -1150,19 +1162,6 @@
     </div>
   </footer>
 
-</div>
-
-<!-- New Game: same players or a fresh list -->
-<div class="overlay" id="newGameDlg" hidden>
-  <div class="dialog ng-dlg" role="dialog" aria-modal="true" aria-labelledby="ngTitle">
-    <h3 id="ngTitle">↻ New Game</h3>
-    <p id="ngText"></p>
-    <div class="ng-opts">
-      <button class="ng-opt same" id="ngSame" type="button">👥 Same players<small></small></button>
-      <button class="ng-opt fresh" id="ngFresh" type="button">＋ New players<small>start with an empty list</small></button>
-    </div>
-    <div class="dlg-actions"><button class="btn-outline" id="ngCancel" type="button">Cancel</button></div>
-  </div>
 </div>
 
 <!-- Export / import chooser: tick what to include -->
@@ -2361,15 +2360,18 @@
     if (!canEdit()) return;
     if (online && online.scope !== 'room') return;
     const played = state.rounds.length || state.timer.startedAt;
+    const box = $('ngBox');
+    if (!box.hidden) { closeNewGame(); return; }
     $('ngText').textContent = online
       ? 'The current game stays in the room\'s game list. Settings are kept.'
       : played ? 'The current game is saved under Previous Games. Settings are kept.' : 'Settings are kept.';
     $('ngSame').disabled = state.players.length === 0;
-    $('ngSame').querySelector('small').textContent = state.players.length ? `${state.players.length} players, same order` : 'no players yet';
-    $('newGameDlg').hidden = false;
+    box.hidden = false;
+    $('btnNewGame').setAttribute('aria-expanded', 'true');
   }
+  function closeNewGame() { $('ngBox').hidden = true; $('btnNewGame').setAttribute('aria-expanded', 'false'); }
   function startNewGame(keepPlayers) {
-    $('newGameDlg').hidden = true;
+    closeNewGame();
     if (online) { onlineNewGame(keepPlayers); return; }
     clearUndo();
     if (!keepPlayers) { state.players = []; state.nextId = 1; arrangeMode = false; selectedIds = new Set(); }
@@ -3100,8 +3102,7 @@
   $('btnNewGame').addEventListener('click', newGame);
   $('ngSame').addEventListener('click', () => startNewGame(true));
   $('ngFresh').addEventListener('click', () => startNewGame(false));
-  $('ngCancel').addEventListener('click', () => { $('newGameDlg').hidden = true; });
-  $('newGameDlg').addEventListener('click', e => { if (e.target === e.currentTarget) $('newGameDlg').hidden = true; });
+
   $('btnApplySettings').addEventListener('click', applySettings);
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
   // Dealer rules save straight away and can change at any point in the game
