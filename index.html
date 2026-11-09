@@ -526,24 +526,28 @@
     transform: rotate(45deg); transition: transform .15s;
   }
   .settings-card[open] > summary::after, .archive-card[open] > summary::after { transform: rotate(-135deg); margin-bottom: -2px; }
-  .card-order > summary::before, .time-details > summary::before, .stats-box > summary::before, details.agame > summary::before {
+  .card-order > summary::before, .stats-box > summary::before, details.agame > summary::before {
     content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 8px 2px 2px; vertical-align: middle;
     border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
     transform: rotate(-45deg); transition: transform .15s; opacity: .8;
   }
-  .card-order[open] > summary::before, .time-details[open] > summary::before,
+  .card-order[open] > summary::before,
   .stats-box[open] > summary::before, details.agame[open] > summary::before { transform: rotate(45deg); margin-bottom: 4px; }
 
   /* Game clock: time details (collapsed) */
   .time-details { width: 100%; font-size: .84rem; color: var(--muted); text-align: center; }
-  .time-details .intervals { justify-content: center; }
   .time-details[hidden] { display: none; }
-  .time-details > summary { cursor: pointer; list-style: none; }
-  .time-details b { color: var(--text); }
   .iv-n { font-weight: 700; color: var(--text); }
-  .rt-row { margin-top: 4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }   /* separator after Game time */
-  .rtimes { list-style: none; margin: 6px 0 0; padding: 0; }
-  .rtimes li { margin: 2px 0; }
+  /* Names and values in two aligned columns; separators span just those columns */
+  .tgrid { display: inline-grid; grid-template-columns: auto auto; column-gap: 18px; row-gap: 3px; text-align: left; }
+  .tgrid .tl { font-weight: 700; color: var(--text); }
+  .tgrid .tsep { grid-column: 1 / -1; height: 1px; background: var(--border); margin: 4px 0; }
+  button.clock { background: none; border: 0; padding: 2px 6px; min-height: 0; color: inherit; font: inherit; cursor: pointer; }
+  button.clock.idle { cursor: default; }
+  .clock-chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg); transition: transform .15s; opacity: .7; align-self: center; margin-right: 2px; }
+  button.clock[aria-expanded="true"] .clock-chev { transform: rotate(45deg); margin-top: -4px; }
+  button.clock.idle .clock-chev { display: none; }
   .rtime { display: block; margin-top: 2px; font-size: .64rem; font-weight: 600; letter-spacing: .02em; opacity: .75; text-transform: none; }
   .iv-empty { margin-top: 6px; }
   /* Table footer: add player + Save under the new round */
@@ -1039,15 +1043,13 @@
 
     <!-- Game clock and share calculator (below the table) -->
     <div class="game-clock">
-      <div class="clock idle" id="clockBox">
+      <!-- Tap the clock (chevron) to show game time, start / end and each round's time -->
+      <button class="clock idle" id="clockBox" type="button" aria-expanded="false" aria-controls="timeBody">
+        <span class="clock-chev" aria-hidden="true"></span>
         <span class="clock-time" id="clock">00:00:00</span>
         <span class="clock-state" id="clockState">Not started</span>
-      </div>
-      <!-- Start / end times and play intervals, collapsed by default, right under the time -->
-      <details class="time-details" id="timeDetails" hidden>
-        <summary id="timeSum"></summary>
-        <div id="timeBody"></div>
-      </details>
+      </button>
+      <div class="time-details" id="timeBody" hidden></div>
       <div class="clock-btns">
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
@@ -2411,12 +2413,6 @@
   function roundTimeTag(ms) {
     return ms == null ? '' : `<span class="rtime" title="Time this round took">${fmtShort(ms)}</span>`;
   }
-  function roundTimesHtml(rounds) {
-    const known = roundDurations(rounds).map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
-    if (!known.length) return '';
-    return `<ul class="rtimes">${known.map(x => `<li><span class="iv-n">Round ${x.n}</span> – ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
-  }
-
   function fmtTime(ms) {
     return new Date(ms).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   }
@@ -2429,11 +2425,14 @@
     return last && last.end === null ? 'running' : 'paused';
   }
 
-  // Saved game: start and end, game time, then each round's time
+  // Game time | start and end | each round's time — names and values in aligned columns
   function timeSummaryHtml(t, rounds) {
     if (!t.startedAt) return '';
-    return `<div><b>Start:</b> ${fmtTime(t.startedAt)}${t.endedAt ? ` · <b>End:</b> ${fmtTime(t.endedAt)}` : ''}</div>` +
-      `<div class="rt-row"><b>Game time:</b> ${fmtDuration(playedMs(t))}</div>` + roundTimesHtml(rounds || []);
+    const row = (l, v) => `<span class="tl">${l}</span><span class="tv">${v}</span>`;
+    const rd = roundDurations(rounds || []).map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
+    return `<div class="tgrid">${row('Game time', fmtDuration(playedMs(t)))}<span class="tsep"></span>` +
+      row('Start', fmtTime(t.startedAt)) + (t.endedAt ? row('End', fmtTime(t.endedAt)) : '') +
+      (rd.length ? '<span class="tsep"></span>' + rd.map(x => row(`Round ${x.n}`, fmtDuration(x.ms))).join('') : '') + '</div>';
   }
 
   function renderTimer() {
@@ -2458,12 +2457,8 @@
     $('btnEndGame').querySelector('.eg-label').innerHTML = ended ? '↺ Reopen game' : '<span class="eg-ico">■</span> End Game';
     if (ended && !$('endBox').hidden) closeDeclare();
     // Time details: one-line summary, intervals inside (collapsed by default; open/closed is kept)
-    $('timeDetails').hidden = st === 'idle';
-    if (st !== 'idle') {
-      // Row 1: start (and end once ended) · Row 2: game time · Row 3: each round's time
-      $('timeSum').innerHTML = `<b>Start</b> ${fmtTime(t.startedAt)}` + (t.endedAt ? ` · <b>End</b> ${fmtTime(t.endedAt)}` : '');
-      $('timeBody').innerHTML = `<div class="rt-row"><b>Game time</b> ${fmtDuration(playedMs(t))}</div>` + roundTimesHtml(state.rounds);
-    }
+    if (st === 'idle') { $('timeBody').hidden = true; $('clockBox').setAttribute('aria-expanded', 'false'); }
+    if (st !== 'idle' && !$('timeBody').hidden) $('timeBody').innerHTML = timeSummaryHtml(t, state.rounds);
     syncWakeLock(keepAwake && (st === 'running' || st === 'paused'));
     if (st !== 'running' || keepAwake) $('startBox').hidden = true;
   }
@@ -4495,6 +4490,13 @@
   });
 
   // Time chip in the Scoreboard heading: tap to jump to the clock controls
+  $('clockBox').addEventListener('click', () => {
+    if (timerState() === 'idle') return;
+    const open = $('timeBody').hidden;
+    $('timeBody').hidden = !open;
+    $('clockBox').setAttribute('aria-expanded', String(open));
+    renderTimer();
+  });
   $('timeChip').addEventListener('click', () => {
     document.querySelector('.game-clock').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
