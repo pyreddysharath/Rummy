@@ -586,9 +586,9 @@
   .clock.running .clock-state { background: var(--primary-soft); color: var(--primary-dark); }
   .clock.paused .clock-state { background: var(--orange-soft); color: var(--orange-text); }
   .clock.ended .clock-state { background: var(--red-soft); color: var(--red-text); }
-  .clock-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  .clock-btns { display: grid; grid-template-columns: minmax(96px, 2fr) 3fr; gap: 8px; width: 100%; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
-  .calc-btn { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
+  .calc-btn { min-height: 30px; padding: 4px 10px; font-size: .8rem; white-space: nowrap; }
   .time-chip { min-height: 0; padding: 3px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; font-variant-numeric: tabular-nums;
     background: #eef0f4; color: var(--muted); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 2px; }
   .time-chip.running { background: var(--primary-soft); color: var(--primary-dark); border-color: #b9e0c8; }
@@ -603,7 +603,7 @@
   .calc-btn:hover { background: #a0750a; }
   .calc-btn .chev { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .calc-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
-  .share-box { width: 100%; padding: 10px 12px 12px; border: 1px solid #e4cf94; border-radius: 12px; background: #fffaf0; }
+  .share-box { width: calc(100% + 20px); margin: 0 -10px; padding: 10px 10px 12px; border: 1px solid #e4cf94; border-radius: 12px; background: #fffaf0; }
   .share-box[hidden] { display: none; }
   .share-pot { margin: 10px 0 8px; font-size: .88rem; color: var(--muted); }
   .share-pot b { color: var(--text); }
@@ -615,7 +615,7 @@
   .split-opt.on label { font-weight: 700; color: var(--primary-dark); }
   .so-info { font-size: .8rem; color: #3d4455; margin: 4px 0 4px 28px; line-height: 1.5; }
   /* Results table runs edge to edge, like the scoreboard */
-  .share-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fff; }
+  .share-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -10px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fff; }
   table.shares { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .86rem; font-variant-numeric: tabular-nums; }
   table.shares th, table.shares td { padding: 7px 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); text-align: center; white-space: nowrap; background: #fff; }
   table.shares th:last-child, table.shares td:last-child { border-right: none; }
@@ -643,15 +643,14 @@
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
   .end-btn { background: #d0564a; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    min-height: 0; padding: 7px 26px; font-size: .86rem; align-self: center; border: 2px solid #f3c3bd; box-shadow: 0 0 0 1px #d0564a; }
+    min-height: 0; padding: 7px 26px; font-size: .86rem; align-self: center; border: 0; }
   .end-btn:hover:not(:disabled) { background: #bf4a3f; }
   .end-btn .eg-ico { color: #fff; font-size: 1.25em; line-height: 1; }
-  .end-btn.reopen { border-color: #b9dcc8; box-shadow: 0 0 0 1px var(--felt); }
   .end-btn .chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .end-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
   .end-btn.reopen { background: var(--felt); }
   .end-btn.reopen .chev { display: none; }
-  .end-box { width: 100%; padding: 12px; border: 1px solid #f0c4be; border-radius: 12px; background: #fdf1ef; }
+  .end-box { width: calc(100% + 20px); margin: 0 -10px; padding: 12px 10px; border: 1px solid #f0c4be; border-radius: 12px; background: #fdf1ef; }
   .end-box[hidden] { display: none; }
   .end-intro { margin: 0 0 8px; color: #8a2a20; font-size: .9rem; font-weight: 700; }
   .end-box .pick label { background: #fff; }
