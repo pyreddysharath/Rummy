@@ -417,7 +417,7 @@
   .opt-group.nums { margin-top: 0; padding-top: 4px; }
   .settings-apply { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
   .settings-apply .msg { margin: 0; }
-  .opt-group legend { font-size: .74rem; font-weight: 800; color: #1d2330; padding: 2px 10px; text-transform: uppercase; letter-spacing: .05em;
+  .opt-group legend { white-space: nowrap; font-size: .74rem; font-weight: 800; color: #1d2330; padding: 2px 10px; text-transform: uppercase; letter-spacing: .05em;
     background: var(--gold); border: 1px solid #c99a1e; border-radius: 999px; }
   .settings-card label.field, .settings-card .opt-help { color: #1d2330; }
   .settings-card .opt-group input[type=number] { background: #fff; }
@@ -954,9 +954,9 @@
 
     <!-- Dealer rules (saved straight away) -->
     <fieldset class="opt-group">
-      <legend>Who deals first?</legend>
-      <label class="opt"><input type="radio" name="firstDealer" value="last"> <span><b>Last player</b> on the scoreboard</span></label>
-      <label class="opt"><input type="radio" name="firstDealer" value="first"> <span><b>First player</b> on the scoreboard</span></label>
+      <legend>Who deals first from the scoreboard?</legend>
+      <label class="opt"><input type="radio" name="firstDealer" value="last"> <span><b>Last player</b></span></label>
+      <label class="opt"><input type="radio" name="firstDealer" value="first"> <span><b>First player</b></span></label>
       <p class="opt-help">To pick someone else, select them in Edit Players and mark as Dealer.</p>
     </fieldset>
     <fieldset class="opt-group">
