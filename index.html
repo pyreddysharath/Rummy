@@ -541,7 +541,7 @@
   .time-details > summary { cursor: pointer; list-style: none; }
   .time-details b { color: var(--text); }
   .iv-n { font-weight: 700; color: var(--text); }
-  .rt-head { margin-top: 10px; }
+  .rt-row { margin-top: 4px; }
   .rtime { display: block; margin-top: 2px; font-size: .64rem; font-weight: 600; letter-spacing: .02em; opacity: .75; text-transform: none; }
   .iv-empty { margin-top: 6px; }
   /* Table footer: add player + Save under the new round */
@@ -2409,11 +2409,10 @@
   function roundTimeTag(ms) {
     return ms == null ? '' : `<span class="rtime" title="Time this round took">${fmtShort(ms)}</span>`;
   }
-  function roundTimesHtml(rounds, t) {
+  function roundTimesHtml(rounds) {
     const known = roundDurations(rounds).map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
     if (!known.length) return '';
-    return `<div class="rt-head"><b>Total game time:</b> ${fmtDuration(playedMs(t))}</div>` +
-      `<ul class="intervals">${known.map(x => `<li><span class="iv-n">Round ${x.n}</span> – ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
+    return `<ul class="intervals">${known.map(x => `<li><span class="iv-n">Round ${x.n}</span> – ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
   }
 
   function fmtTime(ms) {
@@ -2428,22 +2427,11 @@
     return last && last.end === null ? 'running' : 'paused';
   }
 
-  // Start time, end time, each play interval and total game time
-  function timeSummaryHtml(t) {
+  // Saved game: start and end, game time, then each round's time
+  function timeSummaryHtml(t, rounds) {
     if (!t.startedAt) return '';
-    const parts = [`<b>Start:</b> ${fmtTime(t.startedAt)}`];
-    if (t.endedAt) parts.push(`<b>End:</b> ${fmtTime(t.endedAt)}`);
-    parts.push(`<b>Game time:</b> ${fmtDuration(playedMs(t))}`);
-    const intervals = t.intervals.map((i, k) =>
-      `<li>${k + 1}. ${fmtTime(i.start)} – ${i.end ? fmtTime(i.end) : (t.endedAt ? fmtTime(t.endedAt) : 'now')} <span>(${fmtDuration((i.end || t.endedAt || Date.now()) - i.start)})</span></li>`).join('');
-    return `<div>${parts.join(' · ')}</div>${t.intervals.length ? `<ul class="intervals">${intervals}</ul>` : ''}`;
-  }
-
-  function intervalsHtml(t) {
-    if (!t.intervals.length) return '<div class="iv-empty">No play intervals yet.</div>';
-    return `<ul class="intervals">${t.intervals.map((i, k) =>
-      `<li><span class="iv-n">${k + 1}.</span> ${fmtTime(i.start)} – ${i.end ? fmtTime(i.end) : (t.endedAt ? fmtTime(t.endedAt) : 'now')} ` +
-      `<span>(${fmtDuration((i.end || t.endedAt || Date.now()) - i.start)})</span></li>`).join('')}</ul>`;
+    return `<div><b>Start:</b> ${fmtTime(t.startedAt)}${t.endedAt ? ` · <b>End:</b> ${fmtTime(t.endedAt)}` : ''}</div>` +
+      `<div class="rt-row"><b>Game time:</b> ${fmtDuration(playedMs(t))}</div>` + roundTimesHtml(rounds || []);
   }
 
   function renderTimer() {
@@ -2470,9 +2458,9 @@
     // Time details: one-line summary, intervals inside (collapsed by default; open/closed is kept)
     $('timeDetails').hidden = st === 'idle';
     if (st !== 'idle') {
-      $('timeSum').innerHTML = `<b>Start</b> ${fmtTime(t.startedAt)}` + (t.endedAt ? ` · <b>End</b> ${fmtTime(t.endedAt)}` : '') +
-        ` · <b>Game time</b> ${fmtDuration(playedMs(t))}`;
-      $('timeBody').innerHTML = intervalsHtml(t) + roundTimesHtml(state.rounds, t);
+      // Row 1: start (and end once ended) · Row 2: game time · Row 3: each round's time
+      $('timeSum').innerHTML = `<b>Start</b> ${fmtTime(t.startedAt)}` + (t.endedAt ? ` · <b>End</b> ${fmtTime(t.endedAt)}` : '');
+      $('timeBody').innerHTML = `<div class="rt-row"><b>Game time</b> ${fmtDuration(playedMs(t))}</div>` + roundTimesHtml(state.rounds);
     }
     syncWakeLock(keepAwake && (st === 'running' || st === 'paused'));
     if (st !== 'running' || keepAwake) $('startBox').hidden = true;
@@ -2827,7 +2815,7 @@
           <span class="ag-meta">${g.rounds.length} round${g.rounds.length === 1 ? '' : 's'} · ${result}${g.timer && g.timer.startedAt ? ` · ⏱ ${fmtDuration(playedMs(g.timer))}` : ''}</span>
           <button class="btn-icon del" type="button" data-delgame="${g.id}" aria-label="Delete ${esc(gameLabel(g))}" title="Delete">🗑</button>
         </summary>
-        ${g.timer && g.timer.startedAt ? `<div class="ag-time">${timeSummaryHtml(g.timer)}</div>` : ''}
+        ${g.timer && g.timer.startedAt ? `<div class="ag-time">${timeSummaryHtml(g.timer, g.rounds)}</div>` : ''}
         ${archivedTable(g, rows)}
       </details>`;
     }).join('');
