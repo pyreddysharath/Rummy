@@ -409,11 +409,12 @@
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
   /* Dealer settings and first-dealer picker */
-  .opt-group { border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px 10px; margin: 12px 0 0; }
+  .opt-group { border: 1px solid #cfe3d6; border-radius: 10px; padding: 8px 12px 10px; margin: 12px 0 0; background: #f2f8f4; }
   .opt-group.nums { margin-top: 0; padding-top: 4px; }
   .settings-apply { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
   .settings-apply .msg { margin: 0; }
-  .opt-group legend { font-size: .86rem; font-weight: 800; color: var(--felt); padding: 0 6px; letter-spacing: .01em; }
+  .opt-group legend { font-size: .74rem; font-weight: 800; color: var(--primary-dark); padding: 2px 8px; text-transform: uppercase; letter-spacing: .05em;
+    background: #fff; border: 1px solid #cfe3d6; border-radius: 999px; }
   .opt-help { margin: 0 0 6px; font-size: .8rem; color: var(--muted); }
   .opt { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: .88rem; cursor: pointer; }
   .opt input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
@@ -650,10 +651,16 @@
   .end-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
   .end-btn.reopen { background: var(--felt); }
   .end-btn.reopen .chev { display: none; }
-  .end-box { width: calc(100% + 20px); margin: 0 -10px; padding: 12px 10px; border: 1px solid #f0c4be; border-radius: 12px; background: #fdf1ef; }
+  .end-box { width: calc(100% + 20px); margin: 0 -10px; padding: 10px 10px 12px; border: 1px solid #d5dbe6; border-radius: 12px; background: #f3f5f9; }
   .end-box[hidden] { display: none; }
-  .end-intro { margin: 0 0 8px; color: #8a2a20; font-size: .9rem; font-weight: 700; }
-  .end-box .pick label { background: #fff; }
+  .end-intro { margin: 2px 0 6px; color: var(--text); font-size: .92rem; font-weight: 700; }
+  .end-box .pick label { background: none; border: 0; border-radius: 0; margin: 0; padding: 7px 2px; gap: 10px; font-size: .92rem; border-bottom: 1px solid #e1e5ec; }
+  .end-box .pick li:last-child label { border-bottom: 0; }
+  .end-box .pick label:has(input:checked) { background: none; border-color: #e1e5ec; }
+  .end-box .pick label:has(input:checked) .pn { color: var(--primary-dark); font-weight: 700; }
+  .end-box .pick input { width: 16px; height: 16px; margin: 0; accent-color: var(--felt); }
+  .end-box .pick .pn { font-weight: 500; }
+  .end-box .pick .pt { font-size: .84rem; }
   .end-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
   .end-ok { background: #d0564a; color: #fff; padding: 7px 22px; }
   .end-ok:hover { background: #bf4a3f; }
@@ -839,11 +846,11 @@
   .ft-copy { font-size: .78rem; color: var(--gold); }
   .ft-copy b { font-weight: 800; }
   .ft-icons { display: flex; gap: 6px; }
-  .ft-btn { width: 38px; height: 38px; min-height: 0; padding: 0; border-radius: 50%; background: rgba(255,255,255,.08);
-    color: var(--gold); border: 1px solid rgba(255,255,255,.18); display: inline-flex; align-items: center; justify-content: center; transition: transform .15s; }
-  .ft-btn svg { width: 20px; height: 20px; }
-  .ft-btn:hover { background: rgba(255,255,255,.16); }
-  .ft-btn.on { background: var(--gold); color: #1d2330; border-color: var(--gold); transform: scale(1.08); }
+  .ft-btn { width: 30px; height: 30px; min-height: 0; padding: 0; border: 0; background: none; border-radius: 6px;
+    color: var(--gold); display: inline-flex; align-items: center; justify-content: center; opacity: .8; transition: transform .15s, opacity .15s; }
+  .ft-btn svg { width: 19px; height: 19px; }
+  .ft-btn:hover { opacity: 1; }
+  .ft-btn.on { opacity: 1; color: #fff; transform: scale(1.15); }
   .ft-sec { margin-top: 12px; background: #fff; color: var(--text); border-radius: 12px; padding: 14px 16px; font-size: .86rem; line-height: 1.6; border-top: 4px solid var(--gold); }
   .ft-sec[hidden] { display: none; }
   .ft-sec p { margin: 0 0 10px; }
@@ -880,7 +887,7 @@
   @media (max-width: 400px) {
     .ft-copy { font-size: .72rem; }
     .ft-icons { gap: 4px; flex: 0 0 auto; }
-    .ft-btn { width: 34px; height: 34px; }
+    .ft-btn { width: 28px; height: 28px; }
     .ft-btn svg { width: 18px; height: 18px; }
   }
 </style>
@@ -1074,7 +1081,7 @@
   <!-- Footer: feedback, help, legal, our other sites -->
   <footer class="app-footer" id="appFooter">
     <div class="ft-row">
-      <div class="ft-copy">© <span id="ftYear"></span> <b>Rummy Scoreboard</b></div>
+      <div class="ft-copy">© <span id="ftYear"></span> <b>RummyTally.com</b></div>
       <div class="ft-icons" role="tablist">
         <button type="button" class="ft-btn" data-ft="help" title="Help: how it works" aria-label="Help">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
