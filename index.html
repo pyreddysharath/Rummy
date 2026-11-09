@@ -580,7 +580,7 @@
   .clock.ended .clock-state { background: var(--red-soft); color: var(--red-text); }
   .clock-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
-  .calc-btn { width: 100%; min-height: 0; padding: 7px 10px; font-size: .86rem; }
+  .calc-btn { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
   .time-chip { min-height: 0; padding: 3px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; font-variant-numeric: tabular-nums;
     background: #eef0f4; color: var(--muted); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 2px; }
   .time-chip.running { background: var(--primary-soft); color: var(--primary-dark); border-color: #b9e0c8; }
@@ -595,7 +595,7 @@
   .calc-btn:hover { background: #a0750a; }
   .calc-btn .chev { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .calc-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
-  .share-box { width: 100%; }
+  .share-box { width: 100%; padding: 10px 12px 12px; border: 1px solid #e4cf94; border-radius: 12px; background: #fffaf0; }
   .share-box[hidden] { display: none; }
   .share-pot { margin: 10px 0 8px; font-size: .88rem; color: var(--muted); }
   .share-pot b { color: var(--text); }
@@ -607,7 +607,7 @@
   .split-opt.on label { font-weight: 700; color: var(--primary-dark); }
   .so-info { font-size: .8rem; color: #3d4455; margin: 4px 0 4px 28px; line-height: 1.5; }
   /* Results table runs edge to edge, like the scoreboard */
-  .share-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fff; }
+  .share-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fff; }
   table.shares { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .86rem; font-variant-numeric: tabular-nums; }
   table.shares th, table.shares td { padding: 7px 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); text-align: center; white-space: nowrap; background: #fff; }
   table.shares th:last-child, table.shares td:last-child { border-right: none; }
@@ -634,19 +634,22 @@
   .share-send:hover { background: var(--felt-light); }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
-  .end-btn { background: #a12a1c; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
-  .end-btn:hover:not(:disabled) { background: #8a2216; }
-  .end-btn .eg-ico { color: #fff; font-size: .78em; }
+  .end-btn { background: #d0564a; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 0; padding: 7px 26px; font-size: .86rem; align-self: center; border: 2px solid #f3c3bd; box-shadow: 0 0 0 1px #d0564a; }
+  .end-btn:hover:not(:disabled) { background: #bf4a3f; }
+  .end-btn .eg-ico { color: #fff; font-size: 1.25em; line-height: 1; }
+  .end-btn.reopen { border-color: #b9dcc8; box-shadow: 0 0 0 1px var(--felt); }
   .end-btn .chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
   .end-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
   .end-btn.reopen { background: var(--felt); }
   .end-btn.reopen .chev { display: none; }
-  .end-box { width: 100%; padding: 4px 0 2px; }
+  .end-box { width: 100%; padding: 12px; border: 1px solid #f0c4be; border-radius: 12px; background: #fdf1ef; }
   .end-box[hidden] { display: none; }
-  .end-intro { margin: 0 0 8px; color: var(--muted); font-size: .84rem; }
+  .end-intro { margin: 0 0 8px; color: #8a2a20; font-size: .9rem; font-weight: 700; }
+  .end-box .pick label { background: #fff; }
   .end-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
-  .end-ok { background: #a12a1c; color: #fff; padding: 7px 18px; }
-  .end-ok:hover { background: #8a2216; }
+  .end-ok { background: #d0564a; color: #fff; padding: 7px 22px; }
+  .end-ok:hover { background: #bf4a3f; }
   .pick .pd { color: var(--muted); font-size: .78rem; }
   .btn-end:hover:not(:disabled) { background: #062e1d; }
   .btn-danger:hover:not(:disabled) { background: #b91c1c; }
@@ -799,7 +802,7 @@
   .rs-danger { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: grid; gap: 4px; justify-items: start; }
   .del-room { color: var(--red); border-color: #f5b5b5; }
   /* View-only visitors: everything that changes the game is hidden */
-  body.readonly #btnNewGame, body.readonly .clock-btns, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
+  body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly #firstDeal .fd-row, body.readonly .settings-apply { display: none !important; }
   body.readonly .settings-card fieldset { pointer-events: none; opacity: .6; }
 
@@ -1024,23 +1027,22 @@
       </details>
       <div class="clock-btns">
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
-        <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
+        <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       </div>
-      <div class="end-box" id="endBox" hidden>
-        <p class="end-intro">Tick the winner(s) – the likely winner is ticked for you. Leave everyone unticked to end without a winner. The end time and game time are recorded.</p>
-        <ul class="pick" id="declareList"></ul>
-        <div class="msg" id="declareMsg"></div>
-        <div class="end-actions">
-          <button class="btn-outline" id="btnEndShares" type="button">₹ Calculate shares first</button>
-          <button class="end-ok" id="btnDeclareOk" type="button">🏆 End Game</button>
-        </div>
-      </div>
-      <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       <div class="share-box" id="shareBox" hidden>
         <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
         <p class="share-pot" id="sharePot"></p>
         <div id="shareResult"></div>
         <button class="share-send" id="shareWa" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg> Share</button>
+      </div>
+      <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
+      <div class="end-box" id="endBox" hidden>
+        <p class="end-intro">Tick the winner(s)</p>
+        <ul class="pick" id="declareList"></ul>
+        <div class="msg" id="declareMsg"></div>
+        <div class="end-actions">
+          <button class="end-ok" id="btnDeclareOk" type="button">🏆 End Game</button>
+        </div>
       </div>
     </div>
 
@@ -3049,10 +3051,6 @@
 
 
   $('btnDeclareOk').addEventListener('click', () => { if (canEdit()) confirmDeclare(); });
-  $('btnEndShares').addEventListener('click', () => {
-    if ($('shareBox').hidden) toggleShares();
-    if (!$('shareBox').hidden) $('btnShares').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
   $('banner').addEventListener('click', e => { if (e.target.id === 'btnUndoDeclare') undoDeclare(); });
 
   $('btnNewGame').addEventListener('click', newGame);
