@@ -541,6 +541,8 @@
   .time-details > summary { cursor: pointer; list-style: none; }
   .time-details b { color: var(--text); }
   .iv-n { font-weight: 700; color: var(--text); }
+  .rt-head { margin-top: 10px; }
+  .rtime { display: block; margin-top: 2px; font-size: .64rem; font-weight: 600; letter-spacing: .02em; opacity: .75; text-transform: none; }
   .iv-empty { margin-top: 6px; }
   /* Table footer: add player + Save under the new round */
   table.board tfoot td { border: none !important; background: var(--card); padding: 8px 6px; vertical-align: middle; }
@@ -1723,6 +1725,7 @@
     if (showEntry) head += `<th class="entry">Round ${nextN}</th>`;
     let undoPlaced = false;
     const undoBefore = r => pendingUndo && !undoPlaced && (r.n - 1) < pendingUndo.idx;
+    const rDur = roundDurations(state.rounds);
     roundsDesc.forEach(r => {
       if (undoBefore(r)) { head += undoHeadHtml(); undoPlaced = true; }
       if (editing === r.n) {
@@ -1731,7 +1734,7 @@
           <button class="hbtn" type="button" data-editcancel aria-label="Cancel editing">✕</button>
           <button class="hbtn del" type="button" data-delround="${r.n}" title="Delete Round ${r.n}" aria-label="Delete round ${r.n}">🗑</button></th>`;
       } else {
-        head += `<th>R${r.n}<button class="hbtn" type="button" data-edit="${r.n}" ${editing !== null ? 'disabled' : ''} title="Edit Round ${r.n}" aria-label="Edit round ${r.n}">✎</button></th>`;
+        head += `<th>R${r.n}<button class="hbtn" type="button" data-edit="${r.n}" ${editing !== null ? 'disabled' : ''} title="Edit Round ${r.n}" aria-label="Edit round ${r.n}">✎</button>${roundTimeTag(rDur[r.n - 1])}</th>`;
       }
     });
     if (pendingUndo && !undoPlaced) head += undoHeadHtml();
@@ -2172,7 +2175,7 @@
     const n = state.rounds.length + 1;
     const dealt = currentDealerId();
     const starter = stepActive(dealt, 1);   // who played first this round (before this round's results)
-    state.rounds.push({ n, points });
+    state.rounds.push({ n, points, at: playedMs(state.timer) });   // game time (pauses excluded) when saved
     state.draft = {};
     state.dealerId = nextDealerAfter(dealt, starter);
     lastAddedId = null;
@@ -2388,6 +2391,35 @@
     return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor((sec % 3600) / 60))}:${pad(sec % 60)}`;
   }
 
+  // Time each round took: game time at its Save minus the previous round's (pauses don't count)
+  function roundDurations(rounds) {
+    let prev = 0;
+    return rounds.map(r => {
+      if (!Number.isFinite(r.at)) return null;   // rounds saved before round times were kept
+      const d = Math.max(0, r.at - prev);
+      prev = r.at;
+      return d;
+    });
+  }
+  function fmtShort(ms) {   // 4:07 or 1:02:07
+    const sec = Math.max(0, Math.round(ms / 1000));
+    const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), x = String(sec % 60).padStart(2, '0');
+    return h ? `${h}:${String(m).padStart(2, '0')}:${x}` : `${m}:${x}`;
+  }
+  function roundTimeTag(ms) {
+    return ms == null ? '' : `<span class="rtime" title="Time this round took">${fmtShort(ms)}</span>`;
+  }
+  function roundTimesHtml(rounds) {
+    const d = roundDurations(rounds);
+    const known = d.map((ms, i) => ({ ms, n: i + 1 })).filter(x => x.ms != null);
+    if (!known.length) return '';
+    const avg = known.reduce((a, x) => a + x.ms, 0) / known.length;
+    const fastest = known.reduce((a, x) => (x.ms < a.ms ? x : a)), longest = known.reduce((a, x) => (x.ms > a.ms ? x : a));
+    return `<div class="rt-head"><b>Round times</b> · average ${fmtDuration(avg)}` +
+      (known.length > 1 ? ` · quickest R${fastest.n} · longest R${longest.n}` : '') + `</div>` +
+      `<ul class="intervals">${known.map(x => `<li><span class="iv-n">R${x.n}</span> ${fmtDuration(x.ms)}</li>`).join('')}</ul>`;
+  }
+
   function fmtTime(ms) {
     return new Date(ms).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   }
@@ -2444,7 +2476,7 @@
     if (st !== 'idle') {
       $('timeSum').innerHTML = `<b>Start</b> ${fmtTime(t.startedAt)}` + (t.endedAt ? ` · <b>End</b> ${fmtTime(t.endedAt)}` : '') +
         ` · <b>Game time</b> ${fmtDuration(playedMs(t))}`;
-      $('timeBody').innerHTML = intervalsHtml(t);
+      $('timeBody').innerHTML = intervalsHtml(t) + roundTimesHtml(state.rounds);
     }
     syncWakeLock(keepAwake && (st === 'running' || st === 'paused'));
     if (st !== 'running' || keepAwake) $('startBox').hidden = true;
@@ -2761,7 +2793,8 @@
   function archivedTable(g, rows) {
     const desc = g.rounds.map((r, i) => ({ r, n: i + 1 })).reverse();   // latest round first
     let html = '<div class="table-scroll"><table class="board"><thead><tr><th class="sticky">Player</th><th class="th-total">Total</th>';
-    desc.forEach(x => { html += `<th>R${x.n}</th>`; });
+    const dur = roundDurations(g.rounds);
+    desc.forEach(x => { html += `<th>R${x.n}${roundTimeTag(dur[x.n - 1])}</th>`; });
     html += '</tr></thead><tbody>';
     rows.forEach(x => {
       const no = g.players.indexOf(x.p) + 1;
@@ -2895,7 +2928,7 @@
         if (!isWhole(v)) throw new Error(`Round ${i + 1} has an invalid score.`);
         if (ids.has(Number(k))) points[k] = v;
       });
-      return { n: i + 1, points };
+      return Number.isFinite(r.at) && r.at >= 0 ? { n: i + 1, points, at: r.at } : { n: i + 1, points };
     });
 
     const s = cleanSettings(d.settings);
