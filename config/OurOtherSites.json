@@ -1,0 +1,20 @@
+{
+  "content": "A few other things we've built – drop by if any of these sound useful.",
+  "sites": [
+    {
+      "site": "AyuBase6.com",
+      "url": "https://ayubase6.com",
+      "information": "A private, no-login health companion – exercise and yoga for your age group, Indian nutrition, everyday health checks, reminders and a vitals tracker."
+    },
+    {
+      "site": "BharatGaruda.com",
+      "url": "https://bharatgaruda.com",
+      "information": "India's government sites aggregator – official government links for every state and union territory of India, in one place."
+    },
+    {
+      "site": "IntiGuttu.com",
+      "url": "https://intiguttu.com",
+      "information": "A private, no-login home reference app – household DIY fixes, everyday tips, and recipes from every state of India and country in the world."
+    }
+  ]
+}

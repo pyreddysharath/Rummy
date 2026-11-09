@@ -1,0 +1,117 @@
+rules_version = '2';
+
+// Rummy Scoreboard – who can read and change what.
+// Everyone is signed in (silently as a guest, or with Google). Access to a room or a single
+// game comes from a secret key in its link: the app records "this user opened the edit link"
+// in roomMembers / gameMembers, and these rules check that the stored key still matches the
+// room's current key – so resetting a link locks out everyone who used the old one.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+
+    function roomDoc(r)   { return get(/databases/$(database)/documents/rooms/$(r)).data; }
+    function roomKeys(r)  { return get(/databases/$(database)/documents/roomKeys/$(r)).data; }
+    function ownerKeys(r) { return get(/databases/$(database)/documents/roomOwnerKeys/$(r)).data; }
+    function rmPath(r)    { return /databases/$(database)/documents/roomMembers/$(r + '_' + request.auth.uid); }
+    function rm(r)        { return get(rmPath(r)).data; }
+
+    function gmPath(r, g) { return /databases/$(database)/documents/gameMembers/$(r + '_' + g + '_' + request.auth.uid); }
+    function gm(r, g)     { return get(gmPath(r, g)).data; }
+    function gKeys(r, g)  { return get(/databases/$(database)/documents/gameKeys/$(r + '_' + g)).data; }
+
+    function isRoomOwner(r) {
+      return signedIn() && (
+        roomDoc(r).ownerUid == uid() ||
+        (exists(rmPath(r)) && rm(r).role == 'owner' && rm(r).key == ownerKeys(r).ownerKey));
+    }
+    function canEditRoom(r) {
+      return isRoomOwner(r) ||
+        (signedIn() && exists(rmPath(r)) && rm(r).role == 'edit' && rm(r).key == roomKeys(r).editKey);
+    }
+    function canViewRoom(r) {
+      return canEditRoom(r) ||
+        (signedIn() && exists(rmPath(r)) && rm(r).role == 'view' && rm(r).key == roomKeys(r).viewKey);
+    }
+    function gameEdit(r, g) {
+      return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'edit' && gm(r, g).key == gKeys(r, g).editKey;
+    }
+    function gameView(r, g) {
+      return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'view' && gm(r, g).key == gKeys(r, g).viewKey;
+    }
+    function validRoomKey(r, role, key) {
+      return (role == 'edit'  && key == roomKeys(r).editKey) ||
+             (role == 'view'  && key == roomKeys(r).viewKey) ||
+             (role == 'owner' && key == ownerKeys(r).ownerKey);
+    }
+    function validGameKey(r, g, role, key) {
+      return (role == 'edit' && key == gKeys(r, g).editKey) ||
+             (role == 'view' && key == gKeys(r, g).viewKey);
+    }
+    // Deletion date: at most about a year ahead (guests are limited to 90 days by the app)
+    function okExpiry(d) {
+      return d.expireAt is timestamp && d.expireAt <= request.time + duration.value(367, 'd');
+    }
+    function expired(d) { return d.expireAt is timestamp && d.expireAt < request.time; }
+
+    // ---------- rooms and their games ----------
+    match /rooms/{r} {
+      allow get: if canViewRoom(r);
+      allow list: if signedIn() && resource.data.ownerUid == uid();     // "My rooms" for signed-in users
+      allow create: if signedIn() && request.resource.data.ownerUid == uid() && okExpiry(request.resource.data);
+      // Owners change anything; editors only move the activity / deletion date and the current game
+      allow update: if okExpiry(request.resource.data) && (
+        isRoomOwner(r) ||
+        (canEditRoom(r) &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['currentGameId', 'updatedAt', 'expireAt'])));
+      allow delete: if signedIn() && (isRoomOwner(r) || expired(resource.data));
+
+      match /games/{g} {
+        allow get: if canViewRoom(r) || gameEdit(r, g) || gameView(r, g);
+        allow list: if canViewRoom(r);
+        allow create: if canEditRoom(r) && okExpiry(request.resource.data);
+        allow update: if (canEditRoom(r) || gameEdit(r, g)) && okExpiry(request.resource.data);
+        allow delete: if signedIn() && (isRoomOwner(r) || expired(resource.data));
+      }
+    }
+
+    // ---------- secret link keys ----------
+    match /roomKeys/{r} {            // edit + view keys: editors may read them to share links
+      allow get: if canEditRoom(r);
+      allow create: if signedIn() && roomDoc(r).ownerUid == uid() && request.resource.data.roomId == r;
+      allow update, delete: if isRoomOwner(r);
+    }
+    match /roomOwnerKeys/{r} {       // owner key: only owners
+      allow get: if isRoomOwner(r);
+      allow create: if signedIn() && roomDoc(r).ownerUid == uid() && request.resource.data.roomId == r;
+      allow update, delete: if isRoomOwner(r);
+    }
+    match /gameKeys/{id} {           // links to one game only
+      allow get: if signedIn() && (canEditRoom(resource.data.roomId) || gameEdit(resource.data.roomId, resource.data.gameId));
+      allow create: if signedIn() && id == request.resource.data.roomId + '_' + request.resource.data.gameId
+                    && isRoomOwner(request.resource.data.roomId);
+      allow update, delete: if signedIn() && isRoomOwner(resource.data.roomId);
+    }
+
+    // ---------- "this user opened a link" records ----------
+    match /roomMembers/{id} {
+      allow get: if signedIn() && resource.data.uid == uid();
+      allow create, update: if signedIn()
+        && request.resource.data.uid == uid()
+        && id == request.resource.data.roomId + '_' + uid()
+        && validRoomKey(request.resource.data.roomId, request.resource.data.role, request.resource.data.key);
+      allow delete: if signedIn() && resource.data.uid == uid();
+    }
+    match /gameMembers/{id} {
+      allow get: if signedIn() && resource.data.uid == uid();
+      allow create, update: if signedIn()
+        && request.resource.data.uid == uid()
+        && id == request.resource.data.roomId + '_' + request.resource.data.gameId + '_' + uid()
+        && validGameKey(request.resource.data.roomId, request.resource.data.gameId,
+                        request.resource.data.role, request.resource.data.key);
+      allow delete: if signedIn() && resource.data.uid == uid();
+    }
+  }
+}
