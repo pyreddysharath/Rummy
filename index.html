@@ -837,7 +837,7 @@
   .ng-box[hidden] { display: none; }
   .ng-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .ng-opt { min-height: 0; padding: 9px 8px; font-size: .9rem; font-weight: 800; border-radius: 10px; }
-  .ng-opt.same { background: var(--gold); color: #2b1f00; }
+  .ng-opt.same { background: var(--gold); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-shadow: 0 1px 1px rgba(0,0,0,.25); }
   .ng-opt.same:hover:not(:disabled) { background: #e2b33a; }
   .ng-opt.fresh { background: #fff; color: var(--felt); }
   .ng-opt.fresh:hover { background: #f2f8f4; }
@@ -925,7 +925,7 @@
       <button class="btn-gold" id="btnNewGame" type="button" aria-expanded="false" aria-controls="ngBox">↻ New Game <span class="chev" aria-hidden="true"></span></button>
       <div class="ng-box" id="ngBox" hidden>
         <div class="ng-opts">
-          <button class="ng-opt same" id="ngSame" type="button">👥 Same players</button>
+          <button class="ng-opt same" id="ngSame" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="9" cy="8" r="3.5" fill="currentColor"/><path d="M2 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5z" fill="currentColor"/><circle cx="17" cy="9" r="2.8" fill="currentColor" opacity=".85"/><path d="M15.5 13.7c3.4-.4 6.5 1.9 6.5 5.3h-4.6c0-2-.7-3.8-1.9-5.3z" fill="currentColor" opacity=".85"/></svg> Same players</button>
           <button class="ng-opt fresh" id="ngFresh" type="button">＋ New players</button>
         </div>
         <p class="ng-note" id="ngText"></p>
