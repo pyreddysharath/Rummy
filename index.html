@@ -830,6 +830,13 @@
   .pk-items { padding-left: 26px; }
   .pk-group + .pk-group { border-top: 1px dashed var(--border); margin-top: 4px; padding-top: 4px; }
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+  .ng-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ng-opt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 8px; font-size: .95rem; font-weight: 800; border-radius: 12px; }
+  .ng-opt small { font-size: .74rem; font-weight: 500; opacity: .9; }
+  .ng-opt.same { background: var(--felt); color: #fff; }
+  .ng-opt.same:hover:not(:disabled) { background: var(--felt-light); }
+  .ng-opt.fresh { background: #fff; color: var(--felt); border: 2px solid var(--felt); }
+  .ng-opt.fresh:hover { background: #f2f8f4; }
 
   /* 5-second Undo bar */
   .undo-bar {
@@ -1143,6 +1150,19 @@
     </div>
   </footer>
 
+</div>
+
+<!-- New Game: same players or a fresh list -->
+<div class="overlay" id="newGameDlg" hidden>
+  <div class="dialog ng-dlg" role="dialog" aria-modal="true" aria-labelledby="ngTitle">
+    <h3 id="ngTitle">↻ New Game</h3>
+    <p id="ngText"></p>
+    <div class="ng-opts">
+      <button class="ng-opt same" id="ngSame" type="button">👥 Same players<small></small></button>
+      <button class="ng-opt fresh" id="ngFresh" type="button">＋ New players<small>start with an empty list</small></button>
+    </div>
+    <div class="dlg-actions"><button class="btn-outline" id="ngCancel" type="button">Cancel</button></div>
+  </div>
 </div>
 
 <!-- Export / import chooser: tick what to include -->
@@ -2336,13 +2356,23 @@
   }
 
   /* ---------- Game actions ---------- */
+  // New Game asks first: keep the same players, or start with an empty list
   function newGame() {
-    if (online) { onlineNewGame(); return; }
-    const msg = state.rounds.length || state.timer.startedAt
-      ? 'Start a New Game? The current game will be saved under Previous Games, then scores are cleared. Player names, their order and settings will be kept.'
-      : 'Start a New Game? Player names and settings will be kept.';
-    if (!confirm(msg)) return;
+    if (!canEdit()) return;
+    if (online && online.scope !== 'room') return;
+    const played = state.rounds.length || state.timer.startedAt;
+    $('ngText').textContent = online
+      ? 'The current game stays in the room\'s game list. Settings are kept.'
+      : played ? 'The current game is saved under Previous Games. Settings are kept.' : 'Settings are kept.';
+    $('ngSame').disabled = state.players.length === 0;
+    $('ngSame').querySelector('small').textContent = state.players.length ? `${state.players.length} players, same order` : 'no players yet';
+    $('newGameDlg').hidden = false;
+  }
+  function startNewGame(keepPlayers) {
+    $('newGameDlg').hidden = true;
+    if (online) { onlineNewGame(keepPlayers); return; }
     clearUndo();
+    if (!keepPlayers) { state.players = []; state.nextId = 1; arrangeMode = false; selectedIds = new Set(); }
     const saved = archiveCurrentGame();
     if (saved) state.gamesSinceBackup = (state.gamesSinceBackup || 0) + 1;
     state.rounds = [];
@@ -2361,6 +2391,7 @@
     setMsg('boardMsg', '', '');
     renderAll();
     toast(saved ? `${saved} saved · New game started` : 'New game started – Round 1');
+    if (!keepPlayers) { startEditPlayers(); const np = $('newPlayer'); if (np) np.focus(); }   // straight to adding players
   }
 
   /* ---------- Game clock ---------- */
@@ -3067,6 +3098,10 @@
   $('banner').addEventListener('click', e => { if (e.target.id === 'btnUndoDeclare') undoDeclare(); });
 
   $('btnNewGame').addEventListener('click', newGame);
+  $('ngSame').addEventListener('click', () => startNewGame(true));
+  $('ngFresh').addEventListener('click', () => startNewGame(false));
+  $('ngCancel').addEventListener('click', () => { $('newGameDlg').hidden = true; });
+  $('newGameDlg').addEventListener('click', e => { if (e.target === e.currentTarget) $('newGameDlg').hidden = true; });
   $('btnApplySettings').addEventListener('click', applySettings);
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
   // Dealer rules save straight away and can change at any point in the game
@@ -3568,19 +3603,21 @@
     }
   }
 
-  async function onlineNewGame() {
+  async function onlineNewGame(keepPlayers) {
     if (!online || online.scope !== 'room' || !canEdit()) return;
-    if (!confirm('Start a New Game in this room? The current game stays in the room\'s game list. Player names, their order and settings are kept.')) return;
     flushPush();
     const g = randKey(8), now = Date.now();
     const seq = roomGames.filter(x => sameDay(new Date(x.createdMs || 0), new Date(now))).length + 1;
     const room = online.room || {};
     try {
-      await fb.setDoc(R.game(online.roomId, g), Object.assign(freshGameFrom(state), gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded)));
+      const fresh = freshGameFrom(state);
+      if (!keepPlayers) { fresh.players = []; fresh.nextId = 1; }
+      await fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded)));
       online.follow = true;
       const want = Math.max(now + Math.min(room.deleteDays || 30, maxDaysOfRoom()) * DAY, room.expireAt || 0);
       await fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) });
       toast('New game started');
+      if (!keepPlayers) setTimeout(() => { if (online && online.gameId === g) startEditPlayers(); }, 700);
     } catch (e) { onCloudError(e); }
   }
 
