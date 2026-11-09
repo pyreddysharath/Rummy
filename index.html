@@ -413,7 +413,7 @@
   .opt-group.nums { margin-top: 0; padding-top: 4px; }
   .settings-apply { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
   .settings-apply .msg { margin: 0; }
-  .opt-group legend { font-size: .8rem; font-weight: 700; color: var(--muted); padding: 0 4px; }
+  .opt-group legend { font-size: .86rem; font-weight: 800; color: var(--felt); padding: 0 6px; letter-spacing: .01em; }
   .opt-help { margin: 0 0 6px; font-size: .8rem; color: var(--muted); }
   .opt { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: .88rem; cursor: pointer; }
   .opt input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
@@ -586,7 +586,7 @@
   .time-chip.paused { background: var(--orange-soft); color: var(--orange-text); }
   .time-chip.ended { background: var(--red-soft); color: var(--red-text); }
   .tc-ico { font-size: .8rem; }
-  .share-row { display: grid; grid-template-columns: 150px 1fr; gap: 10px; align-items: end; }
+  .share-row { display: grid; grid-template-columns: 150px; padding-top: 4px; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
   .share-box { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fcfbf7; }
@@ -891,13 +891,9 @@
     </div>
     </fieldset>
     <fieldset class="opt-group nums" id="shareGroup">
-      <legend>Share amount</legend>
+      <legend>Each player's share (₹)</legend>
       <div class="share-row">
-        <div>
-          <label class="field" for="setShare">Each player's share (₹)</label>
-          <input type="number" id="setShare" min="1" step="1" inputmode="numeric" placeholder="e.g. 100">
-        </div>
-        <p class="opt-help">Used by <b>₹ Calculate Shares</b> under the scoreboard. Saved as you type.</p>
+        <input type="number" id="setShare" min="1" step="1" inputmode="numeric" placeholder="e.g. 100" aria-label="Each player's share in rupees">
       </div>
       <div class="msg" id="shareMsg"></div>
     </fieldset>
