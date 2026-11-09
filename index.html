@@ -110,8 +110,7 @@
   .hero.compact .wm-small { font-size: .95rem; margin-top: 3px; }
   .foot-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 360px; margin: 6px auto 22px; padding: 0 12px; }
   .foot-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 0; padding: 8px 10px; }
-  .foot-actions .fa-share { grid-column: 1 / -1; padding: 10px 12px; font-size: .95rem; background: #b8860b; color: #fff; }
-  .foot-actions .fa-share:hover { background: #a0750a; }
+  .foot-actions .fa-share { grid-column: 1 / -1; padding: 10px 12px; font-size: .95rem; }
   .foot-actions .fa-lbl { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 6px;
     color: rgba(255,255,255,.7); font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
   .foot-actions .fa-lbl::before, .foot-actions .fa-lbl::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,.25); }
@@ -589,6 +588,7 @@
   .time-chip.ended { background: var(--red-soft); color: var(--red-text); }
   .tc-ico { font-size: .8rem; }
   .share-row { display: grid; grid-template-columns: 150px; padding-top: 4px; }
+  #shareGroup { margin-top: 22px; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
   .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #b8860b; color: #fff; }
@@ -624,6 +624,7 @@
   table.shares td .pay { display: inline-block; min-width: 46px; padding: 1px 7px; border-radius: 999px; background: var(--primary-soft); color: var(--primary-dark); font-weight: 700; }
   table.shares td.amt .pay { background: #b8860b; color: #fff; font-weight: 800; }
   table.shares td.na { color: #c3c8d2; }
+  table.shares td.same { color: #9aa1ae; }
   table.shares td.up { color: var(--text); font-weight: 600; }
   table.shares tr.potrow td { color: var(--muted); font-size: .76rem; background: #f6f4ee; }
   table.shares tr.potrow td.stk { font-weight: 700; color: var(--muted); }
@@ -633,6 +634,20 @@
   .share-send:hover { background: var(--felt-light); }
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
+  .end-btn { background: #a12a1c; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+  .end-btn:hover:not(:disabled) { background: #8a2216; }
+  .end-btn .eg-ico { color: #fff; font-size: .78em; }
+  .end-btn .chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
+  .end-btn[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
+  .end-btn.reopen { background: var(--felt); }
+  .end-btn.reopen .chev { display: none; }
+  .end-box { width: 100%; padding: 4px 0 2px; }
+  .end-box[hidden] { display: none; }
+  .end-intro { margin: 0 0 8px; color: var(--muted); font-size: .84rem; }
+  .end-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+  .end-ok { background: #a12a1c; color: #fff; padding: 7px 18px; }
+  .end-ok:hover { background: #8a2216; }
+  .pick .pd { color: var(--muted); font-size: .78rem; }
   .btn-end:hover:not(:disabled) { background: #062e1d; }
   .btn-danger:hover:not(:disabled) { background: #b91c1c; }
 
@@ -784,7 +799,7 @@
   .rs-danger { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: grid; gap: 4px; justify-items: start; }
   .del-room { color: var(--red); border-color: #f5b5b5; }
   /* View-only visitors: everything that changes the game is hidden */
-  body.readonly #btnNewGame, body.readonly .clock-btns, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
+  body.readonly #btnNewGame, body.readonly .clock-btns, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly #firstDeal .fd-row, body.readonly .settings-apply { display: none !important; }
   body.readonly .settings-card fieldset { pointer-events: none; opacity: .6; }
 
@@ -809,7 +824,8 @@
 
   /* ---------- Footer ---------- */
   .app-footer { margin: 8px -16px 0; padding: 14px 16px 24px; border-top: 1px solid rgba(255,255,255,.18); color: #e9f2ec; }
-  .ft-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .ft-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: nowrap; }
+  .ft-copy { white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .ft-copy { font-size: .78rem; color: var(--gold); }
   .ft-copy b { font-weight: 800; }
   .ft-icons { display: flex; gap: 6px; }
@@ -830,9 +846,13 @@
     border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; opacity: .8; }
   .ft-sec details[open] > summary::before { transform: rotate(45deg); }
   .ft-sec details p { margin: 6px 0 4px; color: #3d4455; }
-  .ft-subtabs { display: flex; gap: 6px; margin-bottom: 10px; }
-  .ft-sub { min-height: 0; padding: 4px 12px; font-size: .82rem; background: #f4f1e8; border: 1px solid var(--border); }
-  .ft-sub.on { background: var(--felt); color: #fff; border-color: var(--felt); }
+  /* Real tabs: light tabs on a line; the open tab is filled and joins the line (as on our other sites) */
+  .ft-subtabs { display: flex; gap: 4px; align-items: flex-end; border-bottom: 2px solid var(--felt); margin: 0 0 14px; }
+  .ft-sub { flex: 1 1 0; min-height: 0; margin: 0; padding: 9px 6px 8px; border: 0; border-radius: 10px 10px 0 0;
+    background: color-mix(in srgb, var(--felt) 12%, #fff); color: var(--felt); font-size: .84rem; font-weight: 700; white-space: nowrap; }
+  .ft-sub:hover { background: color-mix(in srgb, var(--felt) 20%, #fff); }
+  .ft-sub.on, .ft-sub.on:hover { background: var(--felt); color: #fff; }
+  @media (min-width: 600px) { .ft-sub { flex: 0 0 auto; padding: 9px 22px 8px; } }
   .fb-form { display: grid; gap: 8px; }
   .fb-form input, .fb-form textarea { font: inherit; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; resize: vertical; }
   .fb-form input:focus, .fb-form textarea:focus { outline: none; border-color: var(--felt); }
@@ -847,6 +867,12 @@
   .os-info[aria-expanded="true"] { background: var(--gold); color: #2b1f00; }
   .os-text { color: #3d4455; font-size: .84rem; margin: 0 0 8px 2px; }
   @media (max-width: 480px) { .app-footer { margin-left: -12px; margin-right: -12px; } }
+  @media (max-width: 400px) {
+    .ft-copy { font-size: .72rem; }
+    .ft-icons { gap: 4px; flex: 0 0 auto; }
+    .ft-btn { width: 34px; height: 34px; }
+    .ft-btn svg { width: 18px; height: 18px; }
+  }
 </style>
 <!-- Firebase project settings for online rooms (optional – the app works offline without it) -->
 <script src="firebase-config.js"></script>
@@ -964,7 +990,7 @@
         <span><b class="rj">↺</b> Rejoined</span>
       </div>
       <div class="ns-note">A red – means no score in the round they went OUT.</div>
-      <div class="ns-note">To undo a win: tap ✎ in Player, then the ✕ on the Winner tag. With no winner left, the game reopens.</div>
+      <div class="ns-note">To end a game, tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the ✕ on a Winner tag in ✎ Player edit.</div>
     </div>
 
     <!-- Shown at the start of a game until the first dealer is chosen -->
@@ -998,7 +1024,16 @@
       </details>
       <div class="clock-btns">
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
-        <button class="btn-end" id="btnEndGame" type="button">⏹ End Game</button>
+        <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
+      </div>
+      <div class="end-box" id="endBox" hidden>
+        <p class="end-intro">Tick the winner(s) – the likely winner is ticked for you. Leave everyone unticked to end without a winner. The end time and game time are recorded.</p>
+        <ul class="pick" id="declareList"></ul>
+        <div class="msg" id="declareMsg"></div>
+        <div class="end-actions">
+          <button class="btn-outline" id="btnEndShares" type="button">₹ Calculate shares first</button>
+          <button class="end-ok" id="btnDeclareOk" type="button">🏆 End Game</button>
+        </div>
       </div>
       <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       <div class="share-box" id="shareBox" hidden>
@@ -1020,7 +1055,7 @@
 
   <!-- Export / import -->
   <div class="foot-actions">
-    <button class="btn-gold fa-share" id="btnShare" type="button" title="Share the scoreboard as an image"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>Share Scoreboard</button>
+    <button class="btn-ghost fa-share" id="btnShare" type="button" title="Share the scoreboard as an image"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>Share Scoreboard</button>
     <div class="fa-lbl">Backup</div>
     <button class="btn-ghost" id="btnExportData" type="button" title="Full backup that can be imported later"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Export Data</button>
     <button class="btn-ghost" id="btnImportData" type="button" title="Restore from an exported data file"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Import Data</button>
@@ -1074,14 +1109,12 @@
         <button type="button" class="ft-sub" data-ftsub="disclaimer">Disclaimer</button>
       </div>
       <div class="ft-subsec" id="ft-privacy">
-        <div class="ft-title">Privacy Policy</div>
         <p><b>On this device:</b> players, scores, settings and previous games are saved in your browser's local storage. They are not sent anywhere unless you use an online room.</p>
         <p><b>Online rooms:</b> when you create or open a room, its name, player names, scores and game times are stored in Google Firebase so that everyone with the room's link can see them. You are signed in with an anonymous ID; if you choose <b>Sign in with Google</b>, your Google account's name and email are used only to keep your rooms on your account. Anyone who has a room's link can see that room – share links only with people you trust. Rooms and games are deleted automatically after the period without activity shown in Room Settings, or when the owner deletes them.</p>
         <p><b>Feedback:</b> if you send feedback, the name and message you enter are sent to us for review. Please don't include personal or sensitive details.</p>
         <p><b>No ads or tracking:</b> this site shows no advertising and uses no analytics or advertising cookies.</p>
       </div>
       <div class="ft-subsec" id="ft-disclaimer" hidden>
-        <div class="ft-title">Disclaimer</div>
         <p>Rummy Scoreboard is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some states (for example Telangana) – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
         <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in Game Settings.</p>
       </div>
@@ -1094,20 +1127,6 @@
     </div>
   </footer>
 
-</div>
-
-<!-- Declare winner dialog -->
-<div class="overlay" id="declareDlg" hidden>
-  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="declareTitle">
-    <h3 id="declareTitle">⏹ End Game</h3>
-    <p>Select the winner(s), or leave everyone unticked to end without a winner. The end time and game time are recorded.</p>
-    <ul class="pick" id="declareList"></ul>
-    <div class="msg" id="declareMsg"></div>
-    <div class="dlg-actions">
-      <button class="btn-outline" id="btnDeclareCancel" type="button">Cancel</button>
-      <button class="btn-end" id="btnDeclareOk" type="button">End Game</button>
-    </div>
-  </div>
 </div>
 
 <!-- Export / import chooser: tick what to include -->
@@ -1661,7 +1680,6 @@
           `<button class="pa out" type="button" id="btnMarkOut" data-bulk="out" title="Mark the ticked players as OUT">Out</button>` +
           `<button class="pa" type="button" id="btnRejoin" data-bulk="rejoin" title="Bring a ticked OUT player back in at the highest score of the players still in">↺ Rejoin</button>` +
           `<button class="pa" type="button" id="btnSetDealer" data-bulk="dealer" title="Make the ticked player deal this round">${DEALER_ICON} Dealer</button>` +
-          `<button class="pa win" type="button" id="btnSetWinner" data-bulk="winner" title="Declare the ticked player(s) as winner and end the game">🏆 Winner &amp; end game</button>` +
           `</div>` +
           `<div class="ph-sep"></div>` +
           `<div class="add-player ph-add"><input type="text" id="newPlayer" maxlength="30" placeholder="New player name" autocomplete="off" aria-label="New player name">` +
@@ -1774,7 +1792,6 @@
     $('btnMarkOut').disabled = n === 0;
     $('btnRejoin').disabled = n === 0;
     $('btnSetDealer').disabled = n !== 1;   // exactly one player
-    $('btnSetWinner').disabled = n === 0 || [...selectedIds].some(id => playerStatus(id) === 'out');   // OUT players can't win
   }
 
   function renderSettings() {
@@ -2078,20 +2095,6 @@
     setMsg('boardMsg', `${p.name} deals this round.`, 'ok');
   }
 
-  // Declare the ticked players as winner(s): closes Edit Players and ends the game
-  function winnerFromSelection() {
-    const ids = [...selectedIds].filter(id => playerById(id) && playerStatus(id) !== 'out');
-    if (!ids.length) return;
-    const focused = document.activeElement;
-    if (focused && focused.matches && focused.matches('.nm-edit')) renameInline(Number(focused.dataset.rename), focused);
-    clearPlayerUndo();
-    arrangeMode = false;
-    editSnapshot = null;
-    selectedIds = new Set();
-    finishGame(ids);
-    toast(`🏆 ${joinNames(ids.map(id => playerById(id).name))} ${ids.length > 1 ? 'win' : 'wins'} – game ended`);
-  }
-
   function bulkSetStatus(target) {
     const ids = [...selectedIds].filter(id => playerById(id));
     if (!ids.length) return;
@@ -2280,23 +2283,23 @@
   /* ---------- Declare winner ---------- */
   function openDeclare() {
     if (state.players.length === 0) return;
-    const auto = autoResult();   // a single player left is ticked for you
-    const pre = auto && auto.type === 'winner' ? auto.players.map(p => p.id) : [];
-    $('declareList').innerHTML = state.players.map(p => {
-      const total = totalOf(p.id);
-      const st = playerStatus(p.id);
-      const out = st === 'out';
-      return `<li><label class="${out ? 'dis' : ''}">
-        <input type="checkbox" value="${p.id}" ${out ? 'disabled' : ''} ${pre.includes(p.id) ? 'checked' : ''}>
+    const alive = state.players.filter(p => playerStatus(p.id) !== 'out');   // OUT players can't win
+    const low = alive.length ? Math.min(...alive.map(p => totalOf(p.id))) : null;
+    const pre = alive.length === 1 ? [alive[0].id] : alive.filter(p => totalOf(p.id) === low).map(p => p.id);
+    $('declareList').innerHTML = alive.map(p => {
+      const total = totalOf(p.id), dl = dropsLeft(total);
+      return `<li><label>
+        <input type="checkbox" value="${p.id}" ${pre.includes(p.id) ? 'checked' : ''}>
         <span class="pn">${esc(p.name)}</span>
-        <span class="pt">${total} · ${STATUS_LABEL[st]}</span>
+        <span class="pt">${total}<span class="pd"> · ${dropsText(dl || 0)}</span></span>
       </label></li>`;
-    }).join('');
+    }).join('') || '<li class="end-intro">Everyone is OUT.</li>';
     setMsg('declareMsg', '', '');
-    $('declareDlg').hidden = false;
+    $('endBox').hidden = false;
+    $('btnEndGame').setAttribute('aria-expanded', 'true');
   }
 
-  function closeDeclare() { $('declareDlg').hidden = true; }
+  function closeDeclare() { $('endBox').hidden = true; $('btnEndGame').setAttribute('aria-expanded', 'false'); }
 
   function confirmDeclare() {
     const ids = Array.from(document.querySelectorAll('#declareList input:checked')).map(i => Number(i.value));
@@ -2404,7 +2407,11 @@
     pp.disabled = st === 'ended';
     pp.textContent = st === 'running' ? '⏸ Pause' : st === 'paused' ? '▶ Resume' : '▶ Play';
     pp.className = st === 'running' ? 'btn-outline' : 'btn-primary';
-    $('btnEndGame').disabled = st === 'ended' || state.players.length < 2;
+    const ended = !!gameResult();
+    $('btnEndGame').disabled = !ended && state.players.length < 2;
+    $('btnEndGame').classList.toggle('reopen', ended);
+    $('btnEndGame').querySelector('.eg-label').innerHTML = ended ? '↺ Reopen game' : '<span class="eg-ico">■</span> End Game';
+    if (ended && !$('endBox').hidden) closeDeclare();
     // Time details: one-line summary, intervals inside (collapsed by default; open/closed is kept)
     $('timeDetails').hidden = st === 'idle';
     if (st !== 'idle') {
@@ -2444,9 +2451,12 @@
   }
 
   // End Game opens the winner window; the game ends when it is confirmed
+  // End Game opens a section under the button; once ended, the same button reopens the game
   function endGame() {
     if (!canEdit()) return;
-    if (timerState() === 'ended' || state.players.length < 2) return;
+    if (gameResult()) { undoDeclare(); return; }
+    if (state.players.length < 2) return;
+    if (!$('endBox').hidden) { closeDeclare(); return; }
     openDeclare();
   }
 
@@ -2985,7 +2995,7 @@
     if (t.hasAttribute('data-editcancelp')) { cancelEditPlayers(); return; }
     if (t.dataset.bulk) {
       ({ active: () => bulkSetStatus('active'), out: () => bulkSetStatus('out'),
-         rejoin: bulkRejoin, dealer: setDealerFromSelection, winner: winnerFromSelection })[t.dataset.bulk]();
+         rejoin: bulkRejoin, dealer: setDealerFromSelection })[t.dataset.bulk]();
       return;
     }
     if (t.hasAttribute('data-addplayer')) { addPlayer(); return; }
@@ -3037,12 +3047,10 @@
   });
 
 
-  $('btnDeclareCancel').addEventListener('click', closeDeclare);
-  $('btnDeclareOk').addEventListener('click', confirmDeclare);
-  $('declareDlg').addEventListener('click', e => { if (e.target === e.currentTarget) closeDeclare(); });
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
-    if (!$('declareDlg').hidden) closeDeclare();
+  $('btnDeclareOk').addEventListener('click', () => { if (canEdit()) confirmDeclare(); });
+  $('btnEndShares').addEventListener('click', () => {
+    if ($('shareBox').hidden) toggleShares();
+    if (!$('shareBox').hidden) $('btnShares').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   $('banner').addEventListener('click', e => { if (e.target.id === 'btnUndoDeclare') undoDeclare(); });
 
@@ -4351,6 +4359,7 @@
       const groups = Array.from({ length: d.steps }, (_, k) => k);
       const sub3 = '<th class="gs-start">Total</th><th>Drops</th><th>Pts left</th>';
       const sub4 = '<th class="gs-start sh">Share</th><th>Total</th><th>Drops</th><th>Pts left</th>';
+      const lastState = (r, k) => { for (let j = k - 1; j >= 0; j--) if (r.steps[j]) return r.steps[j]; return r; };   // no drop this time: unchanged
       const trio = (t, dr, pt, cls, first) => `<td class="${first ? 'gs-start ' : ''}${cls || ''}">${t}</td><td class="${cls || ''}">${dr}</td><td class="${cls || ''}">${pt}</td>`;
       $('shareResult').innerHTML = `<div class="share-scroll"><table class="shares">
         <thead>
@@ -4361,7 +4370,7 @@
         </thead>
         <tbody>${d.rows.map(r => `<tr><td class="stk">${esc(r.p.name)}</td>${trio(r.total, r.drops, r.pts, '', true)}` +
             groups.map(k => `<td class="gs-start amt">${pay(r.cum[k])}</td>` +
-              (r.steps[k] ? trio(r.steps[k].total, r.steps[k].drops, r.steps[k].pts, 'up') : trio('–', '–', '–', 'na'))).join('') + '</tr>').join('')}
+              (r.steps[k] ? trio(r.steps[k].total, r.steps[k].drops, r.steps[k].pts, 'up') : (prev => trio(prev.total, prev.drops, prev.pts, 'same'))(lastState(r, k)))).join('') + '</tr>').join('')}
           <tr class="potrow"><td class="stk">Pot left</td><td class="gs-start" colspan="3">${rupees(d.pot)}</td>
             ${d.potLeft.map(x => `<td class="gs-start" colspan="4">${rupees(x)}</td>`).join('')}</tr></tbody>
         </table></div>${d.steps ? '' : '<p class="share-note">No drop can be taken without leaving one entry or less in the pot.</p>'}${notes}`;
