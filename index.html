@@ -247,11 +247,11 @@
 
   /* Current-round entry column */
   table.board th.entry { background: var(--felt-head-light); color: #fff; }   /* current round: lighter green */
-  table.board td.entry { padding: 6px 8px; }
+  table.board td.entry, table.board th.entry { padding: 6px 3px; }
   tr.st-active td.entry, tr.st-near td.entry { background: var(--card); }
   /* Editing a saved round */
   table.board th.editing { background: var(--edit-head); color: #fff; }
-  table.board td.editing { padding: 6px 8px; }
+  table.board td.editing { padding: 6px 3px; }
   tr.st-active td.editing, tr.st-near td.editing, tr.st-winner td.editing { background: var(--edit-bg); }
   .cellin { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
   .qbtns { display: flex; gap: 4px; }
@@ -550,7 +550,7 @@
   table.board tfoot td { border: none !important; background: var(--card); padding: 8px 6px; }   /* Save row: no grid lines */
   table.board:has(tfoot) tbody tr:last-child td { border-bottom: 1px solid var(--border); }   /* keep the line under the last player */
   .table-scroll:has(tfoot) { border-bottom-color: transparent; }
-  table.board tfoot td.save-cell button { width: 100%; min-height: 0; padding: 7px 8px; }
+  table.board tfoot td.save-cell button { width: 100%; min-width: 0; min-height: 0; padding: 7px 4px; }
   table.board tfoot td.add-cell { padding: 8px; }
   .add-cell .add-player { display: flex; gap: 6px; }
   table.board td.add-cell input#newPlayer { width: 130px; text-align: left; font-weight: 400; min-height: 32px; padding: 5px 8px; }
