@@ -232,7 +232,7 @@
   }
   table.board thead .sticky { background: var(--felt); z-index: 3; text-align: center; }   /* only the PLAYER heading is centred */
   /* TOTAL heading: mustard gold (the colour the current-round heading used to have) */
-  table.board thead th.th-total { background: #b8860b; color: #1d2330; }
+  table.board thead th.th-total { background: var(--gold); color: #1d2330; }
   table.board td.total { font-weight: 800; }   /* same font size as the other columns */
   table.board td.dash { color: #b3b9c6; }
 
@@ -484,7 +484,7 @@
   .edit-done { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 16px; }
   .edit-done button { min-height: 0; padding: 6px 8px; font-size: .82rem; }
   /* On the green heading: Done in the page's gold, Cancel as a light outline */
-  table.board thead .edit-done .btn-primary { background: var(--gold-soft); color: #1d2330; border: 1px solid var(--gold); }
+  table.board thead .edit-done .btn-primary { background: var(--felt); color: #f6e7b0; border: 1px solid var(--felt); }
   table.board thead .edit-done .btn-primary:hover { filter: brightness(1.06); }
   table.board thead .edit-done .btn-outline { background: #fff; color: var(--text); border: 1px solid #c4dccd; }
   table.board thead .edit-done .btn-outline:hover { background: #f1efe8; }
