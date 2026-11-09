@@ -444,7 +444,6 @@
   .first-deal[hidden] { display: none; }
   .fd-title { font-weight: 800; margin-bottom: 2px; }
   .fd-text { font-size: .85rem; color: var(--text); }
-  .fd-hint { color: var(--muted); }
   .fd-row { display: flex; gap: 8px; margin: 8px 0 4px; }
   .fd-row select {
     flex: 1; min-width: 0; font: inherit; padding: 6px 10px; border: 1px solid #d9d3c3; border-radius: 8px; background: #fff;
@@ -977,14 +976,7 @@
       <div class="msg" id="shareMsg"></div>
     </fieldset>
 
-    <!-- Dealer rules (saved straight away, can be changed at any point in the game) -->
-    <fieldset class="opt-group">
-      <legend>First dealer – card draw</legend>
-      <p class="opt-help">At the start, spread the cards face down and let each player pick one.</p>
-      <label class="opt"><input type="radio" name="firstDealer" value="lowest"> <span><b>Lowest card</b> deals first</span></label>
-      <label class="opt"><input type="radio" name="firstDealer" value="highest"> <span><b>Highest card</b> deals first</span></label>
-      <details class="card-order"><summary>Card order, lowest to highest</summary><div class="co-body" data-cardorder></div></details>
-    </fieldset>
+    <!-- Dealer rule (saved straight away, can be changed at any point in the game) -->
     <fieldset class="opt-group">
       <legend>When the next dealer is OUT</legend>
       <label class="opt"><input type="radio" name="dealerOut" value="keep"> <span><b>Previous player still in</b> deals again, so the next player doesn't miss their turn to start</span></label>
@@ -1856,7 +1848,6 @@
     $('setDrop').value = state.settings.drop;
     $('setFull').value = state.settings.full;
     if (document.activeElement !== $('setShare')) $('setShare').value = state.settings.share || '';
-    document.querySelectorAll('input[name="firstDealer"]').forEach(i => { i.checked = i.value === state.settings.firstDealer; });
     document.querySelectorAll('input[name="dealerOut"]').forEach(i => { i.checked = i.value === state.settings.dealerOut; });
     updateRangeNote(state.settings);
   }
@@ -1897,10 +1888,8 @@
     const show = !arrangeMode && canEnterRound() && state.rounds.length === 0 && state.dealerId == null;
     $('firstDeal').hidden = !show;
     if (!show) return;
-    const low = state.settings.firstDealer !== 'highest';
     $('fdText').innerHTML = `Spread the cards face down and let each player pick one. ` +
-      `The <b>${low ? 'lowest' : 'highest'} card</b> deals first; the next player starts. ` +
-      `<span class="fd-hint">(Change this in Game Settings.)</span>`;
+      `The <b>lowest card</b> (or highest, as your group agrees) deals first; the next player starts.`;
     const sel = $('fdSelect');
     const keep = sel.value;
     sel.innerHTML = state.players.filter(p => playerStatus(p.id) !== 'out')
@@ -3143,15 +3132,13 @@
   $('btnApplySettings').addEventListener('click', applySettings);
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
   // Dealer rules save straight away and can change at any point in the game
-  document.querySelectorAll('input[name="firstDealer"], input[name="dealerOut"]').forEach(inp => {
+  document.querySelectorAll('input[name="dealerOut"]').forEach(inp => {
     inp.addEventListener('change', () => {
       if (!canEdit()) { renderSettings(); return; }
       state.settings = { ...state.settings, [inp.name]: inp.value };
       saveState();
       renderAll();
-      toast(inp.name === 'firstDealer'
-        ? `First dealer: ${inp.value === 'lowest' ? 'lowest' : 'highest'} card`
-        : `Next dealer OUT: ${inp.value === 'keep' ? 'previous player deals again' : 'next player deals'}`);
+      toast(`Next dealer OUT: ${inp.value === 'keep' ? 'previous player deals again' : 'next player deals'}`);
     });
   });
   $('btnFdSet').addEventListener('click', setFirstDealer);
