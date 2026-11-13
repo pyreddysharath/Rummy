@@ -118,16 +118,24 @@
   .setup-card .su-step > input { width: 100%; }
   .acct-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; color: rgba(255,255,255,.85); font-size: .82rem; }
   .acct-row[hidden], .foot-actions [hidden] { display: none !important; }
-  .acct-row .g-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #1d2330; border: 0; }
+  .acct-row .g-btn { grid-column: auto; display: inline-flex; align-items: center; gap: 8px; padding: 0 18px; }
+  .acct-row .g-btn svg { color: var(--gold); }
   .acct-row .su-link { color: #f6e7b0; }
   .acct-who { display: inline-flex; align-items: center; gap: 8px; }
   .acct-who .ava { width: 22px; height: 22px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; font-size: .75rem; display: inline-flex; align-items: center; justify-content: center; }
-  .acct-why { opacity: .75; }
   .welcome-card .wc-h { font-size: 1.05rem; }
   .welcome-card .wc-back { margin-top: 8px; }
   /* New Room / New Game section */
   .setup-card h2 { margin-bottom: 10px; }
   .su-step { margin: 0 0 14px; }
+  .su-line { display: grid; grid-template-columns: 74px 1fr; column-gap: 10px; align-items: start; margin: 0 0 12px; }
+  .su-line > .su-lbl { margin: 0; padding-top: 9px; }
+  .su-field { min-width: 0; }
+  .su-field > input { width: 100%; }
+  .su-link.plain { text-decoration: none; }
+  .su-radio { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: .9rem; cursor: pointer; }
+  .su-radio input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
+  .su-radio small { color: var(--muted); }
   .su-lbl { display: block; font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
   .su-row { display: flex; gap: 8px; }
   .su-row input { flex: 1 1 auto; min-width: 0; }
@@ -136,6 +144,8 @@
   .su-warn { background: #fff7e0; border: 1px solid #f0d58a; border-radius: 10px; padding: 8px 10px; font-size: .86rem; margin: 0 0 10px; }
   .combo { position: relative; }
   .combo input { width: 100%; padding-right: 34px; }
+  .setup-card input[type="text"] { min-height: 0; height: 36px; padding: 6px 10px; font-size: .92rem; }
+  select { min-height: 0; height: auto; padding: 5px 28px 5px 10px; line-height: 1.3; }
   .combo .cb-chev { position: absolute; right: 12px; top: 50%; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
     transform: translateY(-70%) rotate(45deg); pointer-events: none; }
   .combo-list { list-style: none; margin: 4px 0 0; padding: 4px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
@@ -158,7 +168,7 @@
   .welcome-card p { margin: 0 0 6px; }
   .welcome-card p[hidden] { display: none; }
   .welcome-card .wc-back { color: var(--muted); font-size: .86rem; margin-bottom: 0; }
-  body.no-game:not(.setup-open) .settings-card, body.no-game .board-card,
+  body:not(.setup-open):not(.rules-edit) .settings-card, body.no-game .board-card,
   body.no-game .archive-card.empty, body.setup-open #roomCard, body.no-game .hero-chips { display: none; }
   .sb-meta { margin: -4px 0 10px; }
   .sb-meta:empty { display: none; }
@@ -171,11 +181,24 @@
   .sb-chips .sync.ok { background: #e3f1e9; color: var(--felt); }
   .sb-chips .sync.offline, .sb-chips .sync.saving { background: #fff3d6; color: #8a5a00; }
   .sb-chips .sync.err, .sb-chips .ended { background: #fde8e6; color: var(--red); }
-  .sb-share-btn { min-height: 0; height: 26px; padding: 0 10px; margin-left: auto; border-radius: 999px; font-size: .76rem; font-weight: 800;
-    background: var(--felt); color: #fff; border: 0; display: inline-flex; align-items: center; gap: 6px; }
   .sb-chev { transition: transform .15s; }
-  .sb-share-btn[aria-expanded="true"] .sb-chev { transform: rotate(180deg); }
   .sb-links { margin: 0 0 12px; }
+  .sb-btns { display: inline-flex; gap: 6px; margin-left: auto; }
+  .sb-btn { min-height: 0; height: 26px; padding: 0 10px; border-radius: 999px; font-size: .76rem; font-weight: 800;
+    background: var(--felt); color: #fff; border: 0; display: inline-flex; align-items: center; gap: 6px; }
+  .sb-btn.ghost { background: #fff; color: var(--felt); border: 1.5px solid var(--felt); }
+  .sb-btn[aria-expanded="true"] .sb-chev { transform: rotate(180deg); }
+  .sb-img { width: 100%; margin-bottom: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .sb-img small { color: var(--muted); font-weight: 600; }
+  .gd-box { margin: 0 0 12px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fffdf6; }
+  .gd-box[hidden] { display: none; }
+  .gd-grid { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 5px; font-size: .86rem; margin-bottom: 10px; }
+  .gd-grid .gl { font-weight: 700; color: var(--muted); }
+  .gd-grid .gv { color: var(--text); font-weight: 600; }
+  #gdRules .settings-card { margin: 0 0 10px; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
+  .awake-line { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); cursor: pointer; }
+  .awake-line input { width: 16px; height: 16px; margin: 0; accent-color: var(--felt); }
+  body.readonly .awake-line { display: flex; }
   .sb-links[hidden] { display: none; }
   .chip {
     background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 999px;
@@ -923,11 +946,11 @@
   /* View-only visitors: everything that changes the game is hidden */
   body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly .settings-apply { display: none !important; }
-  body.readonly .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
+  body.readonly .settings-card fieldset { pointer-events: none; opacity: .6; }
   /* Ended game: nothing can be changed until the owner reopens it */
   body.locked:not(.setup-open) [data-editplayers], body.locked:not(.setup-open) table.board thead .hbtn,
   body.locked:not(.setup-open) .settings-apply { display: none !important; }
-  body.locked:not(.setup-open) .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
+  body.locked:not(.setup-open) .settings-card fieldset { pointer-events: none; opacity: .6; }
   .lock-note { font-size: .8rem; color: var(--muted); background: #f3f1ea; border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
   .lock-note[hidden] { display: none; }
   .end-btn[hidden] { display: none !important; }
@@ -1034,7 +1057,7 @@
 
   <!-- Settings -->
   <details class="card settings-card" id="settingsBox">
-    <summary><span class="ttl"><span class="suit">♣</span> Game Settings</span></summary>
+    <summary><span class="ttl"><span class="suit">♣</span> Game Rules</span></summary>
     <fieldset class="opt-group nums">
       <legend>Points and limits</legend>
     <div class="settings-row">
@@ -1072,11 +1095,6 @@
       <label class="opt"><input type="radio" name="dealerOut" value="keep"> <span><b>Previous player still in</b> deals again, so the next player doesn't miss their turn to start</span></label>
       <label class="opt"><input type="radio" name="dealerOut" value="next"> <span><b>Next player still in</b> deals</span></label>
     </fieldset>
-    <fieldset class="opt-group" id="screenGroup">
-      <legend>Screen</legend>
-      <label class="opt"><input type="checkbox" id="setAwake"> <span><b>Keep the screen on</b> while a game is in progress</span></label>
-      <p class="opt-help">Saved on this phone for every game. Takes effect straight away.</p>
-    </fieldset>
     <div class="settings-apply">
       <button class="btn-primary apply" id="btnApplySettings" type="button">Apply</button>
       <div class="msg" id="settingsMsg"></div>
@@ -1103,6 +1121,7 @@
       </span>
     </h2>
     <div class="sb-meta" id="sbMeta"></div>
+    <div class="gd-box" id="gameDetails" hidden></div>
     <div class="lk-box sb-links" id="sbLinks" hidden></div>
     <p class="lock-note" id="lockNote" hidden></p>
     <div class="range-note info-note" id="legendNote" hidden>
@@ -1153,6 +1172,7 @@
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
       </div>
+      <label class="awake-line" title="Saved on this phone for every game"><input type="checkbox" id="setAwake"> Keep the screen on during the game</label>
       <div class="start-box" id="startBox" role="status" hidden>
         <span>Game started · Keep the screen on?</span>
         <span class="sb-btns"><button class="btn-primary" id="btnAwakeYes" type="button">Yes</button><button class="btn-outline" id="btnAwakeNo" type="button">No</button></span>
@@ -1188,7 +1208,7 @@
 
   <!-- Export / import -->
   <div class="foot-actions">
-    <button class="btn-ghost fa-share" id="btnShare" type="button" title="Share the scoreboard as an image"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>Share Scoreboard</button>
+    <button class="btn-ghost fa-share" id="btnShare" type="button" hidden title="Share the scoreboard as an image"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>Share Scoreboard</button>
     <button class="btn-ghost fa-share" id="btnInstall" type="button" hidden title="Add RummyTally to your home screen or desktop"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v7M9 11l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Install App</button>
     <div class="fa-lbl" id="backupLbl">Backup</div>
     <button class="btn-ghost" id="btnExportData" type="button" title="Full backup that can be imported later"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Export Data</button>
@@ -1216,10 +1236,10 @@
 
     <div class="ft-sec" id="ft-help" hidden>
       <div class="ft-title">How it works</div>
-      <details open><summary>1. Start a game</summary><p>Tap <b>New Game</b>. The first time, give the room a name – the occasion, e.g. "Diwali at Ravi's" – then check the game name, players and Game Settings and tap <b>Create &amp; Start</b>. For the next game, tap <b>New Game</b> again: the room is already chosen, or pick another one or <b>＋ Create a new room</b>.</p></details>
+      <details open><summary>1. Start a game</summary><p>Tap <b>New Game</b>. The first time, give the room a name – the occasion, e.g. "Diwali at Ravi's" – then check the game name, players and Game Rules and tap <b>Create &amp; Start</b>. For the next game, tap <b>New Game</b> again: the room is already chosen, or pick another one or <b>＋ Create a new room</b>.</p></details>
       <details><summary>2. Enter scores</summary><p>Type each round's points and tap <b>Save</b>. Add someone later with <b>＋ Add player</b> under the list. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
       <details><summary>3. Play together on several phones</summary><p>Share the room's <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch. Scores update on every phone straight away. Nobody needs to log in.</p></details>
-      <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
+      <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
       <details><summary>5. Keep your rooms</summary><p>As a guest, your rooms are listed on this device; keep each room's <b>Owner link</b> to get full control back after clearing the browser or on a new phone. Or <b>Sign in with Google</b> (bottom of the page) and your rooms follow you to every device.</p></details>
       <details><summary>6. When games are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner sets this in <b>Room Settings</b>.</p></details>
       <details><summary>7. Backups</summary><p><b>Export Data</b> saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
@@ -1258,7 +1278,7 @@
       </div>
       <div class="ft-subsec" id="ft-disclaimer" hidden>
         <p>RummyTally is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some places – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
-        <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in Game Settings.</p>
+        <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in the Game Rules.</p>
       </div>
     </div>
 
@@ -2512,6 +2532,7 @@
   const settingsHome = document.createComment('settings');   // where Game Settings lives when not setting up
   function openSetup(mode) {
     if (online && !canEdit()) return;
+    closeRulesEdit();
     if (setup && setup.mode === mode && !setup.busy) { closeSetup(); return; }
     const rooms = FB_CFG ? setupRooms() : [];
     const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
@@ -2561,33 +2582,33 @@
     $('suTitle').innerHTML = '<span class="ttl"><span class="suit">♣</span> New Game</span>';
     const rooms = FB_CFG ? setupRooms() : [];
     const sel = rooms.find(x => x.id === setup.roomId);
+    // Each field: name on the left, the box on the right
+    const line = (label, forId, body) => `<div class="su-line"><label class="su-lbl" ${forId ? `for="${forId}"` : ''}>${label}</label><div class="su-field">${body}</div></div>`;
     let roomStep = '';
     if (FB_CFG) {
       if (setup.newRoom) {
-        roomStep = `<div class="su-step"><label class="su-lbl" for="suRoomName">Room name</label>
-          <input type="text" id="suRoomName" maxlength="40" value="${esc(setup.roomName)}" placeholder="e.g. Diwali at Ravi's, Saturday night" autocomplete="off">
-          <p class="su-note">Name it after the occasion. Everyone with the room's link sees the scores live.</p>
-          ${rooms.length ? '<button type="button" class="su-link" data-su="existing">Choose an existing room instead</button>' : ''}</div>`;
+        roomStep = line('Room', 'suRoomName', `<input type="text" id="suRoomName" maxlength="40" value="${esc(setup.roomName)}" placeholder="e.g. Diwali at Ravi's" autocomplete="off">
+          <p class="su-note">${rooms.length ? 'A new room – n' : 'Your first room – n'}ame it after the occasion. Everyone with its link sees the scores live.</p>
+          ${rooms.length ? '<button type="button" class="su-link" data-su="existing">Choose an existing room instead</button>' : ''}`);
       } else {
-        roomStep = `<div class="su-step"><label class="su-lbl" for="suRoomSearch">Room</label>
-          <div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
+        roomStep = line('Room', 'suRoomSearch', `<div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
             placeholder="Search rooms" value="${setup.listOpen ? esc(setup.search) : sel ? esc(`${sel.name}  ·  ${fmtDMY(sel.ms)}`) : ''}"><span class="cb-chev"></span></div>
           <ul class="combo-list" id="suRoomList" role="listbox" ${setup.listOpen ? '' : 'hidden'}></ul>
-          <button type="button" class="su-link" data-su="newroom">＋ Create a new room</button>
-          ${sel && !(online && online.roomId === sel.id) ? '<button type="button" class="su-link su-link2" data-su="continue">Continue this room\'s last game</button>' : ''}</div>`;
+          <button type="button" class="su-link plain" data-su="newroom">＋ Create a new room</button>
+          ${sel && !(online && online.roomId === sel.id) ? '<button type="button" class="su-link su-link2" data-su="continue">Continue this room\'s last game</button>' : ''}`);
       }
     }
-    const gameStep = `<div class="su-step"><label class="su-lbl" for="suGameName">Game name</label>
-        <input type="text" id="suGameName" maxlength="50" value="${esc(setup.gameName)}" autocomplete="off"></div>`;
+    const gameStep = line('Game', 'suGameName', `<input type="text" id="suGameName" maxlength="50" value="${esc(setup.gameName)}" autocomplete="off">`);
     const prev = setup.prevPlayers;
     const names = prev.map(p => esc(p.name)).join(', ');
-    const addArea = `<div class="su-add"><input type="text" id="suPlayerName" maxlength="30" placeholder="Player name" autocomplete="off" enterkeyhint="done">
+    const useOld = prev.length > 0 && setup.useExisting;
+    const radios = prev.length ? `<label class="su-radio"><input type="radio" name="suPlayers" value="existing" id="suExisting" ${useOld ? 'checked' : ''}>
+          <span><b>Existing players</b> <small>(${prev.length}) ${names}</small></span></label>
+        <label class="su-radio"><input type="radio" name="suPlayers" value="new" id="suNew" ${useOld ? '' : 'checked'}> <span><b>New players</b></span></label>` : '';
+    const addArea = `<div class="su-add"><input type="text" id="suPlayerName" maxlength="30" placeholder="${useOld ? 'Add another player' : 'Player name'}" autocomplete="off" enterkeyhint="done">
         <button type="button" class="btn-outline" data-su="addplayer">＋ Add</button></div>
       ${setup.added.length ? `<div class="su-chips">${setup.added.map((n, i) => `<span class="su-chip">${esc(n)}<button type="button" data-su="rmplayer" data-i="${i}" aria-label="Remove ${esc(n)}">✕</button></span>`).join('')}</div>` : ''}`;
-    const playersStep = `<div class="su-step su-players"><span class="su-lbl">Players</span>
-        ${prev.length ? `<label class="su-existing"><input type="checkbox" id="suUseExisting" ${setup.useExisting ? 'checked' : ''}>
-          <span><b>Existing players</b> <small>(${prev.length})</small><br><small>${names}</small></span></label>` : ''}
-        ${!prev.length || !setup.useExisting ? addArea : ''}</div>`;
+    const playersStep = line('Players', '', radios + addArea);
     const keepFocus = document.activeElement && document.activeElement.id;
     const caret = keepFocus && document.activeElement.selectionStart;
     $('suBody').innerHTML = roomStep + gameStep + playersStep;
@@ -2658,7 +2679,7 @@
   async function setupStart() {
     const rs = readSetupSettings();
     if (rs.err) {
-      setMsg('suMsg', rs.err + ' (Game Settings)', 'err');
+      setMsg('suMsg', rs.err + ' (Game Rules)', 'err');
       $('settingsBox').open = true;
       try { $(rs.field).focus(); } catch (e) { /* ignore */ }
       return;
@@ -2770,7 +2791,7 @@
     if (e.target.id === 'suGameName') { setup.gameName = e.target.value; setup.gameNameEdited = true; }
   });
   $('setupCard').addEventListener('change', e => {
-    if (e.target.id === 'suUseExisting' && setup) { setup.useExisting = e.target.checked; renderSetup(); }
+    if (e.target.name === 'suPlayers' && setup) { setup.useExisting = e.target.value === 'existing'; renderSetup(); }
   });
   $('setupCard').addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.target.id === 'suPlayerName') { e.preventDefault(); addSetupPlayer(); }
@@ -2796,17 +2817,18 @@
     const rooms = roomCount();
     document.querySelector('.archive-card').classList.toggle('empty', !state.archive.length);
     // Bottom buttons
-    $('btnShare').hidden = !state.rounds.length;
+    $('btnShare').hidden = true;   // sharing the picture is under the Share button next to the scoreboard
     $('btnExportData').hidden = FB_CFG ? !rooms : fresh;
     $('btnImportData').hidden = fresh;
     $('backupLbl').hidden = $('btnExportData').hidden && $('btnImportData').hidden;
     document.body.classList.toggle('locked', isEnded());
+    if (isEnded() && rulesEditing) closeRulesEdit();
     renderAccount();
     renderSbMeta();
   }
 
-  // Room and game name under the Scoreboard title, with players, sync status and the share links
-  let sbLinksOpen = false;
+  // Room and game name under the Scoreboard title, with players, sync status, Game details and Share
+  let sbLinksOpen = false, detailsOpen = false, rulesEditing = false;
   function renderSbMeta() {
     const el = $('sbMeta');
     if (!el) return;
@@ -2821,21 +2843,27 @@
     if (isEnded()) chips.push('<span class="ended">Ended</span>');
     if (online) {
       const st = navigator.onLine === false ? 'offline' : syncState;
-      chips.push(`<span class="sync ${st}">${{ ok: '● Live', saving: 'Saving…', offline: 'Offline – will sync', err: 'Not saved' }[st] || '● Live'}</span>`);
-      chips.push(`<button type="button" class="sb-share-btn" data-sbshare aria-expanded="${sbLinksOpen}" aria-controls="sbLinks">${I_SHARE} Share link <svg class="sb-chev" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`);
+      if (!(isEnded() && st === 'ok')) chips.push(`<span class="sync ${st}">${{ ok: '● Live', saving: 'Saving…', offline: 'Offline – will sync', err: 'Not saved' }[st] || '● Live'}</span>`);
     }
-    html += `<div class="sb-chips">${chips.join('')}</div>`;
+    const chev = '<svg class="sb-chev" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const btns = `<span class="sb-btns"><button type="button" class="sb-btn ghost" data-sbdetails aria-expanded="${detailsOpen}" aria-controls="gameDetails">ⓘ Details ${chev}</button>`
+      + (online || state.rounds.length ? `<button type="button" class="sb-btn" data-sbshare aria-expanded="${sbLinksOpen}" aria-controls="sbLinks">${I_SHARE} Share ${chev}</button>` : '') + '</span>';
+    html += `<div class="sb-chips">${chips.join('')}${state.players.length || online ? btns : ''}</div>`;
     el.innerHTML = html;
-    if (!online) { sbLinksOpen = false; $('sbLinks').hidden = true; }
+    if (!online && !state.rounds.length && sbLinksOpen) { sbLinksOpen = false; $('sbLinks').hidden = true; }
     const ln = $('lockNote');
     ln.hidden = !isEnded();
     ln.textContent = canReopen() ? 'This game has ended – tap ↺ Reopen game under the scoreboard to change it.' : 'This game has ended – scores can\'t be changed.';
+    if (detailsOpen && !rulesEditing) renderDetails();
   }
+
+  // Share: the scoreboard picture, plus the room's links when playing online
   async function fillSbLinks() {
     const box = $('sbLinks');
-    if (!online) return;
+    const img = `<button type="button" class="btn-outline sb-img" data-shareimg ${state.rounds.length ? '' : 'disabled'}>${I_SHARE} Share scoreboard picture${state.rounds.length ? '' : ' <small>(after Round 1)</small>'}</button>`;
+    if (!online) { box.innerHTML = img; return; }
     const o = online;
-    box.innerHTML = '<p class="lk-note">Loading links…</p>';
+    box.innerHTML = img + '<p class="lk-note">Loading links…</p>';
     let html = '';
     try {
       if (o.scope === 'game') {
@@ -2849,16 +2877,79 @@
         html += '<p class="lk-note">These links open every game in this room, including the next ones.</p>';
       }
     } catch (e) { html = '<p class="lk-note">The links need an internet connection the first time – try again once you\'re online.</p>'; }
-    box.innerHTML = html || '<p class="lk-note">No links available for your access.</p>';
+    box.innerHTML = img + (html || '<p class="lk-note">No links available for your access.</p>');
+  }
+
+  // Game details: everything chosen when the game was set up; editors can change the rules until the game ends
+  function renderDetails() {
+    const box = $('gameDetails');
+    if (rulesEditing) return;
+    const s = state.settings;
+    const row = (l, v) => `<span class="gl">${l}</span><span class="gv">${v}</span>`;
+    let html = '<div class="gd-grid">';
+    if (online) {
+      const room = online.room || {};
+      html += row('Room', esc(online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || 'Room')));
+      if (online.gameMeta) html += row('Game', esc(gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName)));
+      if (online.gameMeta) html += row('Created', `${fmtDMY(online.gameMeta.createdMs)}, ${fmtTime(online.gameMeta.createdMs)}`);
+    } else if (state.gameName) html += row('Game', esc(state.gameName));
+    if (state.timer.startedAt) html += row('Started', `${fmtDMY(state.timer.startedAt)}, ${fmtTime(state.timer.startedAt)}`);
+    html += row('Players', state.players.length ? esc(state.players.map(p => p.name).join(', ')) : 'None yet');
+    html += row('Total limit', s.limit) + row('Drop / full count', `${s.drop} / ${s.full}`);
+    html += row('Entry or buy-in', s.share ? `₹${s.share.toLocaleString('en-IN')} per player` : 'Not set');
+    html += row('Deals first', s.firstDealer === 'first' ? 'First player on the scoreboard' : 'Last player on the scoreboard');
+    html += row('Next dealer OUT', s.dealerOut === 'next' ? 'Next player still in deals' : 'Previous player deals again');
+    html += '</div>';
+    if (canEdit() && !isEnded()) html += '<button type="button" class="btn-outline sm" data-rulesedit>✎ Edit rules</button>';
+    box.innerHTML = html;
+  }
+  function openRulesEdit() {
+    if (!canEdit() || isEnded()) return;
+    detailsOpen = true; rulesEditing = true;
+    const box = $('gameDetails'), sb = $('settingsBox');
+    box.hidden = false;
+    box.innerHTML = '<div id="gdRules"></div><button type="button" class="btn-outline sm gd-done" data-rulesdone>Done</button>';
+    if (!settingsHome.parentNode) sb.parentNode.insertBefore(settingsHome, sb);
+    $('gdRules').appendChild(sb);
+    sb.open = true;
+    document.body.classList.add('rules-edit');
+    renderSettings();
+    renderSbMeta();
+  }
+  function closeRulesEdit() {
+    if (!rulesEditing) return;
+    rulesEditing = false;
+    const sb = $('settingsBox');
+    if (settingsHome.parentNode) settingsHome.parentNode.insertBefore(sb, settingsHome);
+    sb.open = false;
+    document.body.classList.remove('rules-edit');
+    setMsg('settingsMsg', '', '');
+    renderSettings();
+    renderDetails();
   }
   $('sbMeta').addEventListener('click', e => {
-    if (!e.target.closest('[data-sbshare]')) return;
-    sbLinksOpen = !sbLinksOpen;
-    $('sbLinks').hidden = !sbLinksOpen;
-    renderSbMeta();
-    if (sbLinksOpen) fillSbLinks();
+    if (e.target.closest('[data-sbshare]')) {
+      sbLinksOpen = !sbLinksOpen;
+      $('sbLinks').hidden = !sbLinksOpen;
+      renderSbMeta();
+      if (sbLinksOpen) fillSbLinks();
+    } else if (e.target.closest('[data-sbdetails]')) {
+      if (rulesEditing) closeRulesEdit();
+      detailsOpen = !detailsOpen;
+      $('gameDetails').hidden = !detailsOpen;
+      renderSbMeta();
+      if (detailsOpen) renderDetails();
+    }
   });
-  $('sbLinks').addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (b) shareLink(b); });
+  $('gameDetails').addEventListener('click', e => {
+    if (e.target.closest('[data-rulesedit]')) openRulesEdit();
+    else if (e.target.closest('[data-rulesdone]')) closeRulesEdit();
+  });
+  $('sbLinks').addEventListener('click', e => {
+    const b = e.target.closest('[data-lk]');
+    if (b) shareLink(b);
+    else if (e.target.closest('[data-shareimg]')) shareScoreboard();
+  });
 
   /* ---------- Google account (bottom of the page, and in the welcome) ---------- */
   function renderAccount() {
@@ -2872,10 +2963,10 @@
     row.innerHTML = g
       ? `<span class="acct-who"><span class="ava">${esc((cloudUser.displayName || cloudUser.email || '?').trim().charAt(0).toUpperCase())}</span>Signed in as <b>${esc(cloudUser.displayName || cloudUser.email || '')}</b></span>
          <button type="button" class="su-link" data-acct="signout">Sign out</button>`
-      : `<button type="button" class="btn-ghost g-btn" data-acct="signin">${G_ICON} Sign in with Google</button>
-         <span class="acct-why">Keeps your rooms on all your devices</span>`;
+      : `<button type="button" class="btn-ghost g-btn" data-acct="signin">${G_ICON} Sign in with Google</button>`;
   }
-  const G_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8.1z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>';
+  // Google "G" drawn in the page's own colours (one colour, follows the button text)
+  const G_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M21.6 10.2H12v3.9h5.5c-.5 2.5-2.7 4.3-5.5 4.3a6.4 6.4 0 1 1 4.1-11.3l2.9-2.8A10.4 10.4 0 1 0 22.4 12c0-.6-.1-1.2-.2-1.8z"/></svg>';
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-acct]');
     if (!b) return;
@@ -3683,7 +3774,7 @@
   $('btnAwakeYes').addEventListener('click', () => {
     setKeepAwake(true);
     $('startBox').hidden = true;
-    toast('Screen stays on · change it in Game Settings');
+    toast('Screen stays on · change it under the scoreboard');
   });
   $('btnAwakeNo').addEventListener('click', () => { $('startBox').hidden = true; });
   $('setAwake').addEventListener('change', e => setKeepAwake(e.target.checked));
@@ -4976,8 +5067,8 @@
     const box = $('shareBox');
     if (!box.hidden) { box.hidden = true; $('btnShares').setAttribute('aria-expanded', 'false'); return; }
     if (!state.settings.share) {
-      if (!canEdit()) { setMsg('boardMsg', 'The entry amount isn\'t set yet – ask someone with the edit link to set it in Game Settings.', 'err'); return; }
-      $('settingsBox').open = true;   // take them to the field
+      if (!canEdit()) { setMsg('boardMsg', 'The entry amount isn\'t set yet – ask someone with the edit link to set it in the Game Rules.', 'err'); return; }
+      openRulesEdit();   // take them to the field
       setMsg('shareMsg', 'Enter the entry or buy-in per player to calculate shares.', 'err');
       $('setShare').classList.add('need');
       $('shareGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
