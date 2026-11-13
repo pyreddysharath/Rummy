@@ -7,9 +7,12 @@ A mobile-friendly Rummy score keeper. It works fully offline on one phone, and �
 | File | What it is |
 |---|---|
 | `index.html` | The whole app (page, styles and code) |
-| `firebase-config.js` | Your Firebase project settings (step A6). Empty = offline only |
-| `firestore.rules` | Database security rules – paste into Firebase (step A5) |
-| `config/OurOtherSites.json` | The "Our Other Sites" list in the footer – edit freely |
+| `sw.js` | Lets the installed app open without a connection (must stay in the main folder) |
+| `CNAME` | The site's domain for GitHub Pages |
+| `ads.txt` | Google AdSense publisher record (must stay in the main folder) |
+| `js/firebase-config.js` | Your Firebase project settings (step A6). Empty = offline only |
+| `firebase/firestore.rules` | Database security rules – paste into Firebase (step A5) |
+| `assets/manifest.webmanifest`, `assets/icons/` | App name and icons for "Install App" and the browser tab |
 
 To change the app, edit `index.html` (on GitHub: open it → pencil icon → **Commit changes**). The live site updates within a couple of minutes.
 
@@ -41,11 +44,11 @@ You need a Google account. Everything below fits in Firebase's free **Spark** pl
    - Start in **production mode** → **Create**.
 
 5. **Add the security rules**
-   - Firestore → **Rules** tab → delete everything → paste the whole of `firestore.rules` → **Publish**.
+   - Firestore → **Rules** tab → delete everything → paste the whole of `firebase/firestore.rules` → **Publish**.
    - These rules keep rooms private: only people holding a room's link can read it, view links can't change anything, and resetting a link locks out the old one.
 
 6. **Connect the app**
-   - Copy each value from the `firebaseConfig` block of step 2 into the matching line of `firebase-config.js`, e.g. `apiKey: "AIza…",` → commit.
+   - Copy each value from the `firebaseConfig` block of step 2 into the matching line of `js/firebase-config.js`, e.g. `apiKey: "AIza…",` → commit.
    - Open the site, refresh, tap **＋ New Room**, give it a name and tap **Create Room** to test it.
 
 7. **Automatic clean-up (optional)** – lets the database delete expired games and rooms on its own:

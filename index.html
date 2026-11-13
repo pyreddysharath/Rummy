@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#0b4a30">
 <meta name="description" content="RummyTally – a free Rummy score keeper for friends. Add players, enter points each round, see who is out, share live rooms and split the pot.">
 <title>RummyTally – Rummy Scoreboard</title>
-<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<link rel="manifest" href="assets/manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="RummyTally">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -96,21 +96,36 @@
   .hero-foot { display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .hero-chips { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
   .hero-actions { display: flex; gap: 8px; justify-content: center; }
-  .hero-actions button { flex: 0 0 auto; min-height: 30px; height: 30px; padding: 0 14px; font-size: .84rem; }
-  .hero-actions button.on { background: #fff; color: var(--felt); }
-  /* Account button, top right of the header */
-  .hero > .acct-wrap { position: absolute; top: 8px; right: 8px; z-index: 3; }
-  .acct-chip { min-height: 0; height: 30px; padding: 0 10px 0 6px; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff;
-    border: 1.5px solid var(--gold); font-size: .76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
-  .acct-chip .gdot { width: 18px; height: 18px; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; }
-  .acct-chip .ava { width: 20px; height: 20px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; font-size: .72rem;
-    display: inline-flex; align-items: center; justify-content: center; }
-  .acct-pop { position: absolute; right: 0; top: 36px; width: 250px; background: #fff; color: var(--text); border-radius: 12px; padding: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.3); text-align: left; font-size: .82rem; }
-  .acct-pop[hidden] { display: none; }
-  .acct-pop p { margin: 0 0 10px; color: var(--muted); }
-  .acct-pop b { color: var(--text); }
-  .acct-pop button { width: 100%; }
+  .hero-actions { gap: 10px; }
+  .hb { flex: 0 0 auto; min-height: 0; height: 40px; padding: 0 16px 0 12px; border-radius: 12px; font-size: .9rem; font-weight: 800;
+    display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 3px 0 rgba(0,0,0,.25); transition: transform .1s, box-shadow .1s; }
+  .hb svg { width: 20px; height: 20px; }
+  .hb:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+  .hb[hidden] { display: none; }
+  .hb-room { background: #fff; color: var(--felt); border: 2px solid #fff; }
+  .hb-game { background: var(--gold); color: #2b1f00; border: 2px solid var(--gold); }
+  .hb.on { outline: 3px solid rgba(255,255,255,.55); outline-offset: 2px; }
+  .su-link2 { display: block; color: var(--muted); }
+  .su-add { display: flex; gap: 8px; margin-top: 6px; }
+  .su-add input { flex: 1 1 auto; min-width: 0; }
+  .su-add button { flex: 0 0 auto; }
+  .su-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .su-chip { display: inline-flex; align-items: center; gap: 4px; background: #e3f1e9; color: var(--felt); border-radius: 999px; padding: 3px 4px 3px 10px; font-size: .84rem; font-weight: 700; }
+  .su-chip button { min-height: 0; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: rgba(14,90,58,.12); color: var(--felt); font-size: .7rem; }
+  .su-existing { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border: 1px solid var(--felt); background: #f2f8f4; border-radius: 10px; cursor: pointer; font-size: .9rem; }
+  .su-existing input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
+  .su-existing small { color: var(--muted); }
+  #suSettingsSlot .settings-card { margin: 0; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
+  .setup-card .su-step > input { width: 100%; }
+  .acct-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; color: rgba(255,255,255,.85); font-size: .82rem; }
+  .acct-row[hidden], .foot-actions [hidden] { display: none !important; }
+  .acct-row .g-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #1d2330; border: 0; }
+  .acct-row .su-link { color: #f6e7b0; }
+  .acct-who { display: inline-flex; align-items: center; gap: 8px; }
+  .acct-who .ava { width: 22px; height: 22px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; font-size: .75rem; display: inline-flex; align-items: center; justify-content: center; }
+  .acct-why { opacity: .75; }
+  .welcome-card .wc-h { font-size: 1.05rem; }
+  .welcome-card .wc-back { margin-top: 8px; }
   /* New Room / New Game section */
   .setup-card h2 { margin-bottom: 10px; }
   .su-step { margin: 0 0 14px; }
@@ -141,11 +156,11 @@
   .su-actions button { flex: 1 1 0; }
   .su-link { background: none; border: 0; padding: 4px 0; min-height: 0; color: var(--felt); font-weight: 700; font-size: .82rem; text-decoration: underline; }
   body.setup-open .settings-card .settings-apply { display: none; }
-  body.setup-open .settings-card { border-top-color: var(--felt); }
   .welcome-card p { margin: 0 0 6px; }
-  .welcome-card p:last-child { margin: 0; color: var(--muted); font-size: .88rem; }
-  body.no-game:not(.setup-open) .settings-card, body.setup-room .settings-card, body.no-game .board-card,
-  body.no-game .archive-card.empty, body.setup-open #roomCard, body.setup-room #roomCard, body.no-game .hero-chips { display: none; }
+  .welcome-card p[hidden] { display: none; }
+  .welcome-card .wc-back { color: var(--muted); font-size: .86rem; margin-bottom: 0; }
+  body.no-game:not(.setup-open) .settings-card, body.no-game .board-card,
+  body.no-game .archive-card.empty, body.setup-open #roomCard, body.no-game .hero-chips { display: none; }
   .sb-meta { display: flex; flex-wrap: wrap; gap: 5px; margin: -4px 0 10px; }
   .sb-meta:empty { display: none; }
   .sb-meta span { font-size: .74rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #f3efe2; color: #5b4a14; }
@@ -162,7 +177,7 @@
     .chip { font-size: .7rem; padding: 2px 7px; }
     .wm-big { font-size: 4.2rem; }
     .wm-small { font-size: 1.3rem; }
-    .hero-actions button { padding: 0 12px; }
+    .hb { padding: 0 14px 0 10px; }
   }
   /* Compact header during a game: cards and divider hidden, smaller wordmark */
   .hero.compact { margin-bottom: 0; }
@@ -793,8 +808,7 @@
   @media (max-width: 480px) {
     .wrap { padding: 12px; }
     .board-card, .settings-card, .archive-card, .room-card, .setup-card, .welcome-card { margin-left: -12px; margin-right: -12px; }
-    .acct-chip .ac-txt { display: none; }   /* icon only on phones, clear of the title */
-    .acct-chip { padding: 0 5px; }
+
     header.top h1 { font-size: 1.3rem; }
     .brand svg.fan { width: 70px; height: 48px; }
     .foot-actions button { font-size: .85rem; }
@@ -919,7 +933,7 @@
   .undo-bar[hidden] { display: none; }
 
   /* ---------- Footer ---------- */
-  .app-footer { margin: 8px -16px 0; padding: 14px 16px 24px; border-top: 1px solid rgba(255,255,255,.18); color: #e9f2ec; }
+  .app-footer { margin: 8px -16px -16px; padding: 12px 16px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,.18); color: #e9f2ec; }
   .ft-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: nowrap; }
   .ft-copy { white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .ft-copy { font-size: .78rem; color: var(--gold); }
@@ -934,7 +948,7 @@
   .ft-sec[hidden] { display: none; }
   .ft-sec p { margin: 0 0 10px; }
   .ft-sec p:last-child { margin-bottom: 0; }
-  .ft-title { font-weight: 800; font-size: 1rem; margin-bottom: 8px; }
+  .ft-title { font-weight: 800; font-size: 1rem; margin-bottom: 8px; padding-left: 10px; border-left: 4px solid var(--gold); line-height: 1.2; }
   .ft-sec details { border-bottom: 1px solid var(--border); padding: 6px 0; }
   .ft-sec details:last-child { border-bottom: none; }
   .ft-sec details > summary { cursor: pointer; font-weight: 700; list-style: none; }
@@ -942,7 +956,7 @@
     border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .15s; opacity: .8; }
   .ft-sec details[open] > summary::before { transform: rotate(45deg); }
   .ft-sec details p { margin: 6px 0 4px; color: #3d4455; }
-  /* Real tabs: light tabs on a line; the open tab is filled and joins the line (as on our other sites) */
+  /* Real tabs: light tabs on a line; the open tab is filled and joins the line */
   .ft-subtabs { display: flex; gap: 4px; align-items: flex-end; border-bottom: 2px solid var(--felt); margin: 0 0 14px; }
   .ft-sub { flex: 1 1 0; min-height: 0; margin: 0; padding: 9px 6px 8px; border: 0; border-radius: 10px 10px 0 0;
     background: color-mix(in srgb, var(--felt) 12%, #fff); color: var(--felt); font-size: .84rem; font-weight: 700; white-space: nowrap; }
@@ -954,15 +968,7 @@
   .fb-form input:focus, .fb-form textarea:focus { outline: none; border-color: var(--felt); }
   .fb-form button { justify-self: start; }
   .fb-done { font-weight: 700; color: var(--primary-dark); }
-  .os-intro { color: var(--muted); }
-  .os-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
-  .os-link { font-weight: 800; color: var(--felt); text-decoration: none; }
-  .os-link:hover { text-decoration: underline; }
-  .os-info { width: 20px; height: 20px; min-height: 0; padding: 0; border-radius: 50%; font-family: Georgia, serif; font-style: italic; font-weight: 800;
-    font-size: .72rem; background: #fff; color: var(--gold-dark); border: 1px solid var(--gold); }
-  .os-info[aria-expanded="true"] { background: var(--gold); color: #2b1f00; }
-  .os-text { color: #3d4455; font-size: .84rem; margin: 0 0 8px 2px; }
-  @media (max-width: 480px) { .app-footer { margin-left: -12px; margin-right: -12px; } }
+  @media (max-width: 480px) { .app-footer { margin-left: -12px; margin-right: -12px; margin-bottom: -12px; } }
   @media (max-width: 400px) {
     .ft-copy { font-size: .72rem; }
     .ft-icons { gap: 4px; flex: 0 0 auto; }
@@ -971,7 +977,7 @@
   }
 </style>
 <!-- Firebase project settings for online rooms (optional – the app works offline without it) -->
-<script src="firebase-config.js"></script>
+<script src="js/firebase-config.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -983,10 +989,6 @@
       <span class="wm-big" id="wmBig">Rummy</span>
       <span class="wm-small" id="wmSmall">Tally</span>
     </h1>
-    <div class="acct-wrap" id="acctWrap" hidden>
-      <button type="button" class="acct-chip" id="acctChip" aria-haspopup="true" aria-expanded="false"></button>
-      <div class="acct-pop" id="acctPop" hidden></div>
-    </div>
     <div class="hero-suits" aria-hidden="true">♠ <i>♥</i> ♣ <i>♦</i></div>
     <div class="hero-foot">
       <div class="hero-chips">
@@ -994,8 +996,8 @@
         <span class="chip" id="hdrPlayers">0 players</span>
       </div>
       <div class="hero-actions">
-        <button class="btn-gold" id="btnNewRoom" type="button" aria-controls="setupCard" hidden>＋ New Room</button>
-        <button class="btn-gold" id="btnNewGame" type="button" aria-controls="setupCard">＋ New Game</button>
+        <button class="hb hb-room" id="btnNewRoom" type="button" aria-controls="setupCard" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V10l8-6 8 6v11h-5v-6H9v6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>New Room</button>
+        <button class="hb hb-game" id="btnNewGame" type="button" aria-controls="setupCard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game</button>
       </div>
     </div>
   </header>
@@ -1005,8 +1007,10 @@
 
   <!-- Before the first game -->
   <section class="card welcome-card" id="welcomeCard" hidden>
-    <p><b>Welcome!</b> Tap <b>＋ New Game</b> to set up the players and rules.</p>
-    <p class="wc-online" id="wcOnline" hidden>Playing with friends on several phones? Games live in a <b>room</b> – everyone with the room's link sees the scores live.</p>
+    <p class="wc-h"><b>Welcome to RummyTally!</b></p>
+    <p class="wc-online" id="wcOnline" hidden>Start with <b>New Room</b> – name it after the occasion, add the players and play. Everyone with the room's link sees the scores live on their own phone.</p>
+    <p class="wc-local" id="wcLocal">Tap <b>New Game</b> to add the players and set the rules.</p>
+    <p class="wc-back" id="wcSignIn" hidden>Played before? <button type="button" class="su-link" data-acct="signin">Sign in with Google</button> to bring back your rooms, or <button type="button" class="su-link" data-acct="import">import a backup</button>.</p>
   </section>
 
 
@@ -1165,14 +1169,15 @@
   <!-- Export / import -->
   <div class="foot-actions">
     <button class="btn-ghost fa-share" id="btnShare" type="button" title="Share the scoreboard as an image"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>Share Scoreboard</button>
-    <div class="fa-lbl">Backup</div>
+    <button class="btn-ghost fa-share" id="btnInstall" type="button" hidden title="Add RummyTally to your home screen or desktop"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v7M9 11l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Install App</button>
+    <div class="fa-lbl" id="backupLbl">Backup</div>
     <button class="btn-ghost" id="btnExportData" type="button" title="Full backup that can be imported later"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Export Data</button>
     <button class="btn-ghost" id="btnImportData" type="button" title="Restore from an exported data file"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Import Data</button>
     <input type="file" id="importFile" accept=".json,application/json" hidden>
-    <button class="btn-ghost fa-share" id="btnInstall" type="button" hidden title="Add RummyTally to your home screen or desktop"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v7M9 11l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Install App</button>
+    <div class="acct-row" id="acctRow" hidden></div>
   </div>
 
-  <!-- Footer: feedback, help, legal, our other sites -->
+  <!-- Footer: help, feedback, legal -->
   <footer class="app-footer" id="appFooter">
     <div class="ft-row">
       <div class="ft-copy">© <span id="ftYear"></span> <b>RummyTally.com</b></div>
@@ -1186,21 +1191,19 @@
         <button type="button" class="ft-btn" data-ft="legal" title="Legal: privacy policy and disclaimer" aria-label="Legal">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 7.83c.85-.3 1.53-.98 1.83-1.83H18l-3 7c0 1.66 1.57 3 3.5 3s3.5-1.34 3.5-3l-3-7h2V4h-6.17c-.41-1.17-1.52-2-2.83-2s-2.42.83-2.83 2H3v2h2l-3 7c0 1.66 1.57 3 3.5 3S9 14.66 9 13L6 6h3.17c.3.85.98 1.53 1.83 1.83V19H2v2h20v-2h-9V7.83zM20.37 13h-3.74l1.87-4.36L20.37 13zm-13 0H3.63L5.5 8.64 7.37 13zM12 6c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
         </button>
-        <button type="button" class="ft-btn" data-ft="othersites" title="Our Other Sites" aria-label="Our other sites">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-        </button>
       </div>
     </div>
 
     <div class="ft-sec" id="ft-help" hidden>
       <div class="ft-title">How it works</div>
-      <details open><summary>Scoring</summary><p>Add players with <b>＋ Add player</b> under the list, type each round's points and tap <b>Save</b>. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
-      <details><summary>Install as an app</summary><p>RummyTally can sit on your home screen and open full screen, like an app. <b>Android / Chrome / Edge:</b> tap <b>Install App</b> at the bottom of the page, or the install icon in the address bar. <b>iPhone / iPad (Safari):</b> tap Share → <b>Add to Home Screen</b>. Your games stay the same either way.</p></details>
-      <details><summary>Playing online with friends</summary><p>Open <b>Play</b>, give the room a name and tap <b>Create Room</b>. Share the <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch – on WhatsApp or anywhere. Scores update on every phone straight away, no refresh needed. Nobody needs to log in.</p></details>
-      <details><summary>Keeping your rooms</summary><p>As a guest, your rooms are listed on this device. Keep each room's <b>Owner link</b> (WhatsApp it to yourself) – it brings back full control after clearing the browser or on a new phone. Or sign in with Google once, and your rooms follow your account on every device.</p></details>
-      <details><summary>When rooms are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner chooses the period in <b>Room Settings</b>. Use <b>Export Data</b> to keep a copy for longer.</p></details>
-      <details><summary>Calculating shares</summary><p>Set the <b>Entry or buy-in per player</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard. Pick how to split the pot among the players still in – the <b>i</b> next to each option explains it – and tap <b>Share</b> to send the result.</p></details>
-      <details><summary>Backups</summary><p><b>Export Data</b> saves a file with the games on this device and any rooms you tick. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
+      <details open><summary>1. Start a room and a game</summary><p>Tap <b>New Room</b>, name it after the occasion, check the game name, players and Game Settings, then tap <b>Create &amp; Start</b>. For the next game in the same room, tap <b>New Game</b> and pick the room.</p></details>
+      <details><summary>2. Enter scores</summary><p>Type each round's points and tap <b>Save</b>. Add someone later with <b>＋ Add player</b> under the list. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
+      <details><summary>3. Play together on several phones</summary><p>Share the room's <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch. Scores update on every phone straight away. Nobody needs to log in.</p></details>
+      <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
+      <details><summary>5. Keep your rooms</summary><p>As a guest, your rooms are listed on this device; keep each room's <b>Owner link</b> to get full control back after clearing the browser or on a new phone. Or <b>Sign in with Google</b> (bottom of the page) and your rooms follow you to every device.</p></details>
+      <details><summary>6. When games are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner sets this in <b>Room Settings</b>.</p></details>
+      <details><summary>7. Backups</summary><p><b>Export Data</b> saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
+      <details><summary>8. Install as an app</summary><p>Tap <b>Install App</b> at the bottom of the page or the install icon in the browser's address bar. On iPhone or iPad (Safari): Share → <b>Add to Home Screen</b>.</p></details>
     </div>
 
     <div class="ft-sec" id="ft-feedback" hidden>
@@ -1234,16 +1237,11 @@
         <div class="ck-btns"><button type="button" class="btn-primary" data-consent="accepted">Accept</button><button type="button" class="btn-outline" data-consent="declined">Decline</button></div>
       </div>
       <div class="ft-subsec" id="ft-disclaimer" hidden>
-        <p>RummyTally is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some states (for example Telangana) – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
+        <p>RummyTally is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some places – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
         <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in Game Settings.</p>
       </div>
     </div>
 
-    <div class="ft-sec" id="ft-othersites" hidden>
-      <div class="ft-title">Our Other Sites</div>
-      <p class="os-intro" id="osIntro"></p>
-      <div id="osList"></div>
-    </div>
   </footer>
 
 </div>
@@ -1343,7 +1341,8 @@
         gamesSinceBackup: Number.isInteger(s.gamesSinceBackup) ? s.gamesSinceBackup : 0,
         archive: Array.isArray(s.archive) ? s.archive : [],
         timer: cleanTimer(s.timer),
-        nextId: s.nextId || (Math.max(0, ...s.players.map(p => p.id)) + 1)
+        nextId: s.nextId || (Math.max(0, ...s.players.map(p => p.id)) + 1),
+        gameName: typeof s.gameName === 'string' ? s.gameName.slice(0, 50) : ''
       };
     } catch (e) {
       return freshState();
@@ -2459,108 +2458,125 @@
   }
 
   /* ---------- New Room / New Game (one section under the header) ---------- */
-  // setup = { mode: 'room' | 'game', roomId, newRoom, listOpen, search, players: 'same' | 'fresh', prevPlayers, busy, justCreated }
+  // setup = { mode: 'room' | 'game', roomId, newRoom, roomName, listOpen, search, gameName, gameNameEdited,
+  //           useExisting, prevPlayers, added: [names], busy }
   let setup = null;
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function fmtDMY(ms) { const d = new Date(ms); return `${String(d.getDate()).padStart(2, '0')}-${MONTHS[d.getMonth()]}-${d.getFullYear()}`; }
   function nextIdFor(players) { return players.reduce((m, p) => Math.max(m, p.id), 0) + 1; }
+  const roomCount = () => Object.keys(myRooms.rooms).filter(id => !hiddenIds.has(id)).length;
   // Rooms this device can start games in (not view-only), most recently used first
   function setupRooms() {
     return Object.entries(myRooms.rooms).filter(([id, e]) => !hiddenIds.has(id) && e.role !== 'view')
       .map(([id, e]) => ({ id, name: e.name || 'Room', ms: e.createdMs || e.at || Date.now(), at: e.at || 0 }))
       .sort((a, b) => b.at - a.at);
   }
+  // "Room 3": the next free number
+  function defaultRoomName() {
+    const names = new Set(Object.values(myRooms.rooms).map(e => (e.name || '').toLowerCase()));
+    let n = roomCount() + 1;
+    while (names.has(`room ${n}`)) n++;
+    return `Room ${n}`;
+  }
+  // Games started today in a room (known for the open room; otherwise what this device remembers)
+  function gamesTodayIn(r) {
+    const today = new Date();
+    if (online && online.roomId === r && roomGames.length) return roomGames.filter(x => sameDay(new Date(x.createdMs || 0), today)).length;
+    const e = myRooms.rooms[r];
+    return e && e.day === fmtDMY(Date.now()) ? (e.dayGames || 0) : 0;
+  }
+  function defaultGameName(r) { return `${fmtDMY(Date.now())} · Game ${(r ? gamesTodayIn(r) : 0) + 1}`; }
 
+  const settingsHome = document.createComment('settings');   // where Game Settings lives when not setting up
   function openSetup(mode) {
     if (online && !canEdit()) return;
     if (setup && setup.mode === mode && !setup.busy) { closeSetup(); return; }
     const rooms = FB_CFG ? setupRooms() : [];
     const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
+    const newRoom = mode === 'room' || (!!FB_CFG && !rooms.length);
+    const roomId = newRoom ? null : (here || (rooms[0] || {}).id || null);
     setup = {
-      mode, roomId: here || (rooms[0] || {}).id || null,
-      newRoom: mode === 'room' || (!!FB_CFG && !rooms.length), listOpen: false, search: '',
-      players: state.players.length ? 'same' : 'fresh',
-      prevPlayers: state.players.map(p => ({ id: p.id, name: p.name })), busy: false, justCreated: null
+      mode, roomId, newRoom, roomName: defaultRoomName(), listOpen: false, search: '',
+      gameName: defaultGameName(roomId), gameNameEdited: false,
+      useExisting: state.players.length > 0, prevPlayers: state.players.map(p => ({ id: p.id, name: p.name })),
+      added: [], busy: false
     };
+    // Game Settings moves into this section while setting up
+    const sb = $('settingsBox');
+    if (!settingsHome.parentNode) sb.parentNode.insertBefore(settingsHome, sb);
     renderSettings();
-    renderSetup();
+    renderSetup(true);
+    $('suSettingsSlot').appendChild(sb);
+    sb.open = mode === 'room';   // a new room starts with the settings open; a new game keeps them folded
     const card = $('setupCard');
     try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
-    const f = $('suRoomName');
-    if (f) setTimeout(() => f.focus(), 250);
   }
 
   function closeSetup() {
     setup = null;
-    $('settingsBox').open = false;
+    const sb = $('settingsBox');
+    if (settingsHome.parentNode) settingsHome.parentNode.insertBefore(sb, settingsHome);
+    sb.open = false;
     renderSettings();   // drop changes that were not used
     setMsg('settingsMsg', '', '');
-    renderSetup();
+    renderSetup(true);
   }
 
-  function renderSetup() {
+  // full = rebuild the whole section (open / close); otherwise only the changing parts
+  function renderSetup(full) {
     const card = $('setupCard');
-    document.body.classList.toggle('setup-open', !!setup && setup.mode === 'game');
-    document.body.classList.toggle('setup-room', !!setup && setup.mode === 'room');
+    document.body.classList.toggle('setup-open', !!setup);
     $('btnNewGame').classList.toggle('on', !!setup && setup.mode === 'game');
     $('btnNewRoom').classList.toggle('on', !!setup && setup.mode === 'room');
     renderGameVisibility();
     if (!setup) { card.hidden = true; card.innerHTML = ''; return; }
     card.hidden = false;
-    const keepMsg = $('suMsg') ? { t: $('suMsg').textContent, c: $('suMsg').className } : null;
-    const busy = setup.busy;
-    const roomNameRow = (label) => `<div class="su-row"><input type="text" id="suRoomName" maxlength="40" placeholder="Room name, e.g. Friday Friends" autocomplete="off" enterkeyhint="done" aria-label="Room name">
-        <button type="button" class="btn-gold" data-su="createroom" ${busy ? 'disabled' : ''}>${busy ? 'Creating…' : label}</button></div>`;
-    let html;
-    if (setup.mode === 'room') {
-      html = `<h2><span class="ttl"><span class="suit">♥</span> New Room</span></h2>
-        <div class="su-step"><label class="su-lbl" for="suRoomName">Room name</label>${roomNameRow('Create Room')}
-        <p class="su-note">A room keeps your group's games together. Everyone with its link sees the scores live – the links appear once the game is set up.</p>
-        ${signInNote()}</div>
-        <div class="msg" id="suMsg"></div>
-        <div class="su-actions"><button type="button" class="btn-outline" data-su="cancel">Cancel</button></div>`;
-    } else {
-      const rooms = FB_CFG ? setupRooms() : [];
-      const sel = rooms.find(x => x.id === setup.roomId);
-      let roomStep = '';
-      if (FB_CFG) {
-        if (setup.newRoom) {
-          roomStep = `<div class="su-step"><span class="su-lbl">Room</span>
-            ${rooms.length ? '' : '<div class="su-warn">Create a room first – it keeps your games together and gives you links to share.</div>'}
-            ${roomNameRow('Create Room')}
-            ${signInNote()}
-            ${rooms.length ? '<button type="button" class="su-link" data-su="existing">Choose an existing room instead</button>' : ''}</div>`;
-        } else {
-          roomStep = `<div class="su-step"><label class="su-lbl" for="suRoomSearch">Room</label>
-            <div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
-              placeholder="Search rooms" value="${setup.listOpen ? esc(setup.search) : sel ? esc(`${sel.name}  ·  ${fmtDMY(sel.ms)}`) : ''}"><span class="cb-chev"></span></div>
-            <ul class="combo-list" id="suRoomList" role="listbox" ${setup.listOpen ? '' : 'hidden'}></ul>
-            ${sel && setup.justCreated === sel.id ? '<div class="su-picked">✓ Room created</div>' : ''}
-            ${sel && !(online && online.roomId === sel.id) && setup.justCreated !== sel.id ? `<button type="button" class="su-link" data-su="continue">Or continue this room's last game</button>` : ''}</div>`;
-        }
-      }
-      const prev = setup.prevPlayers;
-      const names = prev.slice(0, 4).map(p => esc(p.name)).join(', ') + (prev.length > 4 ? ` +${prev.length - 4}` : '');
-      const playersStep = `<div class="su-step su-players"><span class="su-lbl">Players</span>
-          <label><input type="radio" name="suPlayers" value="same" id="ngSame" ${setup.players === 'same' ? 'checked' : ''} ${prev.length ? '' : 'disabled'}>
-            <span><b>Same players</b>${prev.length ? ` <small>(${names})</small>` : ' <small>(none yet)</small>'}</span></label>
-          <label><input type="radio" name="suPlayers" value="fresh" id="ngFresh" ${setup.players === 'fresh' ? 'checked' : ''}> <span><b>New players</b> <small>– add them on the scoreboard</small></span></label></div>`;
-      const ready = !FB_CFG || (!setup.newRoom && sel);
-      html = `<h2><span class="ttl"><span class="suit">♣</span> New Game</span></h2>${roomStep}${playersStep}
-        <p class="su-note" style="margin:-6px 0 12px">Check the <b>Game Settings</b> below, then start.</p>
-        <div class="msg" id="suMsg"></div>
-        <div class="su-actions"><button type="button" class="btn-primary" id="suStart" data-su="start" ${ready && !busy ? '' : 'disabled'}>${busy ? 'Starting…' : '▶ Start Game'}</button>
-          <button type="button" class="btn-outline" data-su="cancel">Cancel</button></div>`;
+    if (full || !$('suBody')) {
+      card.innerHTML = `<h2 id="suTitle"></h2><div id="suBody"></div>
+        <div class="su-step" id="suSettingsSlot"></div>
+        <div class="msg" id="suMsg"></div><div class="su-actions" id="suFoot"></div>`;
     }
-    card.innerHTML = html;
-    if (keepMsg && keepMsg.t) { $('suMsg').textContent = keepMsg.t; $('suMsg').className = keepMsg.c; }
+    const busy = setup.busy;
+    $('suTitle').innerHTML = setup.mode === 'room'
+      ? '<span class="ttl"><span class="suit">♥</span> New Room</span>'
+      : '<span class="ttl"><span class="suit">♣</span> New Game</span>';
+    const rooms = FB_CFG ? setupRooms() : [];
+    const sel = rooms.find(x => x.id === setup.roomId);
+    let roomStep = '';
+    if (FB_CFG) {
+      if (setup.newRoom) {
+        roomStep = `<div class="su-step"><label class="su-lbl" for="suRoomName">Room name</label>
+          <input type="text" id="suRoomName" maxlength="40" value="${esc(setup.roomName)}" placeholder="e.g. Diwali at Ravi's, Saturday night" autocomplete="off">
+          <p class="su-note">Name it after the occasion. Everyone with the room's link sees the scores live.</p>
+          ${rooms.length ? '<button type="button" class="su-link" data-su="existing">Choose an existing room instead</button>' : ''}</div>`;
+      } else {
+        roomStep = `<div class="su-step"><label class="su-lbl" for="suRoomSearch">Room</label>
+          <div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
+            placeholder="Search rooms" value="${setup.listOpen ? esc(setup.search) : sel ? esc(`${sel.name}  ·  ${fmtDMY(sel.ms)}`) : ''}"><span class="cb-chev"></span></div>
+          <ul class="combo-list" id="suRoomList" role="listbox" ${setup.listOpen ? '' : 'hidden'}></ul>
+          <button type="button" class="su-link" data-su="newroom">＋ Create a new room</button>
+          ${sel && !(online && online.roomId === sel.id) ? '<button type="button" class="su-link su-link2" data-su="continue">Continue this room\'s last game</button>' : ''}</div>`;
+      }
+    }
+    const gameStep = `<div class="su-step"><label class="su-lbl" for="suGameName">Game name</label>
+        <input type="text" id="suGameName" maxlength="50" value="${esc(setup.gameName)}" autocomplete="off"></div>`;
+    const prev = setup.prevPlayers;
+    const names = prev.map(p => esc(p.name)).join(', ');
+    const addArea = `<div class="su-add"><input type="text" id="suPlayerName" maxlength="30" placeholder="Player name" autocomplete="off" enterkeyhint="done">
+        <button type="button" class="btn-outline" data-su="addplayer">＋ Add</button></div>
+      ${setup.added.length ? `<div class="su-chips">${setup.added.map((n, i) => `<span class="su-chip">${esc(n)}<button type="button" data-su="rmplayer" data-i="${i}" aria-label="Remove ${esc(n)}">✕</button></span>`).join('')}</div>` : ''}`;
+    const playersStep = `<div class="su-step su-players"><span class="su-lbl">Players</span>
+        ${prev.length ? `<label class="su-existing"><input type="checkbox" id="suUseExisting" ${setup.useExisting ? 'checked' : ''}>
+          <span><b>Existing players</b> <small>(${prev.length})</small><br><small>${names}</small></span></label>` : ''}
+        ${!prev.length || !setup.useExisting ? addArea : ''}</div>`;
+    const keepFocus = document.activeElement && document.activeElement.id;
+    const caret = keepFocus && document.activeElement.selectionStart;
+    $('suBody').innerHTML = roomStep + gameStep + playersStep;
     renderRoomList();
-  }
-
-  // Guests: a reminder that signing in keeps rooms on every device
-  function signInNote() {
-    if (!FB_CFG || (typeof isGoogle === 'function' && isGoogle())) return '';
-    return '<p class="su-note">Rooms are saved on this phone. <button type="button" class="su-link" data-su="signin">Sign in with Google</button> to keep them on all your devices.</p>';
+    if (keepFocus && $(keepFocus) && keepFocus !== 'suRoomSearch') { const f = $(keepFocus); f.focus(); try { f.setSelectionRange(caret, caret); } catch (e) { /* ignore */ } }
+    const ready = !FB_CFG || setup.newRoom || !!sel;
+    $('suFoot').innerHTML = `<button type="button" class="btn-primary" id="suStart" data-su="start" ${ready && !busy ? '' : 'disabled'}>${busy ? 'Starting…' : setup.newRoom && FB_CFG ? '▶ Create &amp; Start' : '▶ Start Game'}</button>
+      <button type="button" class="btn-outline" data-su="cancel">Cancel</button>`;
   }
 
   function renderRoomList() {
@@ -2570,11 +2586,10 @@
     const rooms = setupRooms().filter(x => !q || x.name.toLowerCase().includes(q) || fmtDMY(x.ms).toLowerCase().includes(q));
     ul.innerHTML = rooms.map(x => `<li role="option" data-su="pickroom" data-id="${x.id}" class="${x.id === setup.roomId ? 'sel' : ''}" aria-selected="${x.id === setup.roomId}">
         <span>${esc(x.name)}</span><span class="cd">${fmtDMY(x.ms)}</span></li>`).join('')
-      + (rooms.length ? '' : '<li class="none">No room matches</li>')
-      + '<li class="new" data-su="newroom">＋ Create a new room</li>';
+      + (rooms.length ? '' : '<li class="none">No room matches</li>');
   }
 
-  // Wait until the room's current game has loaded after entering a room
+  // Wait until the room's current game (and its list of games) has loaded after entering a room
   function waitForGame(ms) {
     return new Promise((res, rej) => {
       const t0 = Date.now();
@@ -2586,25 +2601,17 @@
     });
   }
 
-  async function setupCreateRoom() {
-    const name = String(($('suRoomName') || {}).value || '').trim().replace(/\s+/g, ' ').slice(0, 40);
-    if (!name) { setMsg('suMsg', 'Please give the room a name, e.g. "Friday Friends".', 'err'); $('suRoomName').focus(); return; }
-    setup.busy = true;
+  function addSetupPlayer() {
+    const f = $('suPlayerName');
+    const name = String(f.value || '').trim().replace(/\s+/g, ' ').slice(0, 30);
+    if (!name) { f.focus(); return; }
+    const taken = setup.added.concat(setup.useExisting ? setup.prevPlayers.map(p => p.name) : []).map(n => n.toLowerCase());
+    if (taken.includes(name.toLowerCase())) { setMsg('suMsg', `"${name}" is already in the list.`, 'err'); f.select(); return; }
+    setMsg('suMsg', '', '');
+    setup.added.push(name);
+    f.value = '';
     renderSetup();
-    try {
-      const r = await createRoomDocs(name);
-      if (!setup) return;
-      Object.assign(setup, { mode: 'game', roomId: r, newRoom: false, listOpen: false, busy: false, justCreated: r });
-      renderSettings();
-      renderSetup();
-      toast(`Room "${name}" created – now set up the game`);
-    } catch (e) {
-      console.error(e);
-      if (!setup) return;
-      setup.busy = false;
-      renderSetup();
-      setMsg('suMsg', 'The room couldn\'t be created. ' + cloudSetupHint(e), 'err');
-    }
+    $('suPlayerName').focus();
   }
 
   function readSetupSettings() {
@@ -2619,59 +2626,86 @@
       firstDealer: pick('firstDealer') || state.settings.firstDealer, dealerOut: pick('dealerOut') || state.settings.dealerOut } };
   }
 
+  // Remember how many games this device started in a room today (for the next default game name)
+  function noteGameStarted(r) {
+    const e = myRooms.rooms[r];
+    if (!e) return;
+    const today = fmtDMY(Date.now());
+    e.dayGames = e.day === today ? (e.dayGames || 0) + 1 : 1;
+    e.day = today;
+    saveRooms();
+  }
+
   async function setupStart() {
     const rs = readSetupSettings();
     if (rs.err) {
-      setMsg('suMsg', rs.err + ' (Game Settings, below)', 'err');
+      setMsg('suMsg', rs.err + ' (Game Settings)', 'err');
       $('settingsBox').open = true;
       try { $(rs.field).focus(); } catch (e) { /* ignore */ }
       return;
     }
-    const keep = setup.players === 'same' && setup.prevPlayers.length > 0;
-    const players = keep ? setup.prevPlayers.map(p => ({ ...p })) : [];
+    if ($('suPlayerName') && $('suPlayerName').value.trim()) addSetupPlayer();   // a typed name not yet added
+    const keep = setup.useExisting && setup.prevPlayers.length > 0;
+    let players = keep ? setup.prevPlayers.map(p => ({ ...p })) : [];
+    let id = nextIdFor(players);
+    setup.added.forEach(n => { players.push({ id: id++, name: n }); });
+    const typedName = String(($('suGameName') || {}).value || '').trim().slice(0, 50);
+    const named = setup.gameNameEdited && typedName ? typedName : '';
     if (!FB_CFG) {   // no online rooms in this copy: a game on this device
-      setup = null;
-      $('settingsBox').open = false;
-      renderSetup();
-      startNewGame(keep);
+      closeSetup();
+      startNewGame(true);
+      state.players = players;
+      state.nextId = nextIdFor(players);
+      state.dealerId = null;
+      state.gameName = typedName;
       state.settings = { ...state.settings, ...rs.settings };
       saveState();
       renderSettings();
       renderAll();
+      if (!players.length) openAddPlayer();
       return;
     }
-    const r = setup.roomId, created = setup.justCreated === r;
-    const e = myRooms.rooms[r];
-    if (!r || !e) return;
     setup.busy = true;
     renderSetup();
+    let r = setup.roomId;
+    const created = setup.newRoom;
     try {
+      if (created) {
+        const rn = String(($('suRoomName') || {}).value || '').trim().replace(/\s+/g, ' ').slice(0, 40) || defaultRoomName();
+        r = await createRoomDocs(rn);
+      }
+      const e = myRooms.rooms[r];
+      if (!r || !e) throw new Error('Choose a room first.');
       if (!online || online.roomId !== r || online.scope !== 'room') { await enterRoom(r, null, e.role, 'room'); await waitForGame(10000); }
       const empty = !state.rounds.length && !state.players.length && !state.timer.startedAt;
+      // Default name, now that the room's games are known (a blank game being filled in is already counted)
+      const gameName = named || (empty ? `${fmtDMY(Date.now())} · Game ${Math.max(1, gamesTodayIn(r))}` : defaultGameName(r));
       if (empty) {   // a new room's first game, still blank: fill it in
         state.players = players;
         state.nextId = nextIdFor(players);
         state.dealerId = null;
+        state.gameName = gameName;
         state.settings = { ...state.settings, ...rs.settings };
         saveState();
         renderSettings();
         renderAll();
-        toast(created ? 'Game 1 ready – share the room\'s Edit link' : 'New game ready');
-        if (!keep) setTimeout(openAddPlayer, 300);
+        if (!players.length) setTimeout(openAddPlayer, 300);
       } else {
-        await onlineNewGame(keep, { players, settings: rs.settings });
+        await onlineNewGame(true, { players, settings: rs.settings, gameName });
       }
-      setup = null;
-      $('settingsBox').open = false;
-      renderSetup();
-      if (created) { roomPanel = 'links'; renderRoomCard(); toast('Game ready – the room\'s share links are under the scoreboard'); }
+      noteGameStarted(r);
+      closeSetup();
+      if (created) { roomPanel = 'links'; renderRoomCard(); toast('Room ready – its share links are under the scoreboard'); }
+      else toast(`${gameName} started`);
       setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 400);
     } catch (err) {
       console.error(err);
       if (!setup) return;
       setup.busy = false;
+      if (created && r && myRooms.rooms[r]) { setup.newRoom = false; setup.roomId = r; }   // the room exists now: don't make it twice
       renderSetup();
-      setMsg('suMsg', 'The game couldn\'t be started. ' + (err && err.code ? cloudSetupHint(err) : (err && err.message) || ''), 'err');
+      setMsg('suMsg', (created && !myRooms.rooms[r] ? 'The room couldn\'t be created. ' : 'The game couldn\'t be started. ')
+        + (err && err.code ? cloudSetupHint(err) : (err && err.message) || ''), 'err');
     }
   }
 
@@ -2689,13 +2723,17 @@
     if (!t || !setup) return;
     const a = t.dataset.su;
     if (a === 'cancel') closeSetup();
-    else if (a === 'createroom') setupCreateRoom();
     else if (a === 'start') setupStart();
     else if (a === 'continue') setupContinue();
-    else if (a === 'signin') signInGoogle().then(() => { if (setup) renderSetup(); });
-    else if (a === 'existing') { setup.newRoom = false; renderSetup(); }
-    else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) f.focus(); }, 50); }
-    else if (a === 'pickroom') { setup.roomId = t.dataset.id; setup.listOpen = false; setup.search = ''; renderSetup(); }
+    else if (a === 'addplayer') addSetupPlayer();
+    else if (a === 'rmplayer') { setup.added.splice(+t.dataset.i, 1); renderSetup(); }
+    else if (a === 'existing') { setup.newRoom = false; setup.roomId = (setupRooms()[0] || {}).id || null; if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId); renderSetup(); }
+    else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; if (!setup.gameNameEdited) setup.gameName = defaultGameName(null); renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) f.select(); }, 50); }
+    else if (a === 'pickroom') {
+      setup.roomId = t.dataset.id; setup.listOpen = false; setup.search = '';
+      if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId);
+      renderSetup();
+    }
   });
   $('setupCard').addEventListener('focusin', e => {
     if (e.target.id === 'suRoomSearch' && setup && !setup.listOpen) {
@@ -2707,13 +2745,16 @@
     }
   });
   $('setupCard').addEventListener('input', e => {
-    if (e.target.id === 'suRoomSearch' && setup) { setup.search = e.target.value; setup.listOpen = true; $('suRoomList').hidden = false; renderRoomList(); }
+    if (!setup) return;
+    if (e.target.id === 'suRoomSearch') { setup.search = e.target.value; setup.listOpen = true; $('suRoomList').hidden = false; renderRoomList(); }
+    if (e.target.id === 'suRoomName') setup.roomName = e.target.value;
+    if (e.target.id === 'suGameName') { setup.gameName = e.target.value; setup.gameNameEdited = true; }
   });
   $('setupCard').addEventListener('change', e => {
-    if (e.target.name === 'suPlayers' && setup) setup.players = e.target.value;
+    if (e.target.id === 'suUseExisting' && setup) { setup.useExisting = e.target.checked; renderSetup(); }
   });
   $('setupCard').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.id === 'suRoomName') { e.preventDefault(); setupCreateRoom(); }
+    if (e.key === 'Enter' && e.target.id === 'suPlayerName') { e.preventDefault(); addSetupPlayer(); }
     if (e.key === 'Escape' && setup && setup.listOpen) { setup.listOpen = false; renderSetup(); }
   });
   // Tapping outside the room list closes it
@@ -2721,19 +2762,33 @@
     if (setup && setup.listOpen && !e.target.closest('.combo') && !e.target.closest('#suRoomList')) { setup.listOpen = false; renderSetup(); }
   });
 
-  // Game Settings and the Scoreboard appear once there is a game; before that, a short welcome
+  // Who sees what: a brand-new visitor gets the welcome and the install button only
+  function isNewUser() {
+    return !online && !roomCount() && !state.players.length && !state.rounds.length && !state.archive.length
+      && !(typeof isGoogle === 'function' && isGoogle());
+  }
   function renderGameVisibility() {
     const hasGame = !!online || state.players.length > 0 || state.rounds.length > 0 || addOpen;
+    const fresh = isNewUser();
     document.body.classList.toggle('no-game', !hasGame);
-    $('welcomeCard').hidden = hasGame || !!setup;
+    $('welcomeCard').hidden = !fresh || !!setup;
     $('wcOnline').hidden = !FB_CFG;
+    $('wcLocal').hidden = !!FB_CFG;
+    // Top buttons: with online rooms, a game always belongs to a room – so no room yet means New Room only
+    const rooms = roomCount();
     $('btnNewRoom').hidden = !FB_CFG;
-    if (setup && setup.mode === 'game') $('settingsBox').open = true;
+    $('btnNewGame').hidden = !!FB_CFG && !rooms;
     document.querySelector('.archive-card').classList.toggle('empty', !state.archive.length);
+    // Bottom buttons
+    $('btnShare').hidden = !state.rounds.length;
+    $('btnExportData').hidden = FB_CFG ? !rooms : fresh;
+    $('btnImportData').hidden = fresh;
+    $('backupLbl').hidden = $('btnExportData').hidden && $('btnImportData').hidden;
+    renderAccount();
     renderSbMeta();
   }
 
-  // Room, game number, date and players under the Scoreboard title
+  // Room, game name and players under the Scoreboard title
   function renderSbMeta() {
     const el = $('sbMeta');
     if (!el) return;
@@ -2742,43 +2797,37 @@
       const room = online.room || {};
       const nm = online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || '');
       if (nm) bits.push(`<span>🏠 ${esc(nm)}</span>`);
-      if (online.gameMeta) bits.push(`<span>Game ${online.gameMeta.seq} · ${fmtDMY(online.gameMeta.createdMs)}</span>`);
-    }
+      if (online.gameMeta) bits.push(`<span>${esc(gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName))}</span>`);
+    } else if (state.gameName) bits.push(`<span>${esc(state.gameName)}</span>`);
     bits.push(`<span>${state.players.length} player${state.players.length === 1 ? '' : 's'}</span>`);
     if (online) bits.push(`<span class="live">● Live</span>`);
     el.innerHTML = bits.join('');
   }
 
-  /* ---------- Google account (top right) ---------- */
+  /* ---------- Google account (bottom of the page, and in the welcome) ---------- */
   function renderAccount() {
-    const wrap = $('acctWrap');
-    if (!wrap) return;
-    wrap.hidden = !FB_CFG;
+    const row = $('acctRow');
+    if (!row) return;
+    const fresh = isNewUser();
+    row.hidden = !FB_CFG || fresh;
+    $('wcSignIn').hidden = !FB_CFG;
     if (!FB_CFG) return;
     const g = typeof isGoogle === 'function' && isGoogle();
-    const nm = g ? (cloudUser.displayName || cloudUser.email || 'Account') : '';
-    $('acctChip').innerHTML = g
-      ? `<span class="ava">${esc(nm.trim().charAt(0).toUpperCase())}</span><span class="ac-txt">${esc(nm.split(/[\s@]/)[0])}</span>`
-      : `<span class="gdot"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8.1z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg></span><span class="ac-txt">Sign in</span>`;
-    $('acctChip').title = g ? `Signed in as ${nm}` : 'Sign in with Google to keep your rooms on all your devices';
-    if (!$('acctPop').hidden) $('acctPop').innerHTML = accountHtml();
+    row.innerHTML = g
+      ? `<span class="acct-who"><span class="ava">${esc((cloudUser.displayName || cloudUser.email || '?').trim().charAt(0).toUpperCase())}</span>Signed in as <b>${esc(cloudUser.displayName || cloudUser.email || '')}</b></span>
+         <button type="button" class="su-link" data-acct="signout">Sign out</button>`
+      : `<button type="button" class="btn-ghost g-btn" data-acct="signin">${G_ICON} Sign in with Google</button>
+         <span class="acct-why">Keeps your rooms on all your devices</span>`;
   }
-  $('acctChip').addEventListener('click', e => {
-    e.stopPropagation();
-    const pop = $('acctPop');
-    pop.hidden = !pop.hidden;
-    $('acctChip').setAttribute('aria-expanded', String(!pop.hidden));
-    if (!pop.hidden) pop.innerHTML = accountHtml();
-  });
-  $('acctPop').addEventListener('click', e => {
-    e.stopPropagation();
-    const b = e.target.closest('[data-room]');
+  const G_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8.1z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>';
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-acct]');
     if (!b) return;
-    $('acctPop').hidden = true;
-    if (b.dataset.room === 'signin') signInGoogle();
-    else if (b.dataset.room === 'signout') signOutGoogle();
+    e.preventDefault();
+    if (b.dataset.acct === 'signin') signInGoogle().then(() => renderAll());
+    else if (b.dataset.acct === 'signout') signOutGoogle().then(() => renderAll());
+    else if (b.dataset.acct === 'import') $('btnImportData').click();
   });
-  document.addEventListener('click', () => { if (!$('acctPop').hidden) { $('acctPop').hidden = true; $('acctChip').setAttribute('aria-expanded', 'false'); } });
 
   /* ---------- Game clock ---------- */
   function playedMs(t, now = Date.now()) {
@@ -3142,6 +3191,7 @@
       id: Date.now(),
       date: now.toISOString(),
       seq,
+      name: state.gameName || '',
       settings: { ...state.settings },
       players: state.players.map(p => ({ ...p })),
       rounds: JSON.parse(JSON.stringify(state.rounds)),
@@ -3157,6 +3207,7 @@
   }
 
   function gameLabel(g) {
+    if (g.name) return g.name;
     const d = new Date(g.date);
     const date = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
     return `${date} · Game ${g.seq}`;
@@ -3598,7 +3649,7 @@
      ===================================================================== */
   const FB_VERSION = '11.10.0';
   const FB_CFG = (window.RUMMY_FIREBASE_CONFIG && window.RUMMY_FIREBASE_CONFIG.apiKey) ? window.RUMMY_FIREBASE_CONFIG : null;
-  const GAME_FIELDS = ['settings', 'players', 'rounds', 'draft', 'declared', 'manualOut', 'manualOutAt', 'rejoinAt', 'rejoins', 'dealerId', 'timer', 'nextId'];
+  const GAME_FIELDS = ['settings', 'players', 'rounds', 'draft', 'declared', 'manualOut', 'manualOutAt', 'rejoinAt', 'rejoins', 'dealerId', 'timer', 'nextId', 'gameName'];
   const ROOMS_KEY = 'rummy-rooms-v1';
   const DAY = 86400000;
   const GUEST_DAYS = [7, 30, 90];
@@ -3711,11 +3762,13 @@
     GAME_FIELDS.forEach(f => { g[f] = clone(src[f]); });
     return g;
   }
+  function gameTitle(createdMs, seq, name) { return (typeof name === 'string' && name) || `${fmtDay(createdMs || Date.now())} · Game ${seq || 1}`; }
+
   function freshGameFrom(src) {
     return {
       settings: { ...src.settings }, players: src.players.map(p => ({ id: p.id, name: p.name })),
       rounds: [], draft: {}, declared: [], manualOut: [], manualOutAt: {}, rejoinAt: {}, rejoins: {},
-      dealerId: null, timer: freshTimer(), nextId: src.nextId || 1
+      dealerId: null, timer: freshTimer(), nextId: src.nextId || 1, gameName: ''
     };
   }
 
@@ -3886,7 +3939,7 @@
       maxDays: d.maxDays, onlyEnded: d.onlyEnded, customDays: !!d.customDays, status: d.status };
     if (online.scope === 'game') {
       const e = myRooms.games[online.roomId + '_' + online.gameId];
-      if (e) { e.name = `${fmtDay(online.gameMeta.createdMs)} · Game ${online.gameMeta.seq}`; saveRooms(); }
+      if (e) { e.name = gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName); saveRooms(); }
     }
     applyRemoteGame(d);
     renderRoomCard();
@@ -3899,6 +3952,7 @@
       case 'players': case 'rounds': case 'declared': case 'manualOut': return Array.isArray(v) ? v : [];
       case 'dealerId': return Number.isInteger(v) ? v : null;
       case 'nextId': return Number.isInteger(v) ? v : 1;
+      case 'gameName': return typeof v === 'string' ? v.slice(0, 50) : '';
       default: return v && typeof v === 'object' ? v : {};
     }
   }
@@ -4084,6 +4138,7 @@
     try {
       const fresh = freshGameFrom(state);
       if (opts && opts.settings) fresh.settings = { ...fresh.settings, ...opts.settings };
+      if (opts && opts.gameName) fresh.gameName = opts.gameName;
       if (opts && opts.players) { fresh.players = opts.players.map(p => ({ id: p.id, name: p.name })); fresh.nextId = nextIdFor(fresh.players); }
       if (!keepPlayers) { fresh.players = []; fresh.nextId = 1; }
       await fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded)));
@@ -4240,7 +4295,7 @@
     const gm = roomGames.find(x => x.id === g);
     if (!gm || (online.room && online.room.currentGameId === g)) return;
     const r = online.roomId;
-    withUndo(`${fmtDay(gm.createdMs || Date.now())} · Game ${gm.seq || 1}`, [g], async () => {
+    withUndo(gameTitle(gm.createdMs, gm.seq, gm.gameName), [g], async () => {
       try {
         await fb.deleteDoc(R.game(r, g));
         fb.deleteDoc(R.gameKeys(r, g)).catch(() => {});
@@ -4396,8 +4451,7 @@
   function renderRoomCard() {
     const card = $('roomCard');
     if (!card) return;
-    renderAccount();
-    renderSbMeta();
+    renderGameVisibility();
     if (!FB_CFG || !online) { card.hidden = true; return; }
     card.hidden = false;
     const keepMsg = $('roomMsg') ? { t: $('roomMsg').textContent, c: $('roomMsg').className } : null;
@@ -4436,7 +4490,7 @@
     const name = o.scope === 'game' ? ((myRooms.games[o.roomId + '_' + o.gameId] || {}).name || 'Shared game') : (room.name || 'Loading room…');
     const viewingOld = o.scope === 'room' && room.currentGameId && o.gameId && o.gameId !== room.currentGameId;
     const meta = o.gameMeta;
-    const gameName = meta ? `${fmtDay(meta.createdMs)} · Game ${meta.seq}` : '';
+    const gameName = meta ? gameTitle(meta.createdMs, meta.seq, state.gameName) : '';
     const e = myRooms.rooms[o.roomId] || {};
     const ownerReminder = o.scope === 'room' && o.role === 'owner' && !isGoogle() && !e.savedOwnerLink;
     const exp = o.scope === 'room' ? room.expireAt : (meta && meta.expireAt);
@@ -4493,7 +4547,7 @@
           <option value="room" ${!x.customDays ? 'selected' : ''}>Room setting</option>
           ${dayOptions().map(d => `<option value="${d}" ${x.customDays && x.keepDays === d ? 'selected' : ''}>${daysLabel(d)}</option>`).join('')}</select></label>` : '';
       return `<li class="gl-row ${here ? 'here' : ''}">
-        <div class="gl-top"><b>${fmtDay(x.createdMs || Date.now())} · Game ${x.seq || 1}</b> ${status}
+        <div class="gl-top"><b>${esc(gameTitle(x.createdMs, x.seq, x.gameName))}</b> ${status}
           ${winners.length ? `<span class="gl-win">🏆 ${esc(winners.join(', '))}</span>` : ''}</div>
         <div class="gl-meta">${(x.rounds || []).length} rounds · ${players.length} players${exp ? ` · deletes on ${fmtDay(exp)}` : ''}</div>
         <div class="gl-btns">
@@ -4691,7 +4745,7 @@
             const qs = await fb.getDocs(fb.query(R.games(r), fb.orderBy('createdMs', 'desc')));
             const e = myRooms.rooms[r];
             groups.push({ kind: 'room', id: r, label: `Room: ${e.name || 'Room'}`, room: e,
-              items: qs.docs.map(s => ({ id: s.id, data: s.data(), label: `${fmtDay(s.data().createdMs || Date.now())} · Game ${s.data().seq || 1}${s.data().status === 'ended' ? ' (ended)' : ''}` })) });
+              items: qs.docs.map(s => ({ id: s.id, data: s.data(), label: `${gameTitle(s.data().createdMs, s.data().seq, s.data().gameName)}${s.data().status === 'ended' ? ' (ended)' : ''}` })) });
           } catch (err) { /* no access any more */ }
         }
       } catch (err) { toast('Rooms couldn\'t be loaded – exporting this device only'); }
@@ -4732,7 +4786,7 @@
     const groups = [];
     if (obj.data) groups.push({ kind: 'local', label: 'This device', note: 'replaces the current game and previous games here', items: [] });
     rooms.forEach(r => groups.push({ kind: 'room', label: `Room: ${r.name || 'Room'}`, note: 'restored as a new room with new links', room: r,
-      items: r.games.map(g => ({ data: g, label: `${fmtDay(g.createdMs || Date.now())} · Game ${g.seq || 1}${g.status === 'ended' ? ' (ended)' : ''}` })) }));
+      items: r.games.map(g => ({ data: g, label: `${gameTitle(g.createdMs, g.seq, g.gameName)}${g.status === 'ended' ? ' (ended)' : ''}` })) }));
     openPicker('Import Data', 'Choose what to bring back from the file.', groups, 'Import', chosen => doImport(chosen, obj));
     return true;
   }
@@ -4974,17 +5028,9 @@
     document.querySelector('.game-clock').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  /* ---------- Footer: help, feedback, legal, our other sites ---------- */
-  // Feedback goes to the same Google Sheet as our other sites (the Website column says "RummyTally")
+  /* ---------- Footer: help, feedback, legal ---------- */
+  // Feedback goes to a shared Google Sheet (the Website column says "RummyTally")
   const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxPwZpVM9hxNnVcH_nPoFLH4pUhcsJhqQlo3IB9OwLLHgFqYvS_NLCN9aCxztz0fkK2/exec';
-  const OTHER_SITES_FALLBACK = {
-    content: "A few other things we've built – drop by if any of these sound useful.",
-    sites: [
-      { site: 'AyuBase6.com', url: 'https://ayubase6.com', information: 'A private, no-login health companion – exercise and yoga for your age group, Indian nutrition, everyday health checks, reminders and a vitals tracker.' },
-      { site: 'BharatGaruda.com', url: 'https://bharatgaruda.com', information: "India's government sites aggregator – official government links for every state and union territory of India, in one place." },
-      { site: 'IntiGuttu.com', url: 'https://intiguttu.com', information: 'A private, no-login home reference app – household DIY fixes, everyday tips, and recipes from every state of India and country in the world.' }
-    ]
-  };
   $('ftYear').textContent = new Date().getFullYear();
 
   function showFooter(id) {
@@ -5082,27 +5128,6 @@
       btn.textContent = 'Submit';
     }
   });
-
-  function renderOtherSites(data) {
-    const d = data && Array.isArray(data.sites) ? data : OTHER_SITES_FALLBACK;
-    $('osIntro').textContent = d.content || OTHER_SITES_FALLBACK.content;
-    $('osList').innerHTML = d.sites.map((x, i) => `
-      <div class="os-row">
-        <a class="os-link" href="${esc(x.url || '#')}" target="_blank" rel="noopener noreferrer">${esc(x.site || x.url)}</a>
-        <button type="button" class="os-info" data-os="${i}" aria-expanded="false" title="About ${esc(x.site || '')}" aria-label="About ${esc(x.site || '')}">i</button>
-      </div>
-      <div class="os-text" id="os-${i}" hidden>${esc(x.information || '')}</div>`).join('');
-  }
-  $('osList').addEventListener('click', e => {
-    const b = e.target.closest('[data-os]');
-    if (!b) return;
-    const p = $('os-' + b.dataset.os);
-    p.hidden = !p.hidden;
-    b.setAttribute('aria-expanded', String(!p.hidden));
-  });
-  // The list lives in config/OurOtherSites.json so it can be edited without touching this page
-  renderOtherSites(null);
-  try { if (window.fetch && location.protocol !== 'file:') fetch('config/OurOtherSites.json').then(r => (r.ok ? r.json() : null)).then(d => { if (d) renderOtherSites(d); }).catch(() => {}); } catch (e) { /* keep the built-in list */ }
 
   /* ---------- Init ---------- */
   $('setAwake').checked = keepAwake;

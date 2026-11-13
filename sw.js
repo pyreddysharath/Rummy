@@ -1,7 +1,7 @@
 // RummyTally service worker: lets the installed app open without a connection.
 // Always tries the network first, so updates show straight away; the saved copy is only used offline.
-const CACHE = 'rummytally-v1';
-const CORE = ['/', '/index.html', '/firebase-config.js', '/manifest.webmanifest', '/icons/favicon.svg', '/icons/icon-192.png', '/config/OurOtherSites.json'];
+const CACHE = 'rummytally-v2';
+const CORE = ['/', '/index.html', '/js/firebase-config.js', '/assets/manifest.webmanifest', '/assets/icons/favicon.svg', '/assets/icons/icon-192.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).catch(() => {}));
