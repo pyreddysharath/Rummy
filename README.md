@@ -46,7 +46,7 @@ You need a Google account. Everything below fits in Firebase's free **Spark** pl
 
 6. **Connect the app**
    - Copy each value from the `firebaseConfig` block of step 2 into the matching line of `firebase-config.js`, e.g. `apiKey: "AIza…",` → commit.
-   - Open the site, refresh, and a **♥ Play** card appears at the top. Create a room to test it.
+   - Open the site, refresh, tap **＋ New Room**, give it a name and tap **Create Room** to test it.
 
 7. **Automatic clean-up (optional)** – lets the database delete expired games and rooms on its own:
    - <https://console.cloud.google.com/firestore/databases> → your project → **(default)** → **Time-to-live (TTL)** → **Create policy**.
@@ -71,9 +71,9 @@ You need a Google account. Everything below fits in Firebase's free **Spark** pl
 
 ## How online rooms work
 
-- **Create Room** (in *Play*) makes a room with three links: **Edit** (share with players), **View** (share with watchers) and **Owner** (keep to yourself – it brings back full control on any device).
+- **＋ New Room** at the top makes a room, then sets up its first game; **＋ New Game** starts a game in a room you pick from a searchable list. Each room has three links: **Edit** (share with players), **View** (share with watchers) and **Owner** (keep to yourself – it brings back full control on any device).
 - A room holds all your games; room links open every game, including future ones. The owner can also make **Game links** that open one game only.
-- **Guests** (no login): rooms are listed on that device; save the Owner link to get them back after clearing the browser. **Sign in with Google** to keep your rooms on your account across devices.
+- **Guests** (no login): rooms are listed on that device; save the Owner link to get them back after clearing the browser. **Sign in** (top right) with Google to keep your rooms on your account across devices.
 - **Deletion**: games are deleted after a period without activity – 7/30/90 days for guests, up to 1 year when signed in – and a room once it has no games left. Owners can choose *Only delete games marked as ended*, set a period per game, and (signed in) *Keep 1 more year*. Every delete has a 5-second Undo.
 - **Export / Import Data** lets you tick exactly what to back up: this device's games and any of your rooms. Imported rooms come back with new links.
 - Scores sync instantly; with a poor signal, changes are kept on the phone and sent when the connection returns.

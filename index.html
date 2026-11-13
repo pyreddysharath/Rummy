@@ -95,7 +95,61 @@
   /* Bottom: info chips on one row, New Game centred on the row below */
   .hero-foot { display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .hero-chips { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
-  .hero-foot #btnNewGame { flex: 0 0 auto; min-height: 30px; height: 30px; padding: 0 14px; font-size: .84rem; }
+  .hero-actions { display: flex; gap: 8px; justify-content: center; }
+  .hero-actions button { flex: 0 0 auto; min-height: 30px; height: 30px; padding: 0 14px; font-size: .84rem; }
+  .hero-actions button.on { background: #fff; color: var(--felt); }
+  /* Account button, top right of the header */
+  .hero > .acct-wrap { position: absolute; top: 8px; right: 8px; z-index: 3; }
+  .acct-chip { min-height: 0; height: 30px; padding: 0 10px 0 6px; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff;
+    border: 1.5px solid var(--gold); font-size: .76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .acct-chip .gdot { width: 18px; height: 18px; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; }
+  .acct-chip .ava { width: 20px; height: 20px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; font-size: .72rem;
+    display: inline-flex; align-items: center; justify-content: center; }
+  .acct-pop { position: absolute; right: 0; top: 36px; width: 250px; background: #fff; color: var(--text); border-radius: 12px; padding: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3); text-align: left; font-size: .82rem; }
+  .acct-pop[hidden] { display: none; }
+  .acct-pop p { margin: 0 0 10px; color: var(--muted); }
+  .acct-pop b { color: var(--text); }
+  .acct-pop button { width: 100%; }
+  /* New Room / New Game section */
+  .setup-card h2 { margin-bottom: 10px; }
+  .su-step { margin: 0 0 14px; }
+  .su-lbl { display: block; font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  .su-row { display: flex; gap: 8px; }
+  .su-row input { flex: 1 1 auto; min-width: 0; }
+  .su-row button { flex: 0 0 auto; }
+  .su-note { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+  .su-warn { background: #fff7e0; border: 1px solid #f0d58a; border-radius: 10px; padding: 8px 10px; font-size: .86rem; margin: 0 0 10px; }
+  .combo { position: relative; }
+  .combo input { width: 100%; padding-right: 34px; }
+  .combo .cb-chev { position: absolute; right: 12px; top: 50%; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+    transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+  .combo-list { list-style: none; margin: 4px 0 0; padding: 4px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
+    max-height: 230px; overflow: auto; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+  .combo-list[hidden] { display: none; }
+  .combo-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: .9rem; }
+  .combo-list li:hover, .combo-list li.sel { background: #f2f8f4; }
+  .combo-list li .cd { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+  .combo-list li.new { color: var(--felt); font-weight: 800; border-top: 1px dashed var(--border); border-radius: 0 0 8px 8px; }
+  .combo-list li.none { color: var(--muted); cursor: default; }
+  .su-picked { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: .84rem; color: var(--felt); font-weight: 700; }
+  .su-players label { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; font-size: .9rem; cursor: pointer; }
+  .su-players label:has(input:checked) { border-color: var(--felt); background: #f2f8f4; }
+  .su-players input { width: 16px; height: 16px; margin: 0; accent-color: var(--felt); }
+  .su-players small { color: var(--muted); }
+  .su-actions { display: flex; gap: 8px; margin-top: 4px; }
+  .su-actions button { flex: 1 1 0; }
+  .su-link { background: none; border: 0; padding: 4px 0; min-height: 0; color: var(--felt); font-weight: 700; font-size: .82rem; text-decoration: underline; }
+  body.setup-open .settings-card .settings-apply { display: none; }
+  body.setup-open .settings-card { border-top-color: var(--felt); }
+  .welcome-card p { margin: 0 0 6px; }
+  .welcome-card p:last-child { margin: 0; color: var(--muted); font-size: .88rem; }
+  body.no-game:not(.setup-open) .settings-card, body.setup-room .settings-card, body.no-game .board-card,
+  body.no-game .archive-card.empty, body.setup-open #roomCard, body.setup-room #roomCard, body.no-game .hero-chips { display: none; }
+  .sb-meta { display: flex; flex-wrap: wrap; gap: 5px; margin: -4px 0 10px; }
+  .sb-meta:empty { display: none; }
+  .sb-meta span { font-size: .74rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #f3efe2; color: #5b4a14; }
+  .sb-meta span.live { background: #e3f1e9; color: var(--felt); }
   .chip {
     background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 999px;
     padding: 2px 10px; font-size: .78rem; font-variant-numeric: tabular-nums; white-space: nowrap;
@@ -108,7 +162,7 @@
     .chip { font-size: .7rem; padding: 2px 7px; }
     .wm-big { font-size: 4.2rem; }
     .wm-small { font-size: 1.3rem; }
-    .hero-foot #btnNewGame { padding: 0 12px; }
+    .hero-actions button { padding: 0 12px; }
   }
   /* Compact header during a game: cards and divider hidden, smaller wordmark */
   .hero.compact { margin-bottom: 0; }
@@ -217,7 +271,7 @@
     margin: 0 -16px; border-radius: 0; border-left: none; border-right: none;
   }
   @media (max-width: 600px) {
-    .board-card, .settings-card, .archive-card, .room-card { margin-left: -16px; margin-right: -16px; border-radius: 0; }
+    .board-card, .settings-card, .archive-card, .room-card, .setup-card, .welcome-card { margin-left: -16px; margin-right: -16px; border-radius: 0; }
   }
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
   table.board { border-collapse: separate; border-spacing: 0; width: auto; }
@@ -738,7 +792,9 @@
 
   @media (max-width: 480px) {
     .wrap { padding: 12px; }
-    .board-card, .settings-card, .archive-card, .room-card { margin-left: -12px; margin-right: -12px; }
+    .board-card, .settings-card, .archive-card, .room-card, .setup-card, .welcome-card { margin-left: -12px; margin-right: -12px; }
+    .acct-chip .ac-txt { display: none; }   /* icon only on phones, clear of the title */
+    .acct-chip { padding: 0 5px; }
     header.top h1 { font-size: 1.3rem; }
     .brand svg.fan { width: 70px; height: 48px; }
     .foot-actions button { font-size: .85rem; }
@@ -839,7 +895,7 @@
   .rs-danger { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: grid; gap: 4px; justify-items: start; }
   .del-room { color: var(--red); border-color: #f5b5b5; }
   /* View-only visitors: everything that changes the game is hidden */
-  body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
+  body.readonly #btnNewGame, body.readonly #btnNewRoom, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly .settings-apply { display: none !important; }
   body.readonly .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
 
@@ -853,18 +909,6 @@
   .pk-items { padding-left: 26px; }
   .pk-group + .pk-group { border-top: 1px dashed var(--border); margin-top: 4px; padding-top: 4px; }
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-  #btnNewGame { display: inline-flex; align-items: center; gap: 8px; }
-  #btnNewGame .chev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-top: -4px; transition: transform .15s; }
-  #btnNewGame[aria-expanded="true"] .chev { transform: rotate(-135deg); margin-top: 3px; }
-  .ng-box { width: 100%; max-width: 360px; padding: 10px; border-radius: 12px; background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.18); }
-  .ng-box[hidden] { display: none; }
-  .ng-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ng-opt { min-height: 0; padding: 9px 8px; font-size: .9rem; font-weight: 800; border-radius: 10px; }
-  .ng-opt.same { background: var(--gold); color: #2b1f00; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
-  .ng-opt.same:hover:not(:disabled) { background: #e2b33a; }
-  .ng-opt.fresh { background: #fff; color: var(--felt); }
-  .ng-opt.fresh:hover { background: #f2f8f4; }
-  .ng-note { margin: 8px 2px 0; text-align: left; font-size: .72rem; color: rgba(255,255,255,.75); }
 
   /* 5-second Undo bar */
   .undo-bar {
@@ -939,25 +983,32 @@
       <span class="wm-big" id="wmBig">Rummy</span>
       <span class="wm-small" id="wmSmall">Tally</span>
     </h1>
+    <div class="acct-wrap" id="acctWrap" hidden>
+      <button type="button" class="acct-chip" id="acctChip" aria-haspopup="true" aria-expanded="false"></button>
+      <div class="acct-pop" id="acctPop" hidden></div>
+    </div>
     <div class="hero-suits" aria-hidden="true">♠ <i>♥</i> ♣ <i>♦</i></div>
     <div class="hero-foot">
       <div class="hero-chips">
         <span class="chip" id="hdrRound">Round 1</span>
         <span class="chip" id="hdrPlayers">0 players</span>
       </div>
-      <button class="btn-gold" id="btnNewGame" type="button" aria-expanded="false" aria-controls="ngBox">New Game <span class="chev" aria-hidden="true"></span></button>
-      <div class="ng-box" id="ngBox" hidden>
-        <div class="ng-opts">
-          <button class="ng-opt same" id="ngSame" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="9" cy="8" r="3.5" fill="currentColor"/><path d="M2 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5z" fill="currentColor"/><circle cx="17" cy="9" r="2.8" fill="currentColor" opacity=".85"/><path d="M15.5 13.7c3.4-.4 6.5 1.9 6.5 5.3h-4.6c0-2-.7-3.8-1.9-5.3z" fill="currentColor" opacity=".85"/></svg> Same players</button>
-          <button class="ng-opt fresh" id="ngFresh" type="button">＋ New players</button>
-        </div>
-        <p class="ng-note" id="ngText"></p>
+      <div class="hero-actions">
+        <button class="btn-gold" id="btnNewRoom" type="button" aria-controls="setupCard" hidden>＋ New Room</button>
+        <button class="btn-gold" id="btnNewGame" type="button" aria-controls="setupCard">＋ New Game</button>
       </div>
     </div>
   </header>
 
-  <!-- Online rooms: create / open a room, share links (filled in by the script) -->
-  <section class="card room-card" id="roomCard" hidden></section>
+  <!-- New Room / New Game: filled in by the script when one of the top buttons is tapped -->
+  <section class="card setup-card" id="setupCard" hidden></section>
+
+  <!-- Before the first game -->
+  <section class="card welcome-card" id="welcomeCard" hidden>
+    <p><b>Welcome!</b> Tap <b>＋ New Game</b> to set up the players and rules.</p>
+    <p class="wc-online" id="wcOnline" hidden>Playing with friends on several phones? Games live in a <b>room</b> – everyone with the room's link sees the scores live.</p>
+  </section>
+
 
   <!-- Settings -->
   <details class="card settings-card" id="settingsBox">
@@ -1029,6 +1080,7 @@
         <button class="time-chip idle" id="timeChip" type="button" title="Game clock – tap to go to Play / Pause / End Game"><span class="tc-ico">⏱</span> <span id="timeChipText">00:00:00</span></button>
       </span>
     </h2>
+    <div class="sb-meta" id="sbMeta"></div>
     <div class="range-note info-note" id="legendNote" hidden>
       <div class="rules" id="rulesNote"></div>
       <div class="ns-sub">Scores (rounds and Total)</div>
@@ -1100,6 +1152,9 @@
 
 
   </section>
+
+  <!-- Online rooms: links, games and room settings for the room in use (filled in by the script) -->
+  <section class="card room-card" id="roomCard" hidden></section>
 
   <!-- Previous games (collapsed) -->
   <details class="card archive-card" id="archiveBox">
@@ -1911,6 +1966,7 @@
     renderArchive();
     renderBackupNote();
     if (typeof renderShares === 'function') renderShares();
+    renderGameVisibility();
   }
 
   /* ---------- Player actions ---------- */
@@ -2377,22 +2433,7 @@
 
   /* ---------- Game actions ---------- */
   // New Game asks first: keep the same players, or start with an empty list
-  function newGame() {
-    if (!canEdit()) return;
-    if (online && online.scope !== 'room') return;
-    const played = state.rounds.length || state.timer.startedAt;
-    const box = $('ngBox');
-    if (!box.hidden) { closeNewGame(); return; }
-    $('ngText').textContent = online
-      ? 'The current game stays in the room\'s game list. Settings are kept.'
-      : played ? 'The current game is saved under Previous Games. Settings are kept.' : 'Settings are kept.';
-    $('ngSame').disabled = state.players.length === 0;
-    box.hidden = false;
-    $('btnNewGame').setAttribute('aria-expanded', 'true');
-  }
-  function closeNewGame() { $('ngBox').hidden = true; $('btnNewGame').setAttribute('aria-expanded', 'false'); }
   function startNewGame(keepPlayers) {
-    closeNewGame();
     if (online) { onlineNewGame(keepPlayers); return; }
     clearUndo();
     if (!keepPlayers) { state.players = []; state.nextId = 1; arrangeMode = false; selectedIds = new Set(); }
@@ -2416,6 +2457,328 @@
     toast(saved ? `${saved} saved · New game started` : 'New game started – Round 1');
     if (!keepPlayers) openAddPlayer();   // straight to typing the first name
   }
+
+  /* ---------- New Room / New Game (one section under the header) ---------- */
+  // setup = { mode: 'room' | 'game', roomId, newRoom, listOpen, search, players: 'same' | 'fresh', prevPlayers, busy, justCreated }
+  let setup = null;
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function fmtDMY(ms) { const d = new Date(ms); return `${String(d.getDate()).padStart(2, '0')}-${MONTHS[d.getMonth()]}-${d.getFullYear()}`; }
+  function nextIdFor(players) { return players.reduce((m, p) => Math.max(m, p.id), 0) + 1; }
+  // Rooms this device can start games in (not view-only), most recently used first
+  function setupRooms() {
+    return Object.entries(myRooms.rooms).filter(([id, e]) => !hiddenIds.has(id) && e.role !== 'view')
+      .map(([id, e]) => ({ id, name: e.name || 'Room', ms: e.createdMs || e.at || Date.now(), at: e.at || 0 }))
+      .sort((a, b) => b.at - a.at);
+  }
+
+  function openSetup(mode) {
+    if (online && !canEdit()) return;
+    if (setup && setup.mode === mode && !setup.busy) { closeSetup(); return; }
+    const rooms = FB_CFG ? setupRooms() : [];
+    const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
+    setup = {
+      mode, roomId: here || (rooms[0] || {}).id || null,
+      newRoom: mode === 'room' || (!!FB_CFG && !rooms.length), listOpen: false, search: '',
+      players: state.players.length ? 'same' : 'fresh',
+      prevPlayers: state.players.map(p => ({ id: p.id, name: p.name })), busy: false, justCreated: null
+    };
+    renderSettings();
+    renderSetup();
+    const card = $('setupCard');
+    try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
+    const f = $('suRoomName');
+    if (f) setTimeout(() => f.focus(), 250);
+  }
+
+  function closeSetup() {
+    setup = null;
+    $('settingsBox').open = false;
+    renderSettings();   // drop changes that were not used
+    setMsg('settingsMsg', '', '');
+    renderSetup();
+  }
+
+  function renderSetup() {
+    const card = $('setupCard');
+    document.body.classList.toggle('setup-open', !!setup && setup.mode === 'game');
+    document.body.classList.toggle('setup-room', !!setup && setup.mode === 'room');
+    $('btnNewGame').classList.toggle('on', !!setup && setup.mode === 'game');
+    $('btnNewRoom').classList.toggle('on', !!setup && setup.mode === 'room');
+    renderGameVisibility();
+    if (!setup) { card.hidden = true; card.innerHTML = ''; return; }
+    card.hidden = false;
+    const keepMsg = $('suMsg') ? { t: $('suMsg').textContent, c: $('suMsg').className } : null;
+    const busy = setup.busy;
+    const roomNameRow = (label) => `<div class="su-row"><input type="text" id="suRoomName" maxlength="40" placeholder="Room name, e.g. Friday Friends" autocomplete="off" enterkeyhint="done" aria-label="Room name">
+        <button type="button" class="btn-gold" data-su="createroom" ${busy ? 'disabled' : ''}>${busy ? 'Creating…' : label}</button></div>`;
+    let html;
+    if (setup.mode === 'room') {
+      html = `<h2><span class="ttl"><span class="suit">♥</span> New Room</span></h2>
+        <div class="su-step"><label class="su-lbl" for="suRoomName">Room name</label>${roomNameRow('Create Room')}
+        <p class="su-note">A room keeps your group's games together. Everyone with its link sees the scores live – the links appear once the game is set up.</p>
+        ${signInNote()}</div>
+        <div class="msg" id="suMsg"></div>
+        <div class="su-actions"><button type="button" class="btn-outline" data-su="cancel">Cancel</button></div>`;
+    } else {
+      const rooms = FB_CFG ? setupRooms() : [];
+      const sel = rooms.find(x => x.id === setup.roomId);
+      let roomStep = '';
+      if (FB_CFG) {
+        if (setup.newRoom) {
+          roomStep = `<div class="su-step"><span class="su-lbl">Room</span>
+            ${rooms.length ? '' : '<div class="su-warn">Create a room first – it keeps your games together and gives you links to share.</div>'}
+            ${roomNameRow('Create Room')}
+            ${signInNote()}
+            ${rooms.length ? '<button type="button" class="su-link" data-su="existing">Choose an existing room instead</button>' : ''}</div>`;
+        } else {
+          roomStep = `<div class="su-step"><label class="su-lbl" for="suRoomSearch">Room</label>
+            <div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
+              placeholder="Search rooms" value="${setup.listOpen ? esc(setup.search) : sel ? esc(`${sel.name}  ·  ${fmtDMY(sel.ms)}`) : ''}"><span class="cb-chev"></span></div>
+            <ul class="combo-list" id="suRoomList" role="listbox" ${setup.listOpen ? '' : 'hidden'}></ul>
+            ${sel && setup.justCreated === sel.id ? '<div class="su-picked">✓ Room created</div>' : ''}
+            ${sel && !(online && online.roomId === sel.id) && setup.justCreated !== sel.id ? `<button type="button" class="su-link" data-su="continue">Or continue this room's last game</button>` : ''}</div>`;
+        }
+      }
+      const prev = setup.prevPlayers;
+      const names = prev.slice(0, 4).map(p => esc(p.name)).join(', ') + (prev.length > 4 ? ` +${prev.length - 4}` : '');
+      const playersStep = `<div class="su-step su-players"><span class="su-lbl">Players</span>
+          <label><input type="radio" name="suPlayers" value="same" id="ngSame" ${setup.players === 'same' ? 'checked' : ''} ${prev.length ? '' : 'disabled'}>
+            <span><b>Same players</b>${prev.length ? ` <small>(${names})</small>` : ' <small>(none yet)</small>'}</span></label>
+          <label><input type="radio" name="suPlayers" value="fresh" id="ngFresh" ${setup.players === 'fresh' ? 'checked' : ''}> <span><b>New players</b> <small>– add them on the scoreboard</small></span></label></div>`;
+      const ready = !FB_CFG || (!setup.newRoom && sel);
+      html = `<h2><span class="ttl"><span class="suit">♣</span> New Game</span></h2>${roomStep}${playersStep}
+        <p class="su-note" style="margin:-6px 0 12px">Check the <b>Game Settings</b> below, then start.</p>
+        <div class="msg" id="suMsg"></div>
+        <div class="su-actions"><button type="button" class="btn-primary" id="suStart" data-su="start" ${ready && !busy ? '' : 'disabled'}>${busy ? 'Starting…' : '▶ Start Game'}</button>
+          <button type="button" class="btn-outline" data-su="cancel">Cancel</button></div>`;
+    }
+    card.innerHTML = html;
+    if (keepMsg && keepMsg.t) { $('suMsg').textContent = keepMsg.t; $('suMsg').className = keepMsg.c; }
+    renderRoomList();
+  }
+
+  // Guests: a reminder that signing in keeps rooms on every device
+  function signInNote() {
+    if (!FB_CFG || (typeof isGoogle === 'function' && isGoogle())) return '';
+    return '<p class="su-note">Rooms are saved on this phone. <button type="button" class="su-link" data-su="signin">Sign in with Google</button> to keep them on all your devices.</p>';
+  }
+
+  function renderRoomList() {
+    const ul = $('suRoomList');
+    if (!ul || !setup) return;
+    const q = setup.search.trim().toLowerCase();
+    const rooms = setupRooms().filter(x => !q || x.name.toLowerCase().includes(q) || fmtDMY(x.ms).toLowerCase().includes(q));
+    ul.innerHTML = rooms.map(x => `<li role="option" data-su="pickroom" data-id="${x.id}" class="${x.id === setup.roomId ? 'sel' : ''}" aria-selected="${x.id === setup.roomId}">
+        <span>${esc(x.name)}</span><span class="cd">${fmtDMY(x.ms)}</span></li>`).join('')
+      + (rooms.length ? '' : '<li class="none">No room matches</li>')
+      + '<li class="new" data-su="newroom">＋ Create a new room</li>';
+  }
+
+  // Wait until the room's current game has loaded after entering a room
+  function waitForGame(ms) {
+    return new Promise((res, rej) => {
+      const t0 = Date.now();
+      (function check() {
+        if (online && online.gameMeta && online.room && online.gameId === online.room.currentGameId) return res();
+        if (Date.now() - t0 > ms) return rej(new Error('The room took too long to open – check the connection.'));
+        setTimeout(check, 120);
+      })();
+    });
+  }
+
+  async function setupCreateRoom() {
+    const name = String(($('suRoomName') || {}).value || '').trim().replace(/\s+/g, ' ').slice(0, 40);
+    if (!name) { setMsg('suMsg', 'Please give the room a name, e.g. "Friday Friends".', 'err'); $('suRoomName').focus(); return; }
+    setup.busy = true;
+    renderSetup();
+    try {
+      const r = await createRoomDocs(name);
+      if (!setup) return;
+      Object.assign(setup, { mode: 'game', roomId: r, newRoom: false, listOpen: false, busy: false, justCreated: r });
+      renderSettings();
+      renderSetup();
+      toast(`Room "${name}" created – now set up the game`);
+    } catch (e) {
+      console.error(e);
+      if (!setup) return;
+      setup.busy = false;
+      renderSetup();
+      setMsg('suMsg', 'The room couldn\'t be created. ' + cloudSetupHint(e), 'err');
+    }
+  }
+
+  function readSetupSettings() {
+    const v = readSettingsInputs();
+    const err = validateSettings(v);
+    if (err) return { err, field: 'setLimit' };
+    const raw = String($('setShare').value).trim();
+    let share = null;
+    if (raw !== '') { share = Number(raw); if (!Number.isInteger(share) || share < 1) return { err: 'Entry or buy-in must be a whole amount of ₹1 or more.', field: 'setShare' }; }
+    const pick = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value;
+    return { settings: { limit: parseInt(v.limit, 10), drop: parseInt(v.drop, 10), full: parseInt(v.full, 10), share,
+      firstDealer: pick('firstDealer') || state.settings.firstDealer, dealerOut: pick('dealerOut') || state.settings.dealerOut } };
+  }
+
+  async function setupStart() {
+    const rs = readSetupSettings();
+    if (rs.err) {
+      setMsg('suMsg', rs.err + ' (Game Settings, below)', 'err');
+      $('settingsBox').open = true;
+      try { $(rs.field).focus(); } catch (e) { /* ignore */ }
+      return;
+    }
+    const keep = setup.players === 'same' && setup.prevPlayers.length > 0;
+    const players = keep ? setup.prevPlayers.map(p => ({ ...p })) : [];
+    if (!FB_CFG) {   // no online rooms in this copy: a game on this device
+      setup = null;
+      $('settingsBox').open = false;
+      renderSetup();
+      startNewGame(keep);
+      state.settings = { ...state.settings, ...rs.settings };
+      saveState();
+      renderSettings();
+      renderAll();
+      return;
+    }
+    const r = setup.roomId, created = setup.justCreated === r;
+    const e = myRooms.rooms[r];
+    if (!r || !e) return;
+    setup.busy = true;
+    renderSetup();
+    try {
+      if (!online || online.roomId !== r || online.scope !== 'room') { await enterRoom(r, null, e.role, 'room'); await waitForGame(10000); }
+      const empty = !state.rounds.length && !state.players.length && !state.timer.startedAt;
+      if (empty) {   // a new room's first game, still blank: fill it in
+        state.players = players;
+        state.nextId = nextIdFor(players);
+        state.dealerId = null;
+        state.settings = { ...state.settings, ...rs.settings };
+        saveState();
+        renderSettings();
+        renderAll();
+        toast(created ? 'Game 1 ready – share the room\'s Edit link' : 'New game ready');
+        if (!keep) setTimeout(openAddPlayer, 300);
+      } else {
+        await onlineNewGame(keep, { players, settings: rs.settings });
+      }
+      setup = null;
+      $('settingsBox').open = false;
+      renderSetup();
+      if (created) { roomPanel = 'links'; renderRoomCard(); toast('Game ready – the room\'s share links are under the scoreboard'); }
+      setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 400);
+    } catch (err) {
+      console.error(err);
+      if (!setup) return;
+      setup.busy = false;
+      renderSetup();
+      setMsg('suMsg', 'The game couldn\'t be started. ' + (err && err.code ? cloudSetupHint(err) : (err && err.message) || ''), 'err');
+    }
+  }
+
+  async function setupContinue() {
+    const r = setup.roomId, e = myRooms.rooms[r];
+    if (!e) return;
+    setup.busy = true;
+    renderSetup();
+    try { await enterRoom(r, null, e.role, 'room'); closeSetup(); }
+    catch (err) { if (setup) { setup.busy = false; renderSetup(); setMsg('suMsg', 'The room couldn\'t be opened. ' + cloudSetupHint(err), 'err'); } }
+  }
+
+  $('setupCard').addEventListener('click', e => {
+    const t = e.target.closest('[data-su]');
+    if (!t || !setup) return;
+    const a = t.dataset.su;
+    if (a === 'cancel') closeSetup();
+    else if (a === 'createroom') setupCreateRoom();
+    else if (a === 'start') setupStart();
+    else if (a === 'continue') setupContinue();
+    else if (a === 'signin') signInGoogle().then(() => { if (setup) renderSetup(); });
+    else if (a === 'existing') { setup.newRoom = false; renderSetup(); }
+    else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) f.focus(); }, 50); }
+    else if (a === 'pickroom') { setup.roomId = t.dataset.id; setup.listOpen = false; setup.search = ''; renderSetup(); }
+  });
+  $('setupCard').addEventListener('focusin', e => {
+    if (e.target.id === 'suRoomSearch' && setup && !setup.listOpen) {
+      setup.listOpen = true; setup.search = '';
+      e.target.value = '';
+      e.target.setAttribute('aria-expanded', 'true');
+      $('suRoomList').hidden = false;
+      renderRoomList();
+    }
+  });
+  $('setupCard').addEventListener('input', e => {
+    if (e.target.id === 'suRoomSearch' && setup) { setup.search = e.target.value; setup.listOpen = true; $('suRoomList').hidden = false; renderRoomList(); }
+  });
+  $('setupCard').addEventListener('change', e => {
+    if (e.target.name === 'suPlayers' && setup) setup.players = e.target.value;
+  });
+  $('setupCard').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.id === 'suRoomName') { e.preventDefault(); setupCreateRoom(); }
+    if (e.key === 'Escape' && setup && setup.listOpen) { setup.listOpen = false; renderSetup(); }
+  });
+  // Tapping outside the room list closes it
+  document.addEventListener('click', e => {
+    if (setup && setup.listOpen && !e.target.closest('.combo') && !e.target.closest('#suRoomList')) { setup.listOpen = false; renderSetup(); }
+  });
+
+  // Game Settings and the Scoreboard appear once there is a game; before that, a short welcome
+  function renderGameVisibility() {
+    const hasGame = !!online || state.players.length > 0 || state.rounds.length > 0 || addOpen;
+    document.body.classList.toggle('no-game', !hasGame);
+    $('welcomeCard').hidden = hasGame || !!setup;
+    $('wcOnline').hidden = !FB_CFG;
+    $('btnNewRoom').hidden = !FB_CFG;
+    if (setup && setup.mode === 'game') $('settingsBox').open = true;
+    document.querySelector('.archive-card').classList.toggle('empty', !state.archive.length);
+    renderSbMeta();
+  }
+
+  // Room, game number, date and players under the Scoreboard title
+  function renderSbMeta() {
+    const el = $('sbMeta');
+    if (!el) return;
+    const bits = [];
+    if (online) {
+      const room = online.room || {};
+      const nm = online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || '');
+      if (nm) bits.push(`<span>🏠 ${esc(nm)}</span>`);
+      if (online.gameMeta) bits.push(`<span>Game ${online.gameMeta.seq} · ${fmtDMY(online.gameMeta.createdMs)}</span>`);
+    }
+    bits.push(`<span>${state.players.length} player${state.players.length === 1 ? '' : 's'}</span>`);
+    if (online) bits.push(`<span class="live">● Live</span>`);
+    el.innerHTML = bits.join('');
+  }
+
+  /* ---------- Google account (top right) ---------- */
+  function renderAccount() {
+    const wrap = $('acctWrap');
+    if (!wrap) return;
+    wrap.hidden = !FB_CFG;
+    if (!FB_CFG) return;
+    const g = typeof isGoogle === 'function' && isGoogle();
+    const nm = g ? (cloudUser.displayName || cloudUser.email || 'Account') : '';
+    $('acctChip').innerHTML = g
+      ? `<span class="ava">${esc(nm.trim().charAt(0).toUpperCase())}</span><span class="ac-txt">${esc(nm.split(/[\s@]/)[0])}</span>`
+      : `<span class="gdot"><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8.1z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg></span><span class="ac-txt">Sign in</span>`;
+    $('acctChip').title = g ? `Signed in as ${nm}` : 'Sign in with Google to keep your rooms on all your devices';
+    if (!$('acctPop').hidden) $('acctPop').innerHTML = accountHtml();
+  }
+  $('acctChip').addEventListener('click', e => {
+    e.stopPropagation();
+    const pop = $('acctPop');
+    pop.hidden = !pop.hidden;
+    $('acctChip').setAttribute('aria-expanded', String(!pop.hidden));
+    if (!pop.hidden) pop.innerHTML = accountHtml();
+  });
+  $('acctPop').addEventListener('click', e => {
+    e.stopPropagation();
+    const b = e.target.closest('[data-room]');
+    if (!b) return;
+    $('acctPop').hidden = true;
+    if (b.dataset.room === 'signin') signInGoogle();
+    else if (b.dataset.room === 'signout') signOutGoogle();
+  });
+  document.addEventListener('click', () => { if (!$('acctPop').hidden) { $('acctPop').hidden = true; $('acctChip').setAttribute('aria-expanded', 'false'); } });
 
   /* ---------- Game clock ---------- */
   function playedMs(t, now = Date.now()) {
@@ -2864,14 +3227,19 @@
     }).join('');
   }
 
+  // Removed straight away, with 5 seconds to undo (put back in the same place)
   function deleteArchivedGame(id) {
-    const g = state.archive.find(x => x.id === id);
-    if (!g) return;
-    if (!confirm(`Delete ${gameLabel(g)}? This cannot be undone.`)) return;
-    state.archive = state.archive.filter(x => x.id !== id);
+    const i = state.archive.findIndex(x => x.id === id);
+    if (i < 0) return;
+    const g = state.archive[i];
+    state.archive.splice(i, 1);
     saveState();
     renderArchive();
-    toast('Saved game deleted');
+    undoBar(gameLabel(g), () => {
+      if (!state.archive.some(x => x.id === g.id)) state.archive.splice(Math.min(i, state.archive.length), 0, g);
+      saveState();
+      renderArchive();
+    }, () => {});
   }
 
   /* ---------- Settings ---------- */
@@ -3173,15 +3541,15 @@
   $('btnDeclareOk').addEventListener('click', () => { if (canEdit()) confirmDeclare(); });
   $('banner').addEventListener('click', e => { if (e.target.id === 'btnUndoDeclare') undoDeclare(); });
 
-  $('btnNewGame').addEventListener('click', newGame);
-  $('ngSame').addEventListener('click', () => startNewGame(true));
-  $('ngFresh').addEventListener('click', () => startNewGame(false));
+  $('btnNewGame').addEventListener('click', () => openSetup('game'));
+  $('btnNewRoom').addEventListener('click', () => openSetup('room'));
 
   $('btnApplySettings').addEventListener('click', applySettings);
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
   // Dealer rules save straight away and can change at any point in the game
   document.querySelectorAll('input[name="firstDealer"], input[name="dealerOut"]').forEach(inp => {
     inp.addEventListener('change', () => {
+      if (setup) return;   // setting up a new game: used when the game starts
       if (!canEdit()) { renderSettings(); return; }
       state.settings = { ...state.settings, [inp.name]: inp.value };
       saveState();
@@ -3303,7 +3671,7 @@
       const lib = Object.assign({}, authM, fsM, { app, auth, db });
       await new Promise(res => { const off = authM.onAuthStateChanged(auth, u => { cloudUser = u; off(); res(); }); });
       if (!cloudUser) cloudUser = (await authM.signInAnonymously(auth)).user;
-      authM.onAuthStateChanged(auth, u => { if (u) { cloudUser = u; renderRoomCard(); } });
+      authM.onAuthStateChanged(auth, u => { if (u) { cloudUser = u; renderRoomCard(); renderAccount(); } });
       fb = lib;
       return fb;
     })();
@@ -3665,6 +4033,26 @@
   }
 
   /* ---------- Creating a room and new games ---------- */
+  // Creates the room, its keys and a blank Game 1; returns the room id (does not open it)
+  async function createRoomDocs(name, src) {
+    await cloudInit();
+    const r = randKey(10), g = randKey(8), now = Date.now();
+    const keys = { owner: randKey(24), edit: randKey(24), view: randKey(24) };
+    const days = defaultDays();
+    const game = src || Object.assign(freshGameFrom(state), { players: [], nextId: 1 });
+    await fb.setDoc(R.room(r), {
+      name, ownerUid: cloudUser.uid, createdAt: fb.serverTimestamp(), createdMs: now, updatedAt: fb.serverTimestamp(),
+      deleteDays: days, maxDays: maxDays(), onlyEnded: false, currentGameId: g,
+      expireAt: fb.Timestamp.fromMillis(now + days * DAY)
+    });
+    await fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner });
+    await fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view });
+    await fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(game), gameMeta(1, now, days, false)));
+    myRooms.rooms[r] = { name, role: 'owner', keys, savedOwnerLink: isGoogle(), at: now, createdMs: now };
+    saveRooms();
+    return r;
+  }
+
   async function createRoom(name, withCurrent) {
     if (roomBusy) return;
     name = String(name || '').trim().replace(/\s+/g, ' ').slice(0, 40);
@@ -3672,21 +4060,7 @@
     roomBusy = true;
     renderRoomCard();
     try {
-      await cloudInit();
-      const r = randKey(10), g = randKey(8), now = Date.now();
-      const keys = { owner: randKey(24), edit: randKey(24), view: randKey(24) };
-      const days = defaultDays();
-      const src = withCurrent ? state : freshGameFrom(state);
-      await fb.setDoc(R.room(r), {
-        name, ownerUid: cloudUser.uid, createdAt: fb.serverTimestamp(), createdMs: now, updatedAt: fb.serverTimestamp(),
-        deleteDays: days, maxDays: maxDays(), onlyEnded: false, currentGameId: g,
-        expireAt: fb.Timestamp.fromMillis(now + days * DAY)
-      });
-      await fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner });
-      await fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view });
-      await fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(src), gameMeta(1, now, days, false)));
-      myRooms.rooms[r] = { name, role: 'owner', keys, savedOwnerLink: isGoogle(), at: now };
-      saveRooms();
+      const r = await createRoomDocs(name, withCurrent ? state : freshGameFrom(state));
       roomBusy = false;
       await enterRoom(r, null, 'owner', 'room');
       roomPanel = 'links';
@@ -3700,7 +4074,8 @@
     }
   }
 
-  async function onlineNewGame(keepPlayers) {
+  // opts (from New Game): { players, settings } – the players and rules chosen there
+  async function onlineNewGame(keepPlayers, opts) {
     if (!online || online.scope !== 'room' || !canEdit()) return;
     flushPush();
     const g = randKey(8), now = Date.now();
@@ -3708,14 +4083,16 @@
     const room = online.room || {};
     try {
       const fresh = freshGameFrom(state);
+      if (opts && opts.settings) fresh.settings = { ...fresh.settings, ...opts.settings };
+      if (opts && opts.players) { fresh.players = opts.players.map(p => ({ id: p.id, name: p.name })); fresh.nextId = nextIdFor(fresh.players); }
       if (!keepPlayers) { fresh.players = []; fresh.nextId = 1; }
       await fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded)));
       online.follow = true;
       const want = Math.max(now + Math.min(room.deleteDays || 30, maxDaysOfRoom()) * DAY, room.expireAt || 0);
       await fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) });
       toast('New game started');
-      if (!keepPlayers) setTimeout(() => { if (online && online.gameId === g) startEditPlayers(); }, 700);
-    } catch (e) { onCloudError(e); }
+      if (!keepPlayers) setTimeout(() => { if (online && online.gameId === g) openAddPlayer(); }, 700);
+    } catch (e) { onCloudError(e); throw e; }
   }
 
   /* ---------- Keys for sharing ---------- */
@@ -3836,23 +4213,26 @@
 
   /* ---------- Deleting, with a 5-second Undo ---------- */
   let undoBox = null;
-  function withUndo(label, hideIds, doIt) {
-    hideIds.forEach(id => hiddenIds.add(id));
-    renderRoomCard();
+  // "<label> deleted · Undo 5s": onUndo puts it back, onFinish makes it final
+  function undoBar(label, onUndo, onFinish) {
     if (undoBox) undoBox.finish();
     const el = $('undoToast');
     let left = 5;
     const t = setInterval(() => { left -= 1; const s = $('undoSec'); if (s) s.textContent = left + 's'; if (left <= 0) box.finish(); }, 1000);
     const box = {
       done: false,
-      finish() { if (this.done) return; this.done = true; clearInterval(t); el.hidden = true; undoBox = null; doIt(); },
-      undo() { if (this.done) return; this.done = true; clearInterval(t); el.hidden = true; undoBox = null;
-        hideIds.forEach(id => hiddenIds.delete(id)); renderRoomCard(); toast('Restored'); }
+      finish() { if (this.done) return; this.done = true; clearInterval(t); el.hidden = true; undoBox = null; onFinish(); },
+      undo() { if (this.done) return; this.done = true; clearInterval(t); el.hidden = true; undoBox = null; onUndo(); toast('Restored'); }
     };
     el.innerHTML = `<span>${esc(label)} deleted</span><button type="button" class="hbtn undo" id="undoBtn">↶ Undo <span id="undoSec">5s</span></button>`;
     el.hidden = false;
     $('undoBtn').onclick = () => box.undo();
     undoBox = box;
+  }
+  function withUndo(label, hideIds, doIt) {
+    hideIds.forEach(id => hiddenIds.add(id));
+    renderRoomCard();
+    undoBar(label, () => { hideIds.forEach(id => hiddenIds.delete(id)); renderRoomCard(); }, doIt);
   }
 
   function deleteGame(g) {
@@ -3915,6 +4295,8 @@
           await reclaimAccess(true);
         } else throw e;
       }
+      myRooms.signedIn = true;
+      saveRooms();
       await loadAccountRooms();
       toast(`Signed in as ${cloudUser.displayName || cloudUser.email || 'Google user'}`);
       if (online) await enterRoom(online.roomId, online.scope === 'game' ? online.gameId : null, (online.scope === 'room' ? myRooms.rooms[online.roomId] : myRooms.games[online.roomId + '_' + online.gameId] || {}).role || online.role, online.scope);
@@ -3938,6 +4320,8 @@
       await fb.signOut(fb.auth);
       cloudUser = (await fb.signInAnonymously(fb.auth)).user;
       await reclaimAccess(false);
+      myRooms.signedIn = false;
+      saveRooms();
       toast('Signed out');
       renderRoomCard();
     } catch (e) { console.error(e); roomMsg('Sign-out didn\'t work. Please try again.', 'err'); }
@@ -3978,7 +4362,9 @@
   /* ---------- Room card ---------- */
   function roomMsg(text, type) {
     const el = $('roomMsg');
-    if (el) setMsg('roomMsg', text, type);
+    if (el && !$('roomCard').hidden) setMsg('roomMsg', text, type);
+    else if (setup && $('suMsg')) setMsg('suMsg', text, type);
+    else if (text) toast(text);
   }
 
   const I_SHARE = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>';
@@ -4010,7 +4396,9 @@
   function renderRoomCard() {
     const card = $('roomCard');
     if (!card) return;
-    if (!FB_CFG) { card.hidden = true; return; }
+    renderAccount();
+    renderSbMeta();
+    if (!FB_CFG || !online) { card.hidden = true; return; }
     card.hidden = false;
     const keepMsg = $('roomMsg') ? { t: $('roomMsg').textContent, c: $('roomMsg').className } : null;
     card.innerHTML = online ? onlineCardHtml() : offlineCardHtml();
@@ -4228,7 +4616,7 @@
       if (en) { try { await enterRoom(c.roomId, c.gameId, en.role, c.scope); } catch (e) { onCloudError(e); } return; }
     }
     // Signed in before on this device: load the account's rooms quietly
-    if (Object.values(myRooms.rooms).some(x => x.fromAccount)) { try { await cloudInit(); await loadAccountRooms(); renderRoomCard(); } catch (e) { /* offline */ } }
+    if (myRooms.signedIn || Object.values(myRooms.rooms).some(x => x.fromAccount)) { try { await cloudInit(); await loadAccountRooms(); renderRoomCard(); } catch (e) { /* offline */ } }
   }
 
   /* ---------- Export / import with checkboxes (this device + rooms) ---------- */
@@ -4561,6 +4949,7 @@
 
   // Share amount: saved as it's typed (whole rupees, 1 or more; empty clears it)
   $('setShare').addEventListener('input', () => {
+    if (setup) { $('setShare').classList.remove('need'); setMsg('shareMsg', '', ''); return; }   // used when the new game starts
     if (!canEdit()) { renderSettings(); return; }
     const raw = String($('setShare').value).trim();
     $('setShare').classList.remove('need');
