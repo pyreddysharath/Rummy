@@ -102,7 +102,6 @@
   .hb svg { width: 20px; height: 20px; }
   .hb:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }
   .hb[hidden] { display: none; }
-  .hb-room { background: #fff; color: var(--felt); border: 2px solid #fff; }
   .hb-game { background: var(--gold); color: #2b1f00; border: 2px solid var(--gold); }
   .hb.on { outline: 3px solid rgba(255,255,255,.55); outline-offset: 2px; }
   .su-link2 { display: block; color: var(--muted); }
@@ -161,10 +160,23 @@
   .welcome-card .wc-back { color: var(--muted); font-size: .86rem; margin-bottom: 0; }
   body.no-game:not(.setup-open) .settings-card, body.no-game .board-card,
   body.no-game .archive-card.empty, body.setup-open #roomCard, body.no-game .hero-chips { display: none; }
-  .sb-meta { display: flex; flex-wrap: wrap; gap: 5px; margin: -4px 0 10px; }
+  .sb-meta { margin: -4px 0 10px; }
   .sb-meta:empty { display: none; }
-  .sb-meta span { font-size: .74rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #f3efe2; color: #5b4a14; }
-  .sb-meta span.live { background: #e3f1e9; color: var(--felt); }
+  .sb-names { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; font-size: .95rem; font-weight: 800; margin-bottom: 6px; }
+  .sb-room { color: var(--felt); }
+  .sb-sep { color: var(--muted); }
+  .sb-game { color: var(--text); }
+  .sb-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+  .sb-chips span { font-size: .74rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #f3efe2; color: #5b4a14; }
+  .sb-chips .sync.ok { background: #e3f1e9; color: var(--felt); }
+  .sb-chips .sync.offline, .sb-chips .sync.saving { background: #fff3d6; color: #8a5a00; }
+  .sb-chips .sync.err, .sb-chips .ended { background: #fde8e6; color: var(--red); }
+  .sb-share-btn { min-height: 0; height: 26px; padding: 0 10px; margin-left: auto; border-radius: 999px; font-size: .76rem; font-weight: 800;
+    background: var(--felt); color: #fff; border: 0; display: inline-flex; align-items: center; gap: 6px; }
+  .sb-chev { transition: transform .15s; }
+  .sb-share-btn[aria-expanded="true"] .sb-chev { transform: rotate(180deg); }
+  .sb-links { margin: 0 0 12px; }
+  .sb-links[hidden] { display: none; }
   .chip {
     background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 999px;
     padding: 2px 10px; font-size: .78rem; font-variant-numeric: tabular-nums; white-space: nowrap;
@@ -909,9 +921,16 @@
   .rs-danger { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: grid; gap: 4px; justify-items: start; }
   .del-room { color: var(--red); border-color: #f5b5b5; }
   /* View-only visitors: everything that changes the game is hidden */
-  body.readonly #btnNewGame, body.readonly #btnNewRoom, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
+  body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly .settings-apply { display: none !important; }
   body.readonly .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
+  /* Ended game: nothing can be changed until the owner reopens it */
+  body.locked:not(.setup-open) [data-editplayers], body.locked:not(.setup-open) table.board thead .hbtn,
+  body.locked:not(.setup-open) .settings-apply { display: none !important; }
+  body.locked:not(.setup-open) .settings-card fieldset:not(#screenGroup) { pointer-events: none; opacity: .6; }
+  .lock-note { font-size: .8rem; color: var(--muted); background: #f3f1ea; border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
+  .lock-note[hidden] { display: none; }
+  .end-btn[hidden] { display: none !important; }
 
   /* Export / import chooser */
   .pick-tree { max-height: 50vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
@@ -996,19 +1015,18 @@
         <span class="chip" id="hdrPlayers">0 players</span>
       </div>
       <div class="hero-actions">
-        <button class="hb hb-room" id="btnNewRoom" type="button" aria-controls="setupCard" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V10l8-6 8 6v11h-5v-6H9v6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>New Room</button>
         <button class="hb hb-game" id="btnNewGame" type="button" aria-controls="setupCard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game</button>
       </div>
     </div>
   </header>
 
-  <!-- New Room / New Game: filled in by the script when one of the top buttons is tapped -->
+  <!-- New Game (with its room): filled in by the script when the top button is tapped -->
   <section class="card setup-card" id="setupCard" hidden></section>
 
   <!-- Before the first game -->
   <section class="card welcome-card" id="welcomeCard" hidden>
     <p class="wc-h"><b>Welcome to RummyTally!</b></p>
-    <p class="wc-online" id="wcOnline" hidden>Start with <b>New Room</b> – name it after the occasion, add the players and play. Everyone with the room's link sees the scores live on their own phone.</p>
+    <p class="wc-online" id="wcOnline" hidden>Tap <b>New Game</b> – name the room after the occasion, add the players and play. Everyone with the room's link sees the scores live on their own phone.</p>
     <p class="wc-local" id="wcLocal">Tap <b>New Game</b> to add the players and set the rules.</p>
     <p class="wc-back" id="wcSignIn" hidden>Played before? <button type="button" class="su-link" data-acct="signin">Sign in with Google</button> to bring back your rooms, or <button type="button" class="su-link" data-acct="import">import a backup</button>.</p>
   </section>
@@ -1085,6 +1103,8 @@
       </span>
     </h2>
     <div class="sb-meta" id="sbMeta"></div>
+    <div class="lk-box sb-links" id="sbLinks" hidden></div>
+    <p class="lock-note" id="lockNote" hidden></p>
     <div class="range-note info-note" id="legendNote" hidden>
       <div class="rules" id="rulesNote"></div>
       <div class="ns-sub">Scores (rounds and Total)</div>
@@ -1196,7 +1216,7 @@
 
     <div class="ft-sec" id="ft-help" hidden>
       <div class="ft-title">How it works</div>
-      <details open><summary>1. Start a room and a game</summary><p>Tap <b>New Room</b>, name it after the occasion, check the game name, players and Game Settings, then tap <b>Create &amp; Start</b>. For the next game in the same room, tap <b>New Game</b> and pick the room.</p></details>
+      <details open><summary>1. Start a game</summary><p>Tap <b>New Game</b>. The first time, give the room a name – the occasion, e.g. "Diwali at Ravi's" – then check the game name, players and Game Settings and tap <b>Create &amp; Start</b>. For the next game, tap <b>New Game</b> again: the room is already chosen, or pick another one or <b>＋ Create a new room</b>.</p></details>
       <details><summary>2. Enter scores</summary><p>Type each round's points and tap <b>Save</b>. Add someone later with <b>＋ Add player</b> under the list. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
       <details><summary>3. Play together on several phones</summary><p>Share the room's <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch. Scores update on every phone straight away. Nobody needs to log in.</p></details>
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
@@ -2116,7 +2136,7 @@
   }
 
   function startEditPlayers() {
-    if (!canEdit()) return;
+    if (!canEdit() || isEnded()) return;
     if (arrangeMode) return;
     clearUndo();
     editSnapshot = playerSnapshot();
@@ -2348,6 +2368,7 @@
   }
 
   function startEdit(n) {
+    if (isEnded()) return;
     const round = state.rounds.find(r => r.n === n);
     if (!round || editingRound !== null) return;
     clearUndo();
@@ -2422,6 +2443,7 @@
 
   // Reopen an ended game: winners cleared, clock left paused
   function undoDeclare() {
+    if (!canReopen()) { toast('Only the room owner can reopen an ended game'); return; }
     if (!confirm('Undo ending the game and continue playing?')) return;
     state.declared = [];
     state.timer.endedAt = null;
@@ -2493,7 +2515,7 @@
     if (setup && setup.mode === mode && !setup.busy) { closeSetup(); return; }
     const rooms = FB_CFG ? setupRooms() : [];
     const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
-    const newRoom = mode === 'room' || (!!FB_CFG && !rooms.length);
+    const newRoom = !!FB_CFG && !rooms.length;   // no room yet: this game starts one
     const roomId = newRoom ? null : (here || (rooms[0] || {}).id || null);
     setup = {
       mode, roomId, newRoom, roomName: defaultRoomName(), listOpen: false, search: '',
@@ -2507,7 +2529,7 @@
     renderSettings();
     renderSetup(true);
     $('suSettingsSlot').appendChild(sb);
-    sb.open = mode === 'room';   // a new room starts with the settings open; a new game keeps them folded
+    sb.open = newRoom;   // the first game of a new room starts with the settings open; otherwise folded
     const card = $('setupCard');
     try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
   }
@@ -2526,8 +2548,7 @@
   function renderSetup(full) {
     const card = $('setupCard');
     document.body.classList.toggle('setup-open', !!setup);
-    $('btnNewGame').classList.toggle('on', !!setup && setup.mode === 'game');
-    $('btnNewRoom').classList.toggle('on', !!setup && setup.mode === 'room');
+    $('btnNewGame').classList.toggle('on', !!setup);
     renderGameVisibility();
     if (!setup) { card.hidden = true; card.innerHTML = ''; return; }
     card.hidden = false;
@@ -2537,9 +2558,7 @@
         <div class="msg" id="suMsg"></div><div class="su-actions" id="suFoot"></div>`;
     }
     const busy = setup.busy;
-    $('suTitle').innerHTML = setup.mode === 'room'
-      ? '<span class="ttl"><span class="suit">♥</span> New Room</span>'
-      : '<span class="ttl"><span class="suit">♣</span> New Game</span>';
+    $('suTitle').innerHTML = '<span class="ttl"><span class="suit">♣</span> New Game</span>';
     const rooms = FB_CFG ? setupRooms() : [];
     const sel = rooms.find(x => x.id === setup.roomId);
     let roomStep = '';
@@ -2728,7 +2747,7 @@
     else if (a === 'addplayer') addSetupPlayer();
     else if (a === 'rmplayer') { setup.added.splice(+t.dataset.i, 1); renderSetup(); }
     else if (a === 'existing') { setup.newRoom = false; setup.roomId = (setupRooms()[0] || {}).id || null; if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId); renderSetup(); }
-    else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; if (!setup.gameNameEdited) setup.gameName = defaultGameName(null); renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) f.select(); }, 50); }
+    else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; if (!setup.gameNameEdited) setup.gameName = defaultGameName(null); renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) { f.focus(); f.select(); } }, 50); }
     else if (a === 'pickroom') {
       setup.roomId = t.dataset.id; setup.listOpen = false; setup.search = '';
       if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId);
@@ -2774,35 +2793,72 @@
     $('welcomeCard').hidden = !fresh || !!setup;
     $('wcOnline').hidden = !FB_CFG;
     $('wcLocal').hidden = !!FB_CFG;
-    // Top buttons: with online rooms, a game always belongs to a room – so no room yet means New Room only
     const rooms = roomCount();
-    $('btnNewRoom').hidden = !FB_CFG;
-    $('btnNewGame').hidden = !!FB_CFG && !rooms;
     document.querySelector('.archive-card').classList.toggle('empty', !state.archive.length);
     // Bottom buttons
     $('btnShare').hidden = !state.rounds.length;
     $('btnExportData').hidden = FB_CFG ? !rooms : fresh;
     $('btnImportData').hidden = fresh;
     $('backupLbl').hidden = $('btnExportData').hidden && $('btnImportData').hidden;
+    document.body.classList.toggle('locked', isEnded());
     renderAccount();
     renderSbMeta();
   }
 
-  // Room, game name and players under the Scoreboard title
+  // Room and game name under the Scoreboard title, with players, sync status and the share links
+  let sbLinksOpen = false;
   function renderSbMeta() {
     const el = $('sbMeta');
     if (!el) return;
-    const bits = [];
+    let html = '';
     if (online) {
       const room = online.room || {};
-      const nm = online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || '');
-      if (nm) bits.push(`<span>🏠 ${esc(nm)}</span>`);
-      if (online.gameMeta) bits.push(`<span>${esc(gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName))}</span>`);
-    } else if (state.gameName) bits.push(`<span>${esc(state.gameName)}</span>`);
-    bits.push(`<span>${state.players.length} player${state.players.length === 1 ? '' : 's'}</span>`);
-    if (online) bits.push(`<span class="live">● Live</span>`);
-    el.innerHTML = bits.join('');
+      const roomName = online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || 'Room');
+      const title = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
+      html += `<div class="sb-names"><span class="sb-room">🏠 ${esc(roomName)}</span>${title && online.scope !== 'game' ? `<span class="sb-sep">›</span><span class="sb-game">${esc(title)}</span>` : ''}</div>`;
+    } else if (state.gameName) html += `<div class="sb-names"><span class="sb-game">${esc(state.gameName)}</span></div>`;
+    const chips = [`<span>${state.players.length} player${state.players.length === 1 ? '' : 's'}</span>`];
+    if (isEnded()) chips.push('<span class="ended">Ended</span>');
+    if (online) {
+      const st = navigator.onLine === false ? 'offline' : syncState;
+      chips.push(`<span class="sync ${st}">${{ ok: '● Live', saving: 'Saving…', offline: 'Offline – will sync', err: 'Not saved' }[st] || '● Live'}</span>`);
+      chips.push(`<button type="button" class="sb-share-btn" data-sbshare aria-expanded="${sbLinksOpen}" aria-controls="sbLinks">${I_SHARE} Share link <svg class="sb-chev" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`);
+    }
+    html += `<div class="sb-chips">${chips.join('')}</div>`;
+    el.innerHTML = html;
+    if (!online) { sbLinksOpen = false; $('sbLinks').hidden = true; }
+    const ln = $('lockNote');
+    ln.hidden = !isEnded();
+    ln.textContent = canReopen() ? 'This game has ended – tap ↺ Reopen game under the scoreboard to change it.' : 'This game has ended – scores can\'t be changed.';
   }
+  async function fillSbLinks() {
+    const box = $('sbLinks');
+    if (!online) return;
+    const o = online;
+    box.innerHTML = '<p class="lk-note">Loading links…</p>';
+    let html = '';
+    try {
+      if (o.scope === 'game') {
+        const e = myRooms.games[o.roomId + '_' + o.gameId] || {};
+        if (e.key) html = linkRowHtml(o.role === 'edit' ? 'Edit link' : 'View link', o.role === 'edit' ? 'can enter scores in this game' : 'watch only', gameLink(o.roomId, o.gameId, o.role, e.key), o.role === 'edit' ? 'gedit' : 'gview');
+      } else {
+        const k = await roomKeysFor(o.roomId);
+        if (online !== o) return;
+        if (k.view) html += linkRowHtml('View link', 'watch only', roomLink(o.roomId, 'view', k.view), 'view');
+        if (k.edit && o.role !== 'view') html += linkRowHtml('Edit link', 'players can enter scores', roomLink(o.roomId, 'edit', k.edit), 'edit');
+        html += '<p class="lk-note">These links open every game in this room, including the next ones.</p>';
+      }
+    } catch (e) { html = '<p class="lk-note">The links need an internet connection the first time – try again once you\'re online.</p>'; }
+    box.innerHTML = html || '<p class="lk-note">No links available for your access.</p>';
+  }
+  $('sbMeta').addEventListener('click', e => {
+    if (!e.target.closest('[data-sbshare]')) return;
+    sbLinksOpen = !sbLinksOpen;
+    $('sbLinks').hidden = !sbLinksOpen;
+    renderSbMeta();
+    if (sbLinksOpen) fillSbLinks();
+  });
+  $('sbLinks').addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (b) shareLink(b); });
 
   /* ---------- Google account (bottom of the page, and in the welcome) ---------- */
   function renderAccount() {
@@ -2904,10 +2960,11 @@
     const icoPlay = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
     pp.innerHTML = st === 'running' ? icoPause + 'Pause' : (icoPlay + (st === 'paused' ? 'Resume' : 'Play'));
     pp.className = st === 'running' ? 'btn-outline' : 'btn-primary';
-    const ended = !!gameResult();
-    // End Game needs at least 2 players and 1 saved round; Reopen is always allowed
+    const ended = isEnded();
+    // End Game needs at least 2 players and 1 saved round; only the owner (or this device, offline) can reopen
     const canEnd = enoughPlayers && state.rounds.length >= 1;
-    $('btnEndGame').disabled = !ended && !canEnd;
+    $('btnEndGame').disabled = ended ? !canReopen() : !canEnd;
+    $('btnEndGame').hidden = ended && !canReopen();
     $('btnEndGame').title = ended ? '' : !enoughPlayers ? 'Add at least 2 players first' : !canEnd ? 'Save at least 1 round to end the game' : '';
     if (!ended && !canEnd && !$('endBox').hidden) closeDeclare();
     $('btnEndGame').classList.toggle('reopen', ended);
@@ -2955,7 +3012,7 @@
   // End Game opens a section under the button; once ended, the same button reopens the game
   function endGame() {
     if (!canEdit()) return;
-    if (gameResult()) { undoDeclare(); return; }
+    if (isEnded()) { undoDeclare(); return; }
     if (state.players.length < 2 || state.rounds.length < 1) return;
     if (!$('endBox').hidden) { closeDeclare(); return; }
     openDeclare();
@@ -3308,7 +3365,7 @@
   }
 
   function applySettings() {
-    if (!canEdit()) return;
+    if (!canEdit() || isEnded()) return;
     const v = readSettingsInputs();
     const err = validateSettings(v);
     if (err) { setMsg('settingsMsg', err, 'err'); return; }
@@ -3593,7 +3650,6 @@
   $('banner').addEventListener('click', e => { if (e.target.id === 'btnUndoDeclare') undoDeclare(); });
 
   $('btnNewGame').addEventListener('click', () => openSetup('game'));
-  $('btnNewRoom').addEventListener('click', () => openSetup('room'));
 
   $('btnApplySettings').addEventListener('click', applySettings);
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
@@ -3601,7 +3657,7 @@
   document.querySelectorAll('input[name="firstDealer"], input[name="dealerOut"]').forEach(inp => {
     inp.addEventListener('change', () => {
       if (setup) return;   // setting up a new game: used when the game starts
-      if (!canEdit()) { renderSettings(); return; }
+      if (!canEdit() || isEnded()) { renderSettings(); return; }
       state.settings = { ...state.settings, [inp.name]: inp.value };
       saveState();
       renderAll();
@@ -3703,7 +3759,9 @@
     return opts.filter(x => x <= (d || 0)).pop() || opts[0];
   }
   function daysLabel(d) { return d >= 365 ? '1 year' : d >= 180 ? '6 months' : `${d} days`; }
-  function isEnded() { return !!(state.timer.endedAt || gameResult()); }
+  // Ended with End Game (not just one player left): the game is then locked
+  function isEnded() { return !!(state.timer.endedAt || state.declared.length); }
+  function canReopen() { return !online || online.role === 'owner'; }
 
   /* ---------- Firebase loading ---------- */
   async function cloudInit() {
@@ -4047,8 +4105,9 @@
     if (!el) return;
     el.className = 'room-sync ' + s;
     el.textContent = { ok: 'Live', saving: 'Saving…', offline: 'Offline – will sync', err: 'Not saved' }[s] || '';
+    renderSbMeta();
   }
-  window.addEventListener('online', () => { if (online) setSync('ok'); });
+  window.addEventListener('online', () => { if (online) { setSync('ok'); flushPush(); } });
   window.addEventListener('offline', () => { if (online) setSync('offline'); });
 
   // Plain-words reason for a setup problem, with the Firebase code so it can be looked up
@@ -4094,14 +4153,14 @@
     const keys = { owner: randKey(24), edit: randKey(24), view: randKey(24) };
     const days = defaultDays();
     const game = src || Object.assign(freshGameFrom(state), { players: [], nextId: 1 });
-    await fb.setDoc(R.room(r), {
+    await cw(fb.setDoc(R.room(r), {
       name, ownerUid: cloudUser.uid, createdAt: fb.serverTimestamp(), createdMs: now, updatedAt: fb.serverTimestamp(),
       deleteDays: days, maxDays: maxDays(), onlyEnded: false, currentGameId: g,
       expireAt: fb.Timestamp.fromMillis(now + days * DAY)
-    });
-    await fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner });
-    await fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view });
-    await fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(game), gameMeta(1, now, days, false)));
+    }));
+    await cw(fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner }));
+    await cw(fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view }));
+    await cw(fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(game), gameMeta(1, now, days, false))));
     myRooms.rooms[r] = { name, role: 'owner', keys, savedOwnerLink: isGoogle(), at: now, createdMs: now };
     saveRooms();
     return r;
@@ -4129,6 +4188,12 @@
   }
 
   // opts (from New Game): { players, settings } – the players and rules chosen there
+  // Offline, a write is saved on the phone at once and sent when the connection is back – don't wait for the server
+  function cw(p) {
+    if (navigator.onLine === false) { p.catch(e => onCloudError(e)); return Promise.resolve(); }
+    return p;
+  }
+
   async function onlineNewGame(keepPlayers, opts) {
     if (!online || online.scope !== 'room' || !canEdit()) return;
     flushPush();
@@ -4141,10 +4206,10 @@
       if (opts && opts.gameName) fresh.gameName = opts.gameName;
       if (opts && opts.players) { fresh.players = opts.players.map(p => ({ id: p.id, name: p.name })); fresh.nextId = nextIdFor(fresh.players); }
       if (!keepPlayers) { fresh.players = []; fresh.nextId = 1; }
-      await fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded)));
+      await cw(fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded))));
       online.follow = true;
       const want = Math.max(now + Math.min(room.deleteDays || 30, maxDaysOfRoom()) * DAY, room.expireAt || 0);
-      await fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) });
+      await cw(fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) }));
       toast('New game started');
       if (!keepPlayers) setTimeout(() => { if (online && online.gameId === g) openAddPlayer(); }, 700);
     } catch (e) { onCloudError(e); throw e; }
@@ -5004,7 +5069,7 @@
   // Share amount: saved as it's typed (whole rupees, 1 or more; empty clears it)
   $('setShare').addEventListener('input', () => {
     if (setup) { $('setShare').classList.remove('need'); setMsg('shareMsg', '', ''); return; }   // used when the new game starts
-    if (!canEdit()) { renderSettings(); return; }
+    if (!canEdit() || isEnded()) { renderSettings(); return; }
     const raw = String($('setShare').value).trim();
     $('setShare').classList.remove('need');
     if (raw === '') { state.settings = { ...state.settings, share: null }; saveState(); setMsg('shareMsg', '', ''); return; }
