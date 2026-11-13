@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#0b4a30">
 <meta name="description" content="RummyTally – a free Rummy score keeper for friends. Add players, enter points each round, see who is out, share live rooms and split the pot.">
 <title>RummyTally – Rummy Scoreboard</title>
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="RummyTally">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
   :root {
     --felt: #0e5a3a;
@@ -70,7 +77,7 @@
   .hero { text-align: center; color: #fff; margin: 0 0 18px; padding: 4px 0 2px; }
   /* Background card art (option E): large faint cards behind the title */
   .hero { position: relative; overflow: hidden; margin: -16px -16px 0; padding: 14px 16px 14px; }
-  @media (max-width: 480px) { .hero { margin: -12px -12px 0; padding: 12px 12px 12px; } }
+  @media (max-width: 480px) { .hero { margin: -12px -12px 0; padding: 2px 12px 12px; } .wordmark { margin-top: 0; } }
   .hero > *:not(.hero-bgcards) { position: relative; z-index: 1; }
   .hero-bgcards { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .16; pointer-events: none; z-index: 0; }
   /* Wordmark: big centred "Rummy", "Tally" stretched to the same width underneath */
@@ -210,7 +217,7 @@
     margin: 0 -16px; border-radius: 0; border-left: none; border-right: none;
   }
   @media (max-width: 600px) {
-    .board-card, .settings-card, .archive-card { margin-left: -16px; margin-right: -16px; border-radius: 0; }
+    .board-card, .settings-card, .archive-card, .room-card { margin-left: -16px; margin-right: -16px; border-radius: 0; }
   }
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 12px; }
   table.board { border-collapse: separate; border-spacing: 0; width: auto; }
@@ -590,7 +597,8 @@
   .start-box .sb-btns { display: flex; gap: 8px; }
   .start-box button { min-height: 0; padding: 5px 14px; font-size: .82rem; }
   .start-box[hidden] { display: none; }
-  .calc-btn { min-height: 30px; height: 30px; padding: 0 10px; font-size: .8rem; white-space: nowrap; width: calc((100% - 8px) / 2); }
+  .calc-btn { min-height: 30px; height: 30px; padding: 0 10px; font-size: .8rem; white-space: nowrap; width: auto; min-width: calc((100% - 8px) / 2); max-width: 100%; }
+  .calc-btn .chev { flex: 0 0 auto; }   /* never squeezed off the button */
   .time-chip { min-height: 0; padding: 3px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; font-variant-numeric: tabular-nums;
     background: #eef0f4; color: var(--muted); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 2px; }
   .time-chip.running { background: var(--primary-soft); color: var(--primary-dark); border-color: #b9e0c8; }
@@ -708,6 +716,18 @@
   details.agame .table-scroll { border: none; border-top: 1px solid var(--border); border-radius: 0; }
 
   /* Toast */
+  .cookie-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: #fff; border-top: 3px solid var(--gold);
+    box-shadow: 0 -6px 24px rgba(0,0,0,.12); padding: 10px 16px; display: flex; align-items: center; justify-content: center; gap: 16px;
+    flex-wrap: wrap; font-size: .82rem; color: var(--text); transform: translateY(110%); transition: transform .3s; }
+  .cookie-bar.show { transform: translateY(0); }
+  body.has-cookiebar { padding-bottom: 96px; }   /* the page can still scroll above the notice */
+  .cookie-bar a { color: var(--felt); font-weight: 700; }
+  .cb-actions { display: flex; align-items: center; gap: 14px; }
+  .cb-actions a { color: var(--muted); font-weight: 600; }
+  .cb-actions button { min-height: 0; padding: 6px 18px; font-size: .82rem; background: var(--felt); color: #fff; border: 0; border-radius: 8px; font-weight: 700; }
+  .ck-now { font-size: .82rem; }
+  .ck-btns { display: flex; gap: 8px; }
+  .ck-btns button { min-height: 0; padding: 6px 18px; font-size: .84rem; }
   .toast {
     position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
     background: #1d2330; color: #fff; padding: 10px 16px; border-radius: 10px;
@@ -718,7 +738,7 @@
 
   @media (max-width: 480px) {
     .wrap { padding: 12px; }
-    .board-card, .settings-card, .archive-card { margin-left: -12px; margin-right: -12px; }
+    .board-card, .settings-card, .archive-card, .room-card { margin-left: -12px; margin-right: -12px; }
     header.top h1 { font-size: 1.3rem; }
     .brand svg.fan { width: 70px; height: 48px; }
     .foot-actions button { font-size: .85rem; }
@@ -1094,6 +1114,7 @@
     <button class="btn-ghost" id="btnExportData" type="button" title="Full backup that can be imported later"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Export Data</button>
     <button class="btn-ghost" id="btnImportData" type="button" title="Restore from an exported data file"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Import Data</button>
     <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <button class="btn-ghost fa-share" id="btnInstall" type="button" hidden title="Add RummyTally to your home screen or desktop"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v7M9 11l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Install App</button>
   </div>
 
   <!-- Footer: feedback, help, legal, our other sites -->
@@ -1119,7 +1140,8 @@
     <div class="ft-sec" id="ft-help" hidden>
       <div class="ft-title">How it works</div>
       <details open><summary>Scoring</summary><p>Add players with <b>＋ Add player</b> under the list, type each round's points and tap <b>Save</b>. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
-      <details><summary>Playing online with friends</summary><p>Open <b>Play Online</b>, give the room a name and tap <b>Create Room</b>. Share the <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch – on WhatsApp or anywhere. Scores update on every phone straight away, no refresh needed. Nobody needs to log in.</p></details>
+      <details><summary>Install as an app</summary><p>RummyTally can sit on your home screen and open full screen, like an app. <b>Android / Chrome / Edge:</b> tap <b>Install App</b> at the bottom of the page, or the install icon in the address bar. <b>iPhone / iPad (Safari):</b> tap Share → <b>Add to Home Screen</b>. Your games stay the same either way.</p></details>
+      <details><summary>Playing online with friends</summary><p>Open <b>Play</b>, give the room a name and tap <b>Create Room</b>. Share the <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch – on WhatsApp or anywhere. Scores update on every phone straight away, no refresh needed. Nobody needs to log in.</p></details>
       <details><summary>Keeping your rooms</summary><p>As a guest, your rooms are listed on this device. Keep each room's <b>Owner link</b> (WhatsApp it to yourself) – it brings back full control after clearing the browser or on a new phone. Or sign in with Google once, and your rooms follow your account on every device.</p></details>
       <details><summary>When rooms are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner chooses the period in <b>Room Settings</b>. Use <b>Export Data</b> to keep a copy for longer.</p></details>
       <details><summary>Calculating shares</summary><p>Set the <b>Entry or buy-in per player</b> in Game Settings, then tap <b>₹ Calculate Shares</b> under the scoreboard. Pick how to split the pot among the players still in – the <b>i</b> next to each option explains it – and tap <b>Share</b> to send the result.</p></details>
@@ -1139,14 +1161,22 @@
 
     <div class="ft-sec" id="ft-legal" hidden>
       <div class="ft-subtabs" role="tablist">
-        <button type="button" class="ft-sub on" data-ftsub="privacy">Privacy Policy</button>
+        <button type="button" class="ft-sub on" data-ftsub="privacy">Privacy</button>
+        <button type="button" class="ft-sub" data-ftsub="cookies">Cookies</button>
         <button type="button" class="ft-sub" data-ftsub="disclaimer">Disclaimer</button>
       </div>
       <div class="ft-subsec" id="ft-privacy">
-        <p><b>On this device:</b> players, scores, settings and previous games are saved in your browser's local storage. They are not sent anywhere unless you use an online room.</p>
-        <p><b>Online rooms:</b> when you create or open a room, its name, player names, scores and game times are stored in Google Firebase so that everyone with the room's link can see them. You are signed in with an anonymous ID; if you choose <b>Sign in with Google</b>, your Google account's name and email are used only to keep your rooms on your account. Anyone who has a room's link can see that room – share links only with people you trust. Rooms and games are deleted automatically after the period without activity shown in Room Settings, or when the owner deletes them.</p>
-        <p><b>Feedback:</b> if you send feedback, the name and message you enter are sent to us for review. Please don't include personal or sensitive details.</p>
-        <p><b>No ads or tracking:</b> this site shows no advertising and uses no analytics or advertising cookies.</p>
+        <p><b>On this device:</b> your games and settings stay in this browser.</p>
+        <p><b>Online rooms:</b> a room's name, players, scores and times are kept in Google Firebase so people with its link can see them. Share links only with people you trust. Rooms are deleted after the inactive period you choose, or when the owner deletes them.</p>
+        <p><b>Google sign-in (optional):</b> your name and email are used only to keep your rooms on your account.</p>
+        <p><b>Feedback:</b> the name and message you send reach us for review.</p>
+        <p><b>Ads:</b> see Cookies.</p>
+      </div>
+      <div class="ft-subsec" id="ft-cookies" hidden>
+        <p>This site shows ads from <b>Google AdSense</b>, which may use cookies to show and personalise ads – only after you accept. If you decline, no ad cookies are set. The app itself needs no cookies; your games are kept in the browser's storage.</p>
+        <p>Review your Google ad settings at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>. You can change your choice here at any time.</p>
+        <p class="ck-now" id="ckNow"></p>
+        <div class="ck-btns"><button type="button" class="btn-primary" data-consent="accepted">Accept</button><button type="button" class="btn-outline" data-consent="declined">Decline</button></div>
       </div>
       <div class="ft-subsec" id="ft-disclaimer" hidden>
         <p>RummyTally is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some states (for example Telangana) – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
@@ -1161,6 +1191,12 @@
     </div>
   </footer>
 
+</div>
+
+<!-- Slim cookie notice (non-blocking) -->
+<div class="cookie-bar" id="cookieBar" role="dialog" aria-live="polite" aria-label="Cookie notice">
+  <span>This site uses cookies to show ads. <a href="#" id="ckMore">More</a></span>
+  <span class="cb-actions"><a href="#" data-consent="declined">Decline</a><button type="button" data-consent="accepted">Accept</button></span>
 </div>
 
 <!-- Export / import chooser: tick what to include -->
@@ -3009,6 +3045,27 @@
   });
 
   $('btnShare').addEventListener('click', shareScoreboard);
+
+  /* ---------- Install as an app (PWA) ---------- */
+  // The browser shows its own install icon in the address bar; this button is the same thing, in the page
+  let installPrompt = null;
+  const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    installPrompt = e;
+    $('btnInstall').hidden = isInstalled();
+  });
+  window.addEventListener('appinstalled', () => { installPrompt = null; $('btnInstall').hidden = true; toast('RummyTally installed'); });
+  $('btnInstall').addEventListener('click', async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    try { await installPrompt.userChoice; } catch (e) { /* ignore */ }
+    installPrompt = null;
+    $('btnInstall').hidden = true;
+  });
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  }
   // Tap the dealer icon to show its "Dealer" label; tap it again or anywhere else to hide it
   document.addEventListener('click', e => {
     const d = e.target.closest && e.target.closest('.dealer');
@@ -3572,6 +3629,23 @@
   window.addEventListener('online', () => { if (online) setSync('ok'); });
   window.addEventListener('offline', () => { if (online) setSync('offline'); });
 
+  // Plain-words reason for a setup problem, with the Firebase code so it can be looked up
+  function cloudSetupHint(err) {
+    const code = err && err.code ? String(err.code) : '';
+    const msg = String((err && err.message) || '');
+    const hints = [
+      [/operation-not-allowed|admin-restricted-operation/, 'Anonymous sign-in is turned off in Firebase (Authentication → Sign-in method → Anonymous → Enable).'],
+      [/unauthorized-domain/, 'This website is not in Firebase\'s list (Authentication → Settings → Authorized domains).'],
+      [/api-key|referer|API_KEY|requests-from-referer/i, 'The Firebase key is blocked for this website (Google Cloud → Credentials → Browser key → allowed websites).'],
+      [/permission-denied/, 'The database rules don\'t allow this – paste firestore.rules into Firestore → Rules and Publish.'],
+      [/not-found|does not exist|NOT_FOUND/i, 'The Firestore database isn\'t created yet (Firestore Database → Create database).'],
+      [/failed-precondition/, 'The Firestore database isn\'t ready – check it is created in Native mode.'],
+      [/unavailable|network/i, 'The app can\'t reach Firebase – check the internet connection.']
+    ];
+    const hit = hints.find(([re]) => re.test(code) || re.test(msg));
+    return (hit ? hit[1] : 'Check your connection and try again.') + (code ? ` (${code})` : msg ? ` (${msg.slice(0, 80)})` : '');
+  }
+
   function onCloudError(err) {
     console.error(err);
     const code = err && err.code ? String(err.code) : '';
@@ -3586,7 +3660,7 @@
     } else if (code.includes('unavailable')) {
       setSync('offline');
     } else {
-      roomMsg('Something went wrong with the online room. Check your connection and try again.', 'err');
+      roomMsg('Something went wrong with the online room. ' + cloudSetupHint(err), 'err');
     }
   }
 
@@ -3622,7 +3696,7 @@
       roomBusy = false;
       console.error(e);
       renderRoomCard();
-      roomMsg('The room couldn\'t be created. Check your connection and try again.', 'err');
+      roomMsg('The room couldn\'t be created. ' + cloudSetupHint(e), 'err');
     }
   }
 
@@ -3956,7 +4030,7 @@
         <button type="button" class="ricon del" data-room="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">✕</button></span></li>`)).join('');
     const open = myRooms.uiOpen !== false;
     return `<details class="room-box" id="roomBox" ${open ? 'open' : ''}>
-      <summary><span class="ttl"><span class="suit">♥</span> Play Online</span></summary>
+      <summary><span class="ttl"><span class="suit">♥</span> Play</span></summary>
       <p class="room-intro">Create a room, share its link on WhatsApp, and everyone sees the scores live. Players with the edit link can enter scores; the view link is watch-only. No login needed.</p>
       <div class="room-create">
         <input type="text" id="roomName" maxlength="40" placeholder="Room name, e.g. Friday Rummy" autocomplete="off" aria-label="Room name">
@@ -4543,7 +4617,45 @@
     document.querySelectorAll('.ft-sub').forEach(x => x.classList.toggle('on', x === b));
     $('ft-privacy').hidden = b.dataset.ftsub !== 'privacy';
     $('ft-disclaimer').hidden = b.dataset.ftsub !== 'disclaimer';
+    $('ft-cookies').hidden = b.dataset.ftsub !== 'cookies';
+    renderConsent();
   }));
+
+  /* ---------- Cookie consent and ads (Google AdSense loads only after Accept) ---------- */
+  const CONSENT_KEY = 'cookieConsent';               // 'accepted' | 'declined'
+  const ADSENSE_CLIENT_ID = 'ca-pub-1251018920617954';
+  function getConsent() { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } }
+  function loadAdsense() {
+    if (location.protocol === 'file:' || $('adsbygoogle-js')) return;
+    const sc = document.createElement('script');
+    sc.id = 'adsbygoogle-js'; sc.async = true; sc.crossOrigin = 'anonymous';
+    sc.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
+    document.head.appendChild(sc);
+  }
+  function renderConsent() {
+    const c = getConsent();
+    $('ckNow').innerHTML = c ? `Your choice: <b>${c === 'accepted' ? 'Accepted' : 'Declined'}</b>` : 'No choice made yet in this browser.';
+  }
+  function setConsent(v) {
+    try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { /* ignore */ }
+    $('cookieBar').classList.remove('show');
+    document.body.classList.remove('has-cookiebar');
+    renderConsent();
+    if (v === 'accepted') loadAdsense();
+    else if ($('adsbygoogle-js')) toast('Ads cookies will stop after the page reloads');
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-consent]');
+    if (b) { e.preventDefault(); setConsent(b.dataset.consent); }
+  });
+  $('ckMore').addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();   // otherwise the "tap outside closes the footer" handler shuts it again
+    showFooter('legal');
+    document.querySelector('.ft-sub[data-ftsub="cookies"]').click();
+  });
+  if (getConsent() === 'accepted') loadAdsense();
+  else if (!getConsent()) setTimeout(() => { $('cookieBar').classList.add('show'); document.body.classList.add('has-cookiebar'); }, 800);
   // Tapping anywhere outside the footer closes it (typed feedback is kept)
   document.addEventListener('click', e => {
     if (!e.target.closest('#appFooter')) {
