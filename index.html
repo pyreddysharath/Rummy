@@ -580,7 +580,8 @@
   .clock.running .clock-state { background: var(--primary-soft); color: var(--primary-dark); }
   .clock.paused .clock-state { background: var(--orange-soft); color: var(--orange-text); }
   .clock.ended .clock-state { background: var(--red-soft); color: var(--red-text); }
-  .clock-btns { display: grid; grid-template-columns: minmax(96px, 2fr) 3fr; gap: 8px; width: 100%; }
+  /* Play | End Game side by side; Calculate Shares below at the same width */
+  .clock-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
   .pp-ico { width: 13px; height: 13px; fill: currentColor; vertical-align: -2px; margin-right: 6px; }
   .start-box { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
@@ -588,7 +589,7 @@
   .start-box .sb-btns { display: flex; gap: 8px; }
   .start-box button { min-height: 0; padding: 5px 14px; font-size: .82rem; }
   .start-box[hidden] { display: none; }
-  .calc-btn { min-height: 30px; padding: 4px 10px; font-size: .8rem; white-space: nowrap; }
+  .calc-btn { min-height: 30px; height: 30px; padding: 0 10px; font-size: .8rem; white-space: nowrap; width: calc((100% - 8px) / 2); }
   .time-chip { min-height: 0; padding: 3px 9px; border-radius: 999px; font-size: .78rem; font-weight: 800; font-variant-numeric: tabular-nums;
     background: #eef0f4; color: var(--muted); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 2px; }
   .time-chip.running { background: var(--primary-soft); color: var(--primary-dark); border-color: #b9e0c8; }
@@ -643,8 +644,9 @@
   .btn-danger { background: var(--red); color: #fff; }
   .btn-end { background: var(--felt-dark); color: #f6e7b0; border: 1px solid var(--gold); }   /* End Game: page felt + gold */
   .end-btn { background: #fff; color: #a12a1c; border: 1.5px solid #d0564a !important; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    min-height: 30px; height: 30px; padding: 0 26px; font-size: .84rem; align-self: center; border: 0; }
+    min-height: 30px; height: 30px; padding: 0 10px; font-size: .8rem; border: 0; }
   .end-btn:hover:not(:disabled) { background: #fdf1ef; }
+  .clock-btns button:disabled { opacity: .45; cursor: not-allowed; }
   .end-btn .eg-ico { color: #a12a1c; font-size: 1.25em; line-height: 1; }
   .end-btn.reopen { color: var(--felt); border-color: var(--felt) !important; }
   .end-btn.reopen:hover:not(:disabled) { background: #f2f8f4; }
@@ -1052,19 +1054,12 @@
       <div class="time-details" id="timeBody" hidden></div>
       <div class="clock-btns">
         <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
-        <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
+        <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
       </div>
       <div class="start-box" id="startBox" role="status" hidden>
         <span>Game started · Keep the screen on?</span>
         <span class="sb-btns"><button class="btn-primary" id="btnAwakeYes" type="button">Yes</button><button class="btn-outline" id="btnAwakeNo" type="button">No</button></span>
       </div>
-      <div class="share-box" id="shareBox" hidden>
-        <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
-        <p class="share-pot" id="sharePot"></p>
-        <div id="shareResult"></div>
-        <button class="share-send" id="shareWa" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg> Share</button>
-      </div>
-      <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
       <div class="end-box" id="endBox" hidden>
         <p class="end-intro">Tick the winner(s)</p>
         <ul class="pick" id="declareList"></ul>
@@ -1072,6 +1067,13 @@
         <div class="end-actions">
           <button class="end-ok" id="btnDeclareOk" type="button">🏆 End Game</button>
         </div>
+      </div>
+      <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
+      <div class="share-box" id="shareBox" hidden>
+        <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
+        <p class="share-pot" id="sharePot"></p>
+        <div id="shareResult"></div>
+        <button class="share-send" id="shareWa" type="button"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg> Share</button>
       </div>
     </div>
 
@@ -2445,14 +2447,20 @@
     $('timeChip').className = 'time-chip ' + st;
     $('timeChip').title = { idle: 'Game clock – not started', running: 'Game clock – running', paused: 'Game clock – paused', ended: 'Game clock – ended' }[st] + '. Tap to go to Play / Pause / End Game';
     const pp = $('btnPause');
-    pp.disabled = st === 'ended';
+    const enoughPlayers = state.players.length >= 2;
+    pp.disabled = st === 'ended' || (st === 'idle' && !enoughPlayers);   // Play needs at least 2 players
+    pp.title = st === 'idle' && !enoughPlayers ? 'Add at least 2 players to start' : '';
     // Drawn icons in the text colour (the ⏸ / ▶ characters show as coloured emoji on many phones)
     const icoPause = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
     const icoPlay = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
     pp.innerHTML = st === 'running' ? icoPause + 'Pause' : (icoPlay + (st === 'paused' ? 'Resume' : 'Play'));
     pp.className = st === 'running' ? 'btn-outline' : 'btn-primary';
     const ended = !!gameResult();
-    $('btnEndGame').disabled = !ended && state.players.length < 2;
+    // End Game needs at least 2 players and 1 saved round; Reopen is always allowed
+    const canEnd = enoughPlayers && state.rounds.length >= 1;
+    $('btnEndGame').disabled = !ended && !canEnd;
+    $('btnEndGame').title = ended ? '' : !enoughPlayers ? 'Add at least 2 players first' : !canEnd ? 'Save at least 1 round to end the game' : '';
+    if (!ended && !canEnd && !$('endBox').hidden) closeDeclare();
     $('btnEndGame').classList.toggle('reopen', ended);
     $('btnEndGame').querySelector('.eg-label').innerHTML = ended ? '↺ Reopen game' : '<span class="eg-ico">■</span> End Game';
     if (ended && !$('endBox').hidden) closeDeclare();
@@ -2485,6 +2493,7 @@
       state.timer.intervals.push({ start: now, end: null });
       toast('Game resumed');
     } else if (st === 'idle') {
+      if (state.players.length < 2) return;
       startClock();
       renderHeader();
       return;
@@ -2498,7 +2507,7 @@
   function endGame() {
     if (!canEdit()) return;
     if (gameResult()) { undoDeclare(); return; }
-    if (state.players.length < 2) return;
+    if (state.players.length < 2 || state.rounds.length < 1) return;
     if (!$('endBox').hidden) { closeDeclare(); return; }
     openDeclare();
   }
