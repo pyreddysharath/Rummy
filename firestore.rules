@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Rummy Scoreboard – who can read and change what.
+// RummyTally – who can read and change what.
 // Everyone is signed in (silently as a guest, or with Google). Access to a room or a single
 // game comes from a secret key in its link: the app records "this user opened the edit link"
 // in roomMembers / gameMembers, and these rules check that the stored key still matches the

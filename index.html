@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b4a30">
-<title>Rummy Scoreboard</title>
+<meta name="description" content="RummyTally – a free Rummy score keeper for friends. Add players, enter points each round, see who is out, share live rooms and split the pot.">
+<title>RummyTally – Rummy Scoreboard</title>
 <style>
   :root {
     --felt: #0e5a3a;
@@ -72,7 +73,7 @@
   @media (max-width: 480px) { .hero { margin: -12px -12px 0; padding: 12px 12px 12px; } }
   .hero > *:not(.hero-bgcards) { position: relative; z-index: 1; }
   .hero-bgcards { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .16; pointer-events: none; z-index: 0; }
-  /* Wordmark: big centred "Rummy", "Scoreboard" stretched to the same width underneath */
+  /* Wordmark: big centred "Rummy", "Tally" stretched to the same width underneath */
   .wordmark { display: inline-flex; flex-direction: column; align-items: center; margin: 6px 0 0; line-height: 1; }
   .wm-big {
     font-family: Georgia, "Times New Roman", serif; font-weight: 800; font-size: 4.6rem;
@@ -914,9 +915,9 @@
   <header class="hero">
     <!-- Big faint playing cards behind the title -->
     <svg class="hero-bgcards" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-opacity=".35"/></filter></defs><g transform="rotate(-18 45.0 130.0)" opacity="1" filter="url(#sh)"><rect x="10" y="40" width="70" height="100" rx="4" fill="#fff" stroke="#d8cfb4"/><text x="14" y="51" font-size="10" font-weight="700" fill="#1d2330" font-family="Georgia,serif">A</text><text x="14" y="61" font-size="9" fill="#1d2330">♠</text><text x="45.0" y="112.0" font-size="18" text-anchor="middle" fill="#1d2330">♠</text></g><g transform="rotate(16 305.0 110.0)" opacity="1" filter="url(#sh)"><rect x="270" y="20" width="70" height="100" rx="4" fill="#fff" stroke="#d8cfb4"/><text x="274" y="31" font-size="10" font-weight="700" fill="#c62828" font-family="Georgia,serif">K</text><text x="274" y="41" font-size="9" fill="#c62828">♥</text><text x="305.0" y="92.0" font-size="18" text-anchor="middle" fill="#c62828">♥</text></g><g transform="rotate(-10 280.0 253.0)" opacity="1" filter="url(#sh)"><rect x="250" y="170" width="60" height="86" rx="4" fill="#fff" stroke="#d8cfb4"/><text x="254" y="181" font-size="10" font-weight="700" fill="#c62828" font-family="Georgia,serif">Q</text><text x="254" y="191" font-size="9" fill="#c62828">♦</text><text x="280.0" y="231.92" font-size="18" text-anchor="middle" fill="#c62828">♦</text></g><g transform="rotate(12 50.0 263.0)" opacity="1" filter="url(#sh)"><rect x="20" y="180" width="60" height="86" rx="4" fill="#fff" stroke="#d8cfb4"/><text x="24" y="191" font-size="10" font-weight="700" fill="#1d2330" font-family="Georgia,serif">J</text><text x="24" y="201" font-size="9" fill="#1d2330">♣</text><text x="50.0" y="241.92" font-size="18" text-anchor="middle" fill="#1d2330">♣</text></g></svg>
-    <h1 class="wordmark" aria-label="Rummy Scoreboard">
+    <h1 class="wordmark" aria-label="RummyTally">
       <span class="wm-big" id="wmBig">Rummy</span>
-      <span class="wm-small" id="wmSmall">Scoreboard</span>
+      <span class="wm-small" id="wmSmall">Tally</span>
     </h1>
     <div class="hero-suits" aria-hidden="true">♠ <i>♥</i> ♣ <i>♦</i></div>
     <div class="hero-foot">
@@ -1148,7 +1149,7 @@
         <p><b>No ads or tracking:</b> this site shows no advertising and uses no analytics or advertising cookies.</p>
       </div>
       <div class="ft-subsec" id="ft-disclaimer" hidden>
-        <p>Rummy Scoreboard is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some states (for example Telangana) – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
+        <p>RummyTally is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some states (for example Telangana) – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
         <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in Game Settings.</p>
       </div>
     </div>
@@ -1518,7 +1519,7 @@
     fitWordmark();
   }
 
-  // Stretch "Scoreboard" with letter-spacing so it is exactly as wide as "Rummy"
+  // Stretch "Tally" with letter-spacing so it is exactly as wide as "Rummy"
   function fitWordmark() {
     const big = $('wmBig'), small = $('wmSmall');
     small.style.letterSpacing = '0px';
@@ -2601,8 +2602,8 @@
     x.fillStyle = '#0e5a3a'; x.fillRect(0, 0, width, titleH);
     x.fillStyle = '#d6a62c'; x.fillRect(0, titleH - 4, width, 4);
     x.fillStyle = '#ffffff'; x.font = `800 22px Georgia, serif`; x.textBaseline = 'middle';
-    x.fillText('Rummy ', pad, 26);
-    x.fillStyle = '#d6a62c'; x.fillText('Scoreboard', pad + x.measureText('Rummy ').width, 26);
+    x.fillText('Rummy', pad, 26);
+    x.fillStyle = '#d6a62c'; x.fillText('Tally', pad + x.measureText('Rummy').width, 26);
     const res = gameResult();
     const sub = `${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · ` +
       `${state.rounds.length} round${state.rounds.length === 1 ? '' : 's'}` +
@@ -2684,11 +2685,11 @@
     const canvas = buildShareCanvas();
     const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
     if (!blob) { toast('Could not create the image'); return; }
-    const name = `rummy-scoreboard-${dateStamp()}.png`;
+    const name = `rummytally-${dateStamp()}.png`;
     const file = new File([blob], name, { type: 'image/png' });
     try {
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Rummy Scoreboard' });
+        await navigator.share({ files: [file], title: 'RummyTally' });
         return;
       }
     } catch (e) {
@@ -2896,7 +2897,7 @@
   function normalizeImported(obj) {
     const d = obj && obj.data ? obj.data : obj;
     if (!d || typeof d !== 'object') throw new Error('The file does not contain scoreboard data.');
-    if (obj && obj.app && obj.app !== 'rummy-scoreboard') throw new Error('This file is not a Rummy Scoreboard export.');
+    if (obj && obj.app && obj.app !== 'rummy-scoreboard') throw new Error('This file is not a RummyTally export.');
     if (!Array.isArray(d.players) || !Array.isArray(d.rounds)) throw new Error('Players or rounds are missing from the file.');
 
     const isWhole = n => Number.isInteger(n) && n >= 0;
@@ -4087,7 +4088,7 @@
     const name = online && online.room ? online.room.name : 'Rummy';
     const what = { edit: 'join and enter scores', view: 'watch the scores live', owner: 'manage the room (keep private)',
       gedit: 'enter scores in this game', gview: 'watch this game live' }[kind] || 'open the scoreboard';
-    const text = `Rummy – ${name}: tap to ${what}\n${url}`;
+    const text = `RummyTally – ${name}: tap to ${what}\n${url}`;
     if (kind === 'owner' && online && myRooms.rooms[online.roomId]) { myRooms.rooms[online.roomId].savedOwnerLink = true; saveRooms(); }
     if (how === 'copy') {
       try { await navigator.clipboard.writeText(url); toast('Link copied'); }
@@ -4253,7 +4254,7 @@
         });
       }
     });
-    downloadFile(JSON.stringify(payload, null, 2), `rummy-data-${dateStamp()}.json`, 'application/json');
+    downloadFile(JSON.stringify(payload, null, 2), `rummytally-data-${dateStamp()}.json`, 'application/json');
     if (payload.data) {
       const s = online ? loadState() : state;
       s.gamesSinceBackup = 0;
@@ -4480,7 +4481,7 @@
   });
   $('shareWa').addEventListener('click', async () => {
     const text = shareText();
-    if (navigator.share) { try { await navigator.share({ title: 'Rummy – shares', text }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    if (navigator.share) { try { await navigator.share({ title: 'RummyTally – shares', text }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
     window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
   });
 
@@ -4511,7 +4512,7 @@
   });
 
   /* ---------- Footer: help, feedback, legal, our other sites ---------- */
-  // Feedback goes to the same Google Sheet as our other sites (the Website column says "Rummy Scoreboard")
+  // Feedback goes to the same Google Sheet as our other sites (the Website column says "RummyTally")
   const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxPwZpVM9hxNnVcH_nPoFLH4pUhcsJhqQlo3IB9OwLLHgFqYvS_NLCN9aCxztz0fkK2/exec';
   const OTHER_SITES_FALLBACK = {
     content: "A few other things we've built – drop by if any of these sound useful.",
@@ -4562,7 +4563,7 @@
     const btn = $('fbSubmit');
     btn.disabled = true;
     btn.textContent = 'Sending…';
-    const entry = { Date: fbStamp(new Date()), Website: 'Rummy Scoreboard', Name: name, Message: message, Status: 'Open' };
+    const entry = { Date: fbStamp(new Date()), Website: 'RummyTally', Name: name, Message: message, Status: 'Open' };
     try {
       const res = await fetch(FEEDBACK_ENDPOINT, { method: 'POST', body: new URLSearchParams(entry) });
       try { const body = await res.json(); if (body.status !== 'ok') console.error('Feedback sheet update failed:', body); }
