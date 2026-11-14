@@ -1527,7 +1527,7 @@
       </div>
       <div class="gu-sec">
         <div class="gu-h">Ending a game</div>
-        <p class="gu-note">The game ends by itself as soon as there is a winner – when only one player is left, through the scores or by marking the others OUT. To end it earlier, tap <b>■ End Game</b>, tick the winner(s) and tap <b>🏆 End Game</b> – or tap <b>✎</b> on Player, tick the winner(s) and tap <b>🏆 Make winner &amp; end game</b>. The owner can undo it with <b>↺ Reopen game</b>.</p>
+        <p class="gu-note">The game ends by itself as soon as there is a winner – when only one player is left, through the scores or by marking the others OUT. To end it earlier, tap <b>■ End Game</b>, tick the winner(s) and tap <b>🏆 End Game</b> – or tap <b>✎</b> on Player, tick the winner(s) and tap <b>🏆 Make winner &amp; end game</b>. Anyone with edit access can undo it with <b>↺ Reopen game</b>.</p>
       </div>
     </div>
     <div class="sb-headrow">
@@ -1632,7 +1632,7 @@
       <details><summary>3. Share and play together</summary><p>Send the <b>Edit link</b> to people who enter scores and the <b>View link</b> to people who only watch. Scores update on every phone straight away, and nobody needs to log in.<br>
         • <b>One game</b> – the share button next to Scoreboard, or the share icon beside a game in My Rooms. They see only that game.<br>
         • <b>Whole room</b> – the share icon beside a room in My Rooms. They see every game in it, including new ones.<br>
-        • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, reopen an ended game, or delete a link with the <b>bin</b> beside it – only that link (View or Edit) stops working, nothing else is deleted – and make a new one with <b>＋ Make … link</b>.<br>
+        • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, or delete a link with the <b>bin</b> beside it – only that link (View or Edit) stops working, nothing else is deleted – and make a new one with <b>＋ Make … link</b>.<br>
         • Links work for 1 year – the date is shown where you share them.</p></details>
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Setup (New Game, or <b>⚙ Edit</b> on the Game Setup row under Scoreboard), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
       <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games, oldest first. Tap <b>＋</b> to open a room, a game to see its scoreboard below, the share icon for its links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too. Under <b>Shared with me</b>, games shared one by one are grouped by room, 👁 marks watch-only, and the bin only removes them from your list.</p></details>
@@ -2887,7 +2887,7 @@
 
   // Reopen an ended game: winners cleared, clock left paused
   function undoDeclare() {
-    if (!canReopen()) { toast('Only the room owner can reopen an ended game'); return; }
+    if (!canReopen()) { toast('Only players with edit access can reopen an ended game'); return; }
     if (!confirm('Undo ending the game and continue playing?')) return;
     state.declared = [];
     state.timer.endedAt = null;
@@ -3992,7 +3992,7 @@
     $('timeChip').title = { idle: 'Game clock – not started', running: 'Game clock – running', paused: 'Game clock – paused', ended: 'Game clock – ended' }[st] + '. Tap to go to Play / Pause / End Game';
     const enoughPlayers = state.players.length >= 2;
     const ended = isEnded();
-    // End Game needs at least 2 players and 1 saved round; only the owner (or this device, offline) can reopen
+    // End Game needs at least 2 players and 1 saved round; anyone who can edit can reopen
     const canEnd = enoughPlayers && state.rounds.length >= 1;
     $('btnEndGame').disabled = ended ? !canReopen() : !canEnd;
     $('btnEndGame').hidden = ended && !canReopen();
@@ -4866,7 +4866,7 @@
   function daysLabel(d) { return d >= 365 ? '1 year' : d >= 180 ? '6 months' : `${d} days`; }
   // Ended with End Game (not just one player left): the game is then locked
   function isEnded() { return !!(state.timer.endedAt || state.declared.length); }
-  function canReopen() { return !online || online.role === 'owner'; }
+  function canReopen() { return canEdit(); }   // whoever can end a game can reopen it
 
   /* ---------- Firebase loading ---------- */
   async function cloudInit() {

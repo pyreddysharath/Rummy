@@ -79,9 +79,8 @@ service cloud.firestore {
         allow get: if canViewRoom(r) || gameEdit(r, g) || gameView(r, g);
         allow list: if canViewRoom(r);
         allow create: if canEditRoom(r) && okExpiry(request.resource.data);
-        // Once a game is ended (End Game) only the owner can change it – e.g. to reopen it
-        allow update: if okExpiry(request.resource.data) && (isRoomOwner(r) ||
-          ((canEditRoom(r) || gameEdit(r, g)) && resource.data.status != 'ended'));
+        // Owners and editors change games – also an ended one, e.g. to reopen it
+        allow update: if okExpiry(request.resource.data) && (isRoomOwner(r) || canEditRoom(r) || gameEdit(r, g));
         allow delete: if signedIn() && (isRoomOwner(r) || expired(resource.data));
       }
     }
