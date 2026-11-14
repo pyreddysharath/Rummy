@@ -1485,7 +1485,7 @@
       <details><summary>3. Share and play together</summary><p>Send the <b>Edit link</b> to people who enter scores and the <b>View link</b> to people who only watch. Scores update on every phone straight away, and nobody needs to log in.<br>
         • <b>One game</b> – the share button next to Scoreboard, or the share icon beside a game in My Rooms. They see only that game.<br>
         • <b>Whole room</b> – the share icon beside a room in My Rooms. They see every game in it, including new ones.<br>
-        • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, reopen an ended game, or make <b>↻ New links</b> (the old links then stop working).<br>
+        • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, reopen an ended game, or make <b>↻ New links</b> for a room or a game – the old links stop working, the room or game stays.<br>
         • Links work for 1 year – the date is shown where you share them.</p></details>
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
       <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games, oldest first. Tap <b>＋</b> to open a room, a game to see its scoreboard below, the share icon for its links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too. Under <b>Shared with me</b>, games shared one by one are grouped by room, 👁 marks watch-only, and the bin only removes them from your list.</p></details>
@@ -3244,7 +3244,9 @@
   });
   $('sbLinks').addEventListener('click', e => {
     const b = e.target.closest('[data-lk]');
+    const gr = e.target.closest('[data-greset]');
     if (b) shareLink(b);
+    else if (gr) resetGameLinksFor(gr.dataset.greset, gr.dataset.g);
     else if (e.target.closest('[data-shareimg]')) shareScoreboard();
   });
 
@@ -3549,6 +3551,8 @@
   $('roomsCard').addEventListener('click', e => {
     const lk = e.target.closest('[data-lk]');
     if (lk) { shareLink(lk); return; }
+    const gr = e.target.closest('[data-greset]');
+    if (gr) { e.preventDefault(); resetGameLinksFor(gr.dataset.greset, gr.dataset.g); return; }
     const b = e.target.closest('[data-mr]');
     if (!b) return;
     e.preventDefault();   // an icon in a room's heading shouldn't fold it open or shut by itself
@@ -5160,7 +5164,21 @@
   async function gameLinksHtml(r, g) {
     const k = await gameKeysFor(r, g);
     if (!k) return '';
-    return linkRowHtml('View', gameLink(r, g, 'view', k.viewKey), 'gview') + linkRowHtml('Edit', gameLink(r, g, 'edit', k.editKey), 'gedit') + linkUntilHtml(tsMs(k.expireAt));
+    return linkRowHtml('View', gameLink(r, g, 'view', k.viewKey), 'gview') + linkRowHtml('Edit', gameLink(r, g, 'edit', k.editKey), 'gedit') + linkUntilHtml(tsMs(k.expireAt))
+      + (roomRoleOf(r) === 'owner' ? `<button type="button" class="link-del plain" data-greset="${r}" data-g="${g}">↻ New links</button>` : '');
+  }
+  // Owner only: new links for one game – the old ones stop working, the game itself is untouched
+  async function resetGameLinksFor(r, g) {
+    if (roomRoleOf(r) !== 'owner') return;
+    if (!confirm('Make new View and Edit links for this game? The old links stop working – the game and its scores stay.')) return;
+    try {
+      await cloudInit();
+      await cw(fb.setDoc(R.gameKeys(r, g), { roomId: r, gameId: g, editKey: randKey(24), viewKey: randKey(24), expireAt: linkExpiry() }));
+      toast('New links made – share them again');
+      const id = r + '_' + g;
+      if ($('mgl-' + id)) fillGameLinks(id);
+      if (online && online.roomId === r && online.gameId === g && !$('sbLinks').hidden) fillSbLinks();
+    } catch (err) { onCloudError(err); }
   }
 
   async function resetRoomLinks(which) {
