@@ -3564,7 +3564,11 @@
     $('tileRooms').hidden = !FB_CFG;
     $('tileNew').hidden = document.body.classList.contains('readonly') && !!online;
     $('tiles').classList.add('one');
-    const open = hasOpenGame();
+    // An ended game isn't offered as Continue (after a refresh, what this phone remembers decides until it loads)
+    const loaded = online ? !!online.gameMeta : !(FB_CFG && myRooms.current);
+    const ended = loaded ? isEnded() : !!(myRooms.current && myRooms.current.ended);
+    if (online && online.gameMeta && myRooms.current && !!myRooms.current.ended !== ended) { myRooms.current.ended = ended; saveRooms(); }
+    const open = hasOpenGame() && !ended;
     $('btnResume').hidden = !open;
     if (open) {
       const lbl = resumeLabel();
@@ -4986,8 +4990,10 @@
     if (!online) saveState();   // keep the offline game safe before switching
     online = { roomId: r, gameId: null, role, scope, room: null, gameMeta: null, follow: scope === 'room' };
     const keepLabel = myRooms.current && myRooms.current.roomId === r && myRooms.current.scope === scope ? myRooms.current.label : undefined;
+    const prevEnded = !!(keepLabel && myRooms.current.ended);
     myRooms.current = { roomId: r, gameId: scope === 'game' ? g : null, scope };
-    if (keepLabel) myRooms.current.label = keepLabel;   // same room again (e.g. after a refresh): Continue keeps its name while loading
+    if (keepLabel) myRooms.current.label = keepLabel;
+    if (keepLabel && prevEnded) myRooms.current.ended = true;   // same room again (e.g. after a refresh): Continue keeps its name while loading
     saveRooms();
     state = Object.assign(freshState(), { archive: [], gamesSinceBackup: 0 });
     lastSynced = {};
