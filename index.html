@@ -2364,6 +2364,7 @@
     $('btnMarkActive').disabled = n === 0;
     $('btnMarkOut').disabled = n === 0;
     $('btnRejoin').disabled = n === 0;
+    if ($('btnMakeWinner')) $('btnMakeWinner').disabled = n === 0;
     $('btnSetDealer').disabled = n !== 1;   // exactly one player
   }
 
