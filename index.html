@@ -921,7 +921,38 @@
   /* Share, backup reminder, stats */
   .h2-btns { display: inline-flex; gap: 6px; margin-left: auto; }
   #timeChip { display: none !important; }   /* the clock is under the scoreboard */
-  .board-card h2 { flex-wrap: nowrap; justify-content: center; position: relative; padding: 0 34px; }
+  .board-card h2 { flex-wrap: nowrap; justify-content: center; position: relative; padding: 0 40px; }
+  .board-card h2.sb-h { gap: 12px; }
+  .sb-h .sbs { display: inline-flex; gap: 5px; }
+  .sb-h .sbs svg { width: 14px; height: 14px; display: block; }
+  .sb-h .sbs .bk { color: #1d2330; }
+  .sb-h .sbs .rd { color: #e0282e; }
+  /* Room › Game row with Share and ⓘ on its right */
+  .sb-headrow { position: relative; }
+  .sb-headrow .sb-strip, .sb-headrow .sb-editing { margin-right: 46px; min-height: 40px; box-sizing: border-box; }
+  .sb-headrow .sb-strip .seg b { font-size: .86rem; }
+  #btnCloseBoard[hidden] { display: none !important; }
+  .sb-acts { position: absolute; top: 0; right: 0; height: 40px; display: flex; align-items: center; gap: 8px; }
+  .sb-acts .info-btn.share-ico { width: 36px; height: 36px; margin: 0; }
+  .sb-setup #btnLegend { width: 30px; height: 30px; min-height: 0; font-size: .95rem; margin: 0 2px 0 auto; border-width: 1.5px; flex: 0 0 auto; }
+  .sb-setup .sv { flex: 0 1 auto; }
+  /* ⓘ guide */
+  .guide { margin: 10px 0 12px; padding: 12px 14px 4px; background: #fff; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .guide[hidden] { display: none; }
+  .gu-title { font-weight: 800; font-size: 1rem; color: var(--felt); margin: 0 0 8px; }
+  .gu-sec { padding: 8px 0 10px; border-top: 1px solid #f0ece0; }
+  .gu-h { display: flex; align-items: baseline; gap: 6px; font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #8a6a10; margin: 0 0 8px; }
+  .gu-h small { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); font-size: .72rem; }
+  .gu-grid { display: grid; grid-template-columns: 58px 1fr; gap: 7px 10px; align-items: center; font-size: .86rem; color: var(--text); }
+  .gu-grid > span:nth-child(odd) { display: flex; justify-content: center; }
+  .gu-grid small { color: var(--muted); font-size: .74rem; margin-left: 4px; }
+  .gu-grid .sw { display: inline-block; width: 16px; height: 16px; border-radius: 50%; }
+  .gu-grid .lg-pill { font-size: .64rem; padding: 2px 7px; margin: 0; }
+  .gu-note { margin: 6px 0 0; font-size: .8rem; color: var(--muted); line-height: 1.45; }
+  .gu-suits { display: flex; align-items: center; gap: 6px; }
+  .gu-suits svg { width: 20px; height: 20px; display: block; }
+  .gu-suits .bk { color: #111; } .gu-suits .rd { color: #e0282e; }
+  .gu-suits b { color: var(--muted); }
   .board-card h2 .ttl { justify-content: center; }
   .board-card h2 .sb-word { text-transform: uppercase; font-size: 1.4rem; letter-spacing: .08em; font-weight: 800; line-height: 1; }
   .board-card h2 .ttl { display: inline-flex; align-items: center; gap: 4px; }
@@ -1442,48 +1473,61 @@
 
   <!-- Scoreboard: players, score entry, rounds -->
   <section class="card board-card">
-    <h2>
-      <span class="ttl"><span class="suit">♠</span> <span class="sb-word">Scoreboard</span>
-        <button class="info-btn" id="btnLegend" type="button" aria-expanded="false" aria-controls="gameDetails" title="Game overview: rules, players and what the colours mean">i</button>
-        <button class="info-btn share-ico" id="btnSbShare" type="button" data-sbshare aria-expanded="false" aria-controls="sbLinks" title="Share: scoreboard picture and links" hidden><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="18" cy="5" r="3.4" fill="currentColor"/><circle cx="6" cy="12" r="3.4" fill="currentColor"/><circle cx="18" cy="19" r="3.4" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2.8"/></svg></button></span>
+    <h2 class="sb-h"><span class="sbs" aria-hidden="true"><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5C9 5.5 3 9.2 3 13.6a4.6 4.6 0 0 0 7.6 3.5L9.6 22h4.8l-1-4.9A4.6 4.6 0 0 0 21 13.6c0-4.4-6-8.1-9-12.1z"/></svg><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.5C8.5 18 2 13.6 2 8.2A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 10 2.2c0 5.4-6.5 9.8-10 13.3z"/></svg></span><span class="sb-word">Scoreboard</span><span class="sbs" aria-hidden="true"><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5 20 12l-8 10.5L4 12z"/></svg><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a4.8 4.8 0 0 0-3.9 7.6A4.8 4.8 0 1 0 10.7 17L9.6 22h4.8l-1.1-5a4.8 4.8 0 1 0 2.6-7.9A4.8 4.8 0 0 0 12 1.5z"/></svg></span>
       <span class="h2-btns">
         <button class="time-chip idle" id="timeChip" type="button" hidden title="Game clock – tap to go to Play / Pause / End Game"><span class="tc-ico">⏱</span> <span id="timeChipText">00:00:00</span></button>
         <button type="button" class="ico-btn" id="btnCloseBoard" title="Close this game (it stays in its room)" aria-label="Close this game" hidden><svg class="x-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
       </span>
     </h2>
-    <div class="gd-box" id="gameDetails" hidden></div>
-    <div class="lk-box sb-links" id="sbLinks" hidden></div>
-    <div class="range-note info-note" id="legendNote" hidden>
-      <div class="rules" id="rulesNote" hidden></div>
-      <div class="lg-title">Legend</div>
-      <div class="ns-sub">1 · Score colours <small>rounds and Total</small></div>
-      <div class="legend">
-        <span><i class="dot" style="background:#16a34a;border-radius:50%"></i>Lowest</span>
-        <span><i class="dot" style="background:#e57a00;border-radius:50%"></i>Highest</span>
-        <span><i class="dot" style="background:#c6f1d3;border-radius:50%;box-shadow:inset 0 0 0 1px #7fd49a"></i>2nd lowest (Total only)</span>
-        <span><i class="dot" style="background:#fed2a1;border-radius:50%;box-shadow:inset 0 0 0 1px #f0a85c"></i>2nd highest (Total only)</span>
+    <div class="sb-headrow">
+      <div class="sb-meta" id="sbMeta"></div>
+      <div class="sb-acts">
+        <button class="info-btn share-ico" id="btnSbShare" type="button" data-sbshare aria-expanded="false" aria-controls="sbLinks" title="Share: scoreboard picture and links" hidden><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="18" cy="5" r="3.4" fill="currentColor"/><circle cx="6" cy="12" r="3.4" fill="currentColor"/><circle cx="18" cy="19" r="3.4" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2.8"/></svg></button>
       </div>
-      <div class="ns-sub">2 · Drops left <small>Total and the line under each name</small></div>
-      <div class="legend">
-        <span><i class="dot" style="background:#fed2a1;border-radius:50%;box-shadow:inset 0 0 0 1px #f0a85c"></i>2 drops</span>
-        <span><i class="dot" style="background:#e57a00;border-radius:50%"></i>1 drop</span>
-        <span><i class="dot" style="background:#fecaca;border-radius:50%;box-shadow:inset 0 0 0 1px #f59a9a"></i>0 drops</span>
-      </div>
-      <div class="ns-note">On the Total, drops colours take priority over score colours.</div>
-      <div class="ns-sub">3 · Players</div>
-      <div class="legend">
-        <span class="lg-full"><span class="pill out lg-pill">OUT</span> red name, Total and OUT round struck through; a red – means no score in that round</span>
-        <span class="lg-full"><span class="pill winner lg-pill">Winner</span> 🏆 gold name, scores on a light gold background</span>
-        <span><svg class="dicon" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true"><g transform="rotate(10 10 12)"><rect x="3" y="2" width="14" height="20" rx="2.6" fill="#f5c12e" stroke="#0e5a3a" stroke-width="1.4"/><path transform="translate(5.6 7.2) scale(.88)" d="M5 0C5 0 0 4 0 6.3C0 8 1.8 9 3.4 8.2L3 10H7L6.6 8.2C8.2 9 10 8 10 6.3C10 4 5 0 5 0Z" fill="#1d2330"/></g></svg> Dealer <small class="ns-hint">(tap for label)</small></span>
-        <span><b class="rj">↺</b> Rejoined</span>
-      </div>
-      <div class="ns-sub">4 · Ending a game</div>
-      <div class="ns-note">Tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the × on a Winner tag in ✎ Player edit.</div>
     </div>
-
-
-    <div class="sb-meta" id="sbMeta"></div>
     <div class="gd-box setup-edit" id="setupEdit" hidden></div>
+    <div class="lk-box sb-links" id="sbLinks" hidden></div>
+    <div class="gd-box" id="gameDetails" hidden></div>
+    <div class="rules" id="rulesNote" hidden></div>
+    <!-- ⓘ: how to read the scoreboard -->
+    <div class="guide" id="legendNote" hidden>
+      <div class="gu-title">How to read the scoreboard</div>
+      <div class="gu-sec">
+        <div class="gu-h">Score colours <small>rounds and Total</small></div>
+        <div class="gu-grid">
+          <span><i class="sw" style="background:#16a34a"></i></span><span>Lowest</span>
+          <span><i class="sw" style="background:#e57a00"></i></span><span>Highest</span>
+          <span><i class="sw" style="background:#c6f1d3;box-shadow:inset 0 0 0 1.5px #7fd49a"></i></span><span>2nd lowest <small>Total only</small></span>
+          <span><i class="sw" style="background:#fed2a1;box-shadow:inset 0 0 0 1.5px #f0a85c"></i></span><span>2nd highest <small>Total only</small></span>
+        </div>
+      </div>
+      <div class="gu-sec">
+        <div class="gu-h">Drops left <small>Total and the line under each name</small></div>
+        <div class="gu-grid">
+          <span><i class="sw" style="background:#fed2a1;box-shadow:inset 0 0 0 1.5px #f0a85c"></i></span><span>2 drops left</span>
+          <span><i class="sw" style="background:#e57a00"></i></span><span>1 drop left</span>
+          <span><i class="sw" style="background:#fecaca;box-shadow:inset 0 0 0 1.5px #f59a9a"></i></span><span>No drops left</span>
+        </div>
+        <p class="gu-note">On the Total, the drops colour wins over the score colour.</p>
+      </div>
+      <div class="gu-sec">
+        <div class="gu-h">Players</div>
+        <div class="gu-grid">
+          <span><span class="pill out lg-pill">OUT</span></span><span>Name and Total struck through <small>red – = their OUT round</small></span>
+          <span><span class="pill winner lg-pill">Winner</span></span><span>🏆 Gold name and row</span>
+          <span><svg class="dicon" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true"><g transform="rotate(10 10 12)"><rect x="3" y="2" width="14" height="20" rx="2.6" fill="#f5c12e" stroke="#0e5a3a" stroke-width="1.4"/><path transform="translate(5.6 7.2) scale(.88)" d="M5 0C5 0 0 4 0 6.3C0 8 1.8 9 3.4 8.2L3 10H7L6.6 8.2C8.2 9 10 8 10 6.3C10 4 5 0 5 0Z" fill="#1d2330"/></g></svg></span><span>Dealer this round <small>tap it for the label</small></span>
+          <span><b class="rj">↺</b></span><span>Rejoined</span>
+        </div>
+      </div>
+      <div class="gu-sec">
+        <div class="gu-h">Suit order <small>highest to lowest</small></div>
+        <div class="gu-suits"><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5C9 5.5 3 9.2 3 13.6a4.6 4.6 0 0 0 7.6 3.5L9.6 22h4.8l-1-4.9A4.6 4.6 0 0 0 21 13.6c0-4.4-6-8.1-9-12.1z"/></svg><b>›</b><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.5C8.5 18 2 13.6 2 8.2A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 10 2.2c0 5.4-6.5 9.8-10 13.3z"/></svg><b>›</b><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5 20 12l-8 10.5L4 12z"/></svg><b>›</b><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a4.8 4.8 0 0 0-3.9 7.6A4.8 4.8 0 1 0 10.7 17L9.6 22h4.8l-1.1-5a4.8 4.8 0 1 0 2.6-7.9A4.8 4.8 0 0 0 12 1.5z"/></svg></div>
+      </div>
+      <div class="gu-sec">
+        <div class="gu-h">Ending a game</div>
+        <p class="gu-note">The game ends by itself when only one player is left. To end it earlier, tap <b>■ End Game</b> and tick the winner. The owner can undo it with <b>↺ Reopen game</b>.</p>
+      </div>
+    </div>
 
     <div class="table-scroll">
       <table class="board" id="board"></table>
@@ -3105,7 +3149,7 @@
       const e = myRooms.rooms[r];
       if (!r || !e) throw new Error('Choose a room first.');
       if (!online || online.roomId !== r || online.scope !== 'room') { await enterRoom(r, null, e.role, 'room'); await waitForGame(10000); }
-      const empty = created && !state.rounds.length && !state.players.length && !state.timer.startedAt;
+      const empty = created && !state.rounds.length && !state.players.length;   // the new room's blank first game
       // Default name, now that the room's games are known (a blank game being filled in is already counted)
       const gameName = named || (empty ? 'Game 1' : defaultGameName(r));
       if (empty) {   // a new room's first game, still blank: fill it in
@@ -3259,7 +3303,8 @@
     gameShort = m ? m[1] : gameFull;
     if (sbEdit === 'room') html += editor('Room', roomName, 40);
     else if (sbEdit === 'game') html += editor('Game', gameFull, 50);
-    else if (roomName || gameShort) {
+    else {
+      if (!roomName && !gameShort) gameShort = 'Game';
       html += `<div class="sb-strip" title="${esc([roomName, gameFull].filter(Boolean).join(' › '))}">`
         + (roomName ? `<span class="seg room"><span aria-hidden="true">🏠</span><b>${esc(roomName)}</b>${canRoom ? pen('room', 'room') : ''}</span>` : '')
         + (roomName && gameShort ? '<span class="sep" aria-hidden="true">›</span>' : '')
@@ -3272,6 +3317,7 @@
     html += `<div class="sb-setup"><div class="sv" role="list" aria-label="Game Setup">`
       + `<span role="listitem" class="sv-limit"><small>Limit</small><b>${st.limit}</b></span>`
       + `<span role="listitem" class="sv-buy"><small>Buy-in</small><b>${st.share ? '₹' + st.share.toLocaleString('en-IN') : 'Not set'}</b></span></div>`
+      + `<button class="info-btn" id="btnLegend" type="button" aria-expanded="${detailsOpen}" aria-controls="legendNote" title="How to read the scoreboard">i</button>`
       + (canSetup ? `<button type="button" class="sb-setup-ed ${rulesEditing ? 'on' : ''}" data-setupedit aria-expanded="${rulesEditing}">${I_GEAR_S} ${rulesEditing ? 'Close' : 'Edit'}</button>` : '')
       + '</div>';
     // Chips: only what isn't visible elsewhere – Ended, and a warning when scores aren't reaching the server
@@ -3285,11 +3331,10 @@
     if (chips.length) html += `<div class="sb-chips">${chips.join('')}</div>`;
     el.innerHTML = html;
     if (typing && $('sbEdIn')) { $('sbEdIn').value = typing.v; if (typing.f) $('sbEdIn').focus(); }
-    $('btnCloseBoard').hidden = !online && page !== 'rooms';
+    $('btnCloseBoard').hidden = page !== 'rooms';   // elsewhere the Back arrow closes the game
     const canShare = !!online || state.rounds.length > 0;
     $('btnSbShare').hidden = !canShare;
     if (!canShare && sbLinksOpen) { sbLinksOpen = false; $('sbLinks').hidden = true; $('btnSbShare').setAttribute('aria-expanded', 'false'); }
-    if (detailsOpen && !rulesEditing) renderDetails();
   }
 
   // Share: the scoreboard picture, plus the room's links when playing online
@@ -3479,9 +3524,10 @@
     $('btnBack').hidden = home;
     $('tbTitle').textContent = info ? PAGE_TITLE[page] : '';
     $('tbTitle').hidden = !info;
-    $('tbNav').hidden = home || info || scr === 'game';
-    $('tbBrand').hidden = scr !== 'game';
-    if (scr === 'game' && !$('tbbSuits').firstChild) $('tbbSuits').innerHTML = document.querySelector('.hero-suits').innerHTML;
+    const brand = scr === 'game' || page === 'rooms';
+    $('tbNav').hidden = home || info || brand;
+    $('tbBrand').hidden = !brand;
+    if (brand && !$('tbbSuits').firstChild) $('tbbSuits').innerHTML = document.querySelector('.hero-suits').innerHTML;
     $('btnRoomsNav').hidden = !FB_CFG;
     $('btnRoomsNav').classList.toggle('on', page === 'rooms');
     $('btnNewGame').classList.toggle('on', !!setup);
@@ -4662,14 +4708,14 @@
     });
   });
   // ⓘ: one overview – the game's details and rules, then what the colours and icons mean
-  $('btnLegend').addEventListener('click', () => {
+  $('sbMeta').addEventListener('click', e => { if (e.target.closest('#btnLegend')) toggleGuide(); });
+  function toggleGuide() {
     if (rulesEditing) closeRulesEdit();
     detailsOpen = !detailsOpen;
-    $('gameDetails').hidden = !detailsOpen;
+    $('gameDetails').hidden = true;
     $('legendNote').hidden = !detailsOpen;
     $('btnLegend').setAttribute('aria-expanded', String(detailsOpen));
-    if (detailsOpen) renderDetails();
-  });
+  }
   $('btnSbShare').addEventListener('click', () => {
     sbLinksOpen = !sbLinksOpen;
     $('sbLinks').hidden = !sbLinksOpen;
