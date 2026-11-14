@@ -1017,8 +1017,11 @@
   .clock.running .clock-state { background: var(--primary-soft); color: var(--primary-dark); }
   .clock.paused .clock-state { background: var(--orange-soft); color: var(--orange-text); }
   .clock.ended .clock-state { background: var(--red-soft); color: var(--red-text); }
-  /* Play | End Game side by side; Calculate Shares below at the same width */
-  .clock-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  /* End Game | Calculate Shares side by side */
+  .clock-btns { display: flex; gap: 8px; width: 100%; }
+  .clock-btns > button { flex: 1 1 0; min-width: 0; }
+  .clock-btns > button[hidden] { display: none; }
+  .clock-btns .calc-btn { min-width: 0; width: auto; }
   .clock-btns button { min-height: 30px; padding: 4px 10px; font-size: .8rem; }
   .pp-ico { width: 13px; height: 13px; fill: currentColor; vertical-align: -2px; margin-right: 6px; }
   .start-box { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
@@ -1271,7 +1274,7 @@
   .rs-danger { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: grid; gap: 4px; justify-items: start; }
   .del-room { color: var(--red); border-color: #f5b5b5; }
   /* View-only visitors: everything that changes the game is hidden */
-  body.readonly #btnNewGame, body.readonly #btnPause, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
+  body.readonly #btnNewGame, body.readonly #btnEndGame, body.readonly #endBox, body.readonly [data-editplayers], body.readonly table.board thead .hbtn,
   body.readonly .settings-apply { display: none !important; }
   body.readonly .settings-card fieldset { pointer-events: none; opacity: .6; }
   /* Ended game: nothing can be changed until the owner reopens it */
@@ -1499,8 +1502,8 @@
       </button>
       <div class="time-details" id="timeBody" hidden></div>
       <div class="clock-btns">
-        <button class="btn-primary" id="btnPause" type="button">▶ Play</button>
         <button class="end-btn" id="btnEndGame" type="button" aria-expanded="false" aria-controls="endBox"><span class="eg-label"><span class="eg-ico">■</span> End Game</span><span class="chev" aria-hidden="true"></span></button>
+        <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       </div>
       <label class="awake-line" title="Saved on this phone for every game"><input type="checkbox" id="setAwake"> Keep the screen on during the game</label>
       <div class="start-box" id="startBox" role="status" hidden>
@@ -1515,7 +1518,6 @@
           <button class="end-ok" id="btnDeclareOk" type="button">🏆 End Game</button>
         </div>
       </div>
-      <button class="calc-btn" id="btnShares" type="button" aria-expanded="false" aria-controls="shareBox">₹ Calculate Shares <span class="chev" aria-hidden="true"></span></button>
       <div class="share-box" id="shareBox" hidden>
         <div class="split-opts" id="splitOpts" role="radiogroup" aria-label="How to split"></div>
         <p class="share-pot" id="sharePot"></p>
@@ -1682,6 +1684,8 @@
 
   // Game clock: start time, end time and the play intervals between pauses
   function freshTimer() { return { startedAt: null, endedAt: null, intervals: [] }; }
+  // The clock runs from the moment a game is created until it ends (no pausing)
+  function runningTimer(now = Date.now()) { return { startedAt: now, endedAt: null, intervals: [{ start: now, end: null }] }; }
 
   function cleanTimer(t) {
     if (!t || typeof t !== 'object') return freshTimer();
@@ -2616,9 +2620,13 @@
       }
     });
     if (target === 'active' && changed.length) state.declared = [];   // game continues
-    // No winner left: the game is reopened (clock stays paused until Play)
+    // No winner left: the game is reopened and its clock carries on
     const reopened = unwon.length > 0 && state.declared.length === 0 && !!state.timer.endedAt;
-    if (reopened) state.timer.endedAt = null;
+    if (reopened) {
+      state.timer.endedAt = null;
+      const iv = state.timer.intervals || (state.timer.intervals = []);
+      if (!iv.length || iv[iv.length - 1].end !== null) iv.push({ start: Date.now(), end: null });
+    }
     selectedIds = new Set();
     saveState();
     renderAll();
@@ -2626,9 +2634,10 @@
     const what = target === 'out' ? 'marked as out' : 'marked as active';
     let msg = changed.length ? `${joinNames(changed)} ${what}.` : unwon.length ? '' : `No change – selected players are already ${target === 'out' ? 'out' : 'active'}.`;
     if (unwon.length) msg += `${msg ? ' ' : ''}${joinNames(unwon)} ${unwon.length > 1 ? 'are' : 'is'} no longer ${unwon.length > 1 ? 'winners' : 'the winner'}.` +
-      (reopened ? ' Game reopened – tap Play to restart the clock.' : '');
+      (reopened ? ' Game reopened.' : '');
     if (skipped.length) msg += ` ${joinNames(skipped)} ${skipped.length > 1 ? 'are' : 'is'} out on score – edit their round scores to bring them back.`;
     setMsg('boardMsg', msg, skipped.length && !changed.length ? 'err' : 'ok');
+    if (target === 'out' && changed.length) maybeAutoEnd();   // marking players OUT can leave a winner
   }
 
   /* After a game is reopened: if every player still in had a score typed for the next round, save it
@@ -2656,7 +2665,8 @@
     const n = state.rounds.length + 1;
     const dealt = currentDealerId();
     const starter = stepActive(dealt, 1);   // who played first this round (before this round's results)
-    state.rounds.push({ n, points, at: playedMs(state.timer) });   // game time (pauses excluded) when saved
+    if (!state.timer.startedAt) state.timer = runningTimer();   // older games without a running clock
+    state.rounds.push({ n, points, at: playedMs(state.timer) });   // game time when saved: round N = previous save → this save
     state.draft = {};
     state.dealerId = nextDealerAfter(dealt, starter);
     lastAddedId = null;
@@ -2667,10 +2677,8 @@
     const sc = document.querySelector('.table-scroll');
     sc.scrollLeft = 0;   // new round sits next to Total
 
-    const res = gameResult();
-    if (res && res.type === 'winner') toast(`🏆 ${res.players[0].name} wins!`);
-    else if (res) toast('Game ended – all players are OUT');
-    else toast(`Round ${n} saved`);
+    if (autoResult()) { maybeAutoEnd(); return; }   // a winner (or nobody left): the game ends here
+    toast(`Round ${n} saved`);
   }
 
   /* Undo for a deleted round: a placeholder column with an Undo button, shown for 5 seconds */
@@ -2810,9 +2818,11 @@
     if (!confirm('Undo ending the game and continue playing?')) return;
     state.declared = [];
     state.timer.endedAt = null;
+    const now = Date.now(), iv = state.timer.intervals || (state.timer.intervals = []);
+    if (!iv.length || iv[iv.length - 1].end !== null) iv.push({ start: now, end: null });   // the clock carries on
     saveState();
     renderAll();
-    toast('Game resumed – tap Play to restart the clock');
+    toast('Game reopened – the clock is running again');
   }
 
   /* ---------- Game actions ---------- */
@@ -2831,7 +2841,7 @@
     state.rejoinAt = {};
     state.rejoins = {};
     state.dealerId = null;
-    state.timer = freshTimer();
+    state.timer = runningTimer();
     editingRound = null;
     editDraft = {};
     lastAddedId = null;
@@ -3079,6 +3089,7 @@
       saveState();
       renderSettings();
       renderAll();
+      askKeepAwake();
       if (!players.length) openAddPlayer();   // device-only copy: the scoreboard needs a player to show
       return;
     }
@@ -3103,6 +3114,7 @@
         state.dealerId = null;
         state.gameName = gameName;
         state.settings = { ...state.settings, ...rs.settings };
+        state.timer = runningTimer();   // the clock starts now
         saveState();
         renderSettings();
         renderAll();
@@ -3110,6 +3122,7 @@
         await onlineNewGame(true, { players, settings: rs.settings, gameName, quiet: true });
       }
       noteGameStarted(r);
+      askKeepAwake();
       closeSetup();
       if (created) { roomPanel = 'links'; renderRoomCard(); }
       setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 400);
@@ -3882,15 +3895,7 @@
     $('timeChipText').textContent = fmtClock(playedMs(t));
     $('timeChip').className = 'time-chip ' + st;
     $('timeChip').title = { idle: 'Game clock – not started', running: 'Game clock – running', paused: 'Game clock – paused', ended: 'Game clock – ended' }[st] + '. Tap to go to Play / Pause / End Game';
-    const pp = $('btnPause');
     const enoughPlayers = state.players.length >= 2;
-    pp.disabled = st === 'ended' || (st === 'idle' && !enoughPlayers);   // Play needs at least 2 players
-    pp.title = st === 'idle' && !enoughPlayers ? 'Add at least 2 players to start' : '';
-    // Drawn icons in the text colour (the ⏸ / ▶ characters show as coloured emoji on many phones)
-    const icoPause = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
-    const icoPlay = '<svg class="pp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
-    pp.innerHTML = st === 'running' ? icoPause + 'Pause' : (icoPlay + (st === 'paused' ? 'Resume' : 'Play'));
-    pp.className = st === 'running' ? 'btn-outline' : 'btn-primary';
     const ended = isEnded();
     // End Game needs at least 2 players and 1 saved round; only the owner (or this device, offline) can reopen
     const canEnd = enoughPlayers && state.rounds.length >= 1;
@@ -3919,24 +3924,19 @@
     if (!keepAwake && 'wakeLock' in navigator) $('startBox').hidden = false;
   }
 
-  function togglePause() {
-    if (!canEdit()) return;
-    const st = timerState();
-    const now = Date.now();
-    if (st === 'running') {
-      state.timer.intervals[state.timer.intervals.length - 1].end = now;
-      toast('Game paused');
-    } else if (st === 'paused') {
-      state.timer.intervals.push({ start: now, end: null });
-      toast('Game resumed');
-    } else if (st === 'idle') {
-      if (state.players.length < 2) return;
-      startClock();
-      renderHeader();
-      return;
-    } else return;
-    saveState();
+  // "Keep the screen on?" – asked once when a game starts (unless already chosen)
+  function askKeepAwake() {
+    if (!keepAwake && 'wakeLock' in navigator) $('startBox').hidden = false;
     renderTimer();
+  }
+
+  // A winner (only one player left) ends the game by itself
+  function maybeAutoEnd() {
+    if (isEnded() || !canEdit()) return;
+    const auto = autoResult();
+    if (!auto) return;
+    finishGame(auto.type === 'winner' ? auto.players.map(p => p.id) : []);
+    toast(auto.type === 'winner' ? `🏆 ${joinNames(auto.players.map(p => p.name))} wins! · Game ended` : 'Game ended – all players are OUT');
   }
 
   // End Game opens the winner window; the game ends when it is confirmed
@@ -4684,7 +4684,6 @@
     deleteArchivedGame(Number(b.dataset.delgame));
   });
 
-  $('btnPause').addEventListener('click', togglePause);
   $('btnAwakeYes').addEventListener('click', () => {
     setKeepAwake(true);
     $('startBox').hidden = true;
@@ -4833,7 +4832,7 @@
     return {
       settings: { ...src.settings }, players: src.players.map(p => ({ id: p.id, name: p.name })),
       rounds: [], draft: {}, declared: [], manualOut: [], manualOutAt: {}, rejoinAt: {}, rejoins: {},
-      dealerId: null, timer: freshTimer(), nextId: src.nextId || 1, gameName: ''
+      dealerId: null, timer: runningTimer(), nextId: src.nextId || 1, gameName: ''
     };
   }
 
