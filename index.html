@@ -1477,7 +1477,7 @@
       <details><summary>2. Enter scores</summary><p>Type each round's points and tap <b>Save</b>. Add someone later with <b>＋ Add player</b> under the list. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
       <details><summary>3. Play together on several phones</summary><p>Share the room's <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch. Scores update on every phone straight away. Nobody needs to log in.</p></details>
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
-      <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games. Tap <b>＋</b> to open a room, a game to see its scoreboard, the link icon for the View and Edit links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too.</p></details>
+      <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games, oldest first. Tap <b>＋</b> to open a room, a game to see its scoreboard, the link icon for the View and Edit links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too.</p></details>
       <details><summary>6. Keep your rooms</summary><p>As a guest, your rooms are listed on this device only. <b>Sign in with Google</b> from the menu (top right) and your rooms follow you to every device.</p></details>
       <details><summary>7. When games are deleted</summary><p>The same for everyone: a game is deleted automatically after <b>90 days</b> with no play, and a room once it has no games left.</p></details>
       <details><summary>8. Backups</summary><p><b>Export data</b> (in the menu) saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
@@ -3428,7 +3428,7 @@
     const e = myRooms.rooms[id] || {};
     const own = e.role === 'owner';
     const list = gamesOf(id);
-    const rows = list ? (list.length ? `<ul class="mr-games">${[...list].sort((a, b) => (b.createdMs || 0) - (a.createdMs || 0)).map(x => {
+    const rows = list ? (list.length ? `<ul class="mr-games">${[...list].sort((a, b) => (a.createdMs || 0) - (b.createdMs || 0)).map(x => {   // oldest first
         const here = online && online.roomId === id && online.gameId === x.id;
         return `<li class="${here ? 'here' : ''}"><button type="button" class="mg-name" data-mr="opengameof" data-id="${id}" data-g="${x.id}">${esc(gameTitle(x.createdMs, x.seq, x.gameName))}</button>
           ${x.status === 'ended' ? '<span class="mg-tag">Ended</span>' : ''}
