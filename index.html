@@ -279,7 +279,7 @@
   .su-existing { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border: 1px solid var(--felt); background: #f2f8f4; border-radius: 10px; cursor: pointer; font-size: .9rem; }
   .su-existing input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
   .su-existing small { color: var(--muted); }
-  /* Game Rules inside New Game: no box, a round + / − like My Rooms, folded by default */
+  /* Game Setup inside New Game: no box, a round + / − like My Rooms, folded by default */
   #suSettingsSlot .settings-card { margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: none; }
   #suSettingsSlot .settings-card > summary { justify-content: flex-start; gap: 10px; padding: 8px 0; font-size: 1rem; }
   #suSettingsSlot .settings-card > summary .suit { display: none; }
@@ -367,6 +367,25 @@
   .sb-row { display: grid; grid-template-columns: 52px 1fr; gap: 8px; font-size: .9rem; margin-bottom: 3px; }
   .sb-l { color: var(--muted); font-weight: 700; }
   .sb-v { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 4px; min-width: 0; }
+  /* Room › Game in one strip */
+  .sb-strip { display: flex; align-items: center; gap: 6px; min-width: 0; background: #fffaf0; border: 1px solid #f0dca0; border-radius: 12px; padding: 6px 8px 6px 12px; }
+  .sb-strip .seg { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+  .sb-strip .seg b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .9rem; color: var(--text); }
+  .sb-strip .seg.room { flex: 0 1 auto; }
+  .sb-strip .seg.room b { color: #8a6a10; }
+  .sb-strip .seg.game { flex: 0 1 auto; }
+  .sb-strip .sep { color: #c9a94e; font-weight: 800; flex: 0 0 auto; }
+  .sb-strip .sb-pen { width: 24px; height: 24px; }
+  .sb-editing { background: #fffaf0; border: 1px solid #f0dca0; border-radius: 12px; padding: 6px 8px 6px 12px; }
+  /* Game Setup: one row of chips, swipe for the rest */
+  .sb-setup { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+  .sb-setup .sv { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .sb-setup .sv::-webkit-scrollbar { display: none; }
+  .sb-setup .sv span { white-space: nowrap; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #f6f4ee; color: var(--muted); }
+  .sb-setup .sv span b { color: var(--text); }
+  .sb-setup-ed { flex: 0 0 auto; min-height: 0; padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--gold); background: #fff; color: #8a6a10; font-weight: 800; font-size: .74rem; display: inline-flex; gap: 4px; align-items: center; }
+  .sb-setup-ed.on { background: var(--gold); color: #2b1f00; }
+  .setup-edit { margin-top: 10px; }
   .sb-pen { min-height: 0; width: 26px; height: 26px; padding: 0; border: 0; background: none; color: var(--gold-dark, #a67c12); display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .sb-ed { display: flex; align-items: center; gap: 4px; flex: 1 1 auto; min-width: 0; }
   .sb-ed input { flex: 1 1 auto; min-width: 0; min-height: 0; height: 32px; padding: 4px 8px; font: inherit; font-weight: 700; border: 1.5px solid var(--felt); border-radius: 8px; }
@@ -1312,7 +1331,7 @@
 
   <!-- Settings -->
   <details class="card settings-card" id="settingsBox">
-    <summary><span class="ttl"><span class="suit">♣</span> Game Rules</span></summary>
+    <summary><span class="ttl"><span class="suit">♣</span> Game Setup</span></summary>
     <fieldset class="opt-group nums">
       <legend>Points and limits</legend>
     <div class="settings-row">
@@ -1409,6 +1428,7 @@
 
 
     <div class="sb-meta" id="sbMeta"></div>
+    <div class="gd-box setup-edit" id="setupEdit" hidden></div>
 
     <div class="table-scroll">
       <table class="board" id="board"></table>
@@ -1495,14 +1515,14 @@
 
     <div class="ft-sec" id="ft-help" hidden>
       <div class="ft-title">How it works</div>
-      <details open><summary>1. Start a game</summary><p>Tap <b>New Game</b>. The first time, give the room a name – the occasion, e.g. "Diwali at Ravi's" – then check the game name, add at least <b>2 players</b>, look at <b>Game Rules</b> (tap <b>Show</b>) and tap <b>Start</b>. For the next game, tap <b>New Game</b> again: the room is already chosen, or pick another one or <b>＋ Create a new room</b>. The app reopens on the same screen after a refresh.</p></details>
+      <details open><summary>1. Start a game</summary><p>Tap <b>New Game</b>. The first time, give the room a name – the occasion, e.g. "Diwali at Ravi's" – then check the game name, add at least <b>2 players</b>, look at <b>Game Setup</b> (tap <b>Show</b>) and tap <b>Start</b>. For the next game, tap <b>New Game</b> again: the room is already chosen, or pick another one or <b>＋ Create a new room</b>. The app reopens on the same screen after a refresh.</p></details>
       <details><summary>2. Enter scores</summary><p>Type each round's points and tap <b>Save</b> – numbers are kept as you type, even if the page reloads. Add someone later with <b>＋ Add player</b> under the list. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon. Tap <b>✎</b> beside the Room or Game name to rename it while the game is on (only the owner can rename the room).</p></details>
       <details><summary>3. Share and play together</summary><p>Send the <b>Edit link</b> to people who enter scores and the <b>View link</b> to people who only watch. Scores update on every phone straight away, and nobody needs to log in.<br>
         • <b>One game</b> – the share button next to Scoreboard, or the share icon beside a game in My Rooms. They see only that game.<br>
         • <b>Whole room</b> – the share icon beside a room in My Rooms. They see every game in it, including new ones.<br>
         • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, reopen an ended game, or delete a link with the <b>bin</b> beside it – only that link (View or Edit) stops working, nothing else is deleted – and make a new one with <b>＋ Make … link</b>.<br>
         • Links work for 1 year – the date is shown where you share them.</p></details>
-      <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
+      <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Setup (New Game, or <b>⚙ Edit</b> on the Game Setup row under Scoreboard), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
       <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games, oldest first. Tap <b>＋</b> to open a room, a game to see its scoreboard below, the share icon for its links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too. Under <b>Shared with me</b>, games shared one by one are grouped by room, 👁 marks watch-only, and the bin only removes them from your list.</p></details>
       <details><summary>6. Keep your rooms</summary><p>As a guest, your rooms are kept in this browser only – clearing its site data or switching phones loses them. <b>Sign in with Google</b> from the menu (top right) and the rooms you created follow you to every device. Links others shared with you stay on the phone where you opened them.</p></details>
       <details><summary>7. When games are deleted</summary><p>The same for everyone: a game – finished or not – is deleted <b>1 year</b> after it was last played or changed, and a room once it has no games left. Shared links work for <b>1 year</b>; the owner can delete a link and make a new one any time.</p></details>
@@ -1542,7 +1562,7 @@
       </div>
       <div class="ft-subsec" id="ft-disclaimer" hidden>
         <p>RummyTally is a free score-keeping tool for friendly games. It doesn't take, hold or pay any money: the share calculator only does the arithmetic for a split your group has agreed on. Playing for money is restricted in some places – follow the law where you play. Check the totals yourself – the app is provided as it is, without any guarantee, and we're not responsible for disputes or for scores lost through cleared browsers, expired rooms or connection problems.</p>
-        <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in the Game Rules.</p>
+        <p>Rummy rules vary from group to group; the limits, drop and full counts are only what you set in the Game Setup.</p>
       </div>
     </div>
 
@@ -2954,7 +2974,7 @@
     boardClosed(false);
     const rs = readSetupSettings();
     if (rs.err) {
-      setMsg('suMsg', rs.err + ' (Game Rules)', 'err');
+      setMsg('suMsg', rs.err + ' (Game Setup)', 'err');
       $('settingsBox').open = true;
       try { $(rs.field).focus(); } catch (e) { /* ignore */ }
       return;
@@ -3117,6 +3137,7 @@
   let sbLinksOpen = false, detailsOpen = false, rulesEditing = false;
   // ✎ beside Room (owner) and Game (anyone who can edit) while the game is being played
   let sbEdit = null;   // 'room' | 'game' while renaming
+  const I_GEAR_S = '<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" transform="translate(-1 0)" d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>';
   const I_PEN = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2.2"/></svg>';
   const I_OK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function canRenameRoom() { return !!online && online.scope === 'room' && isOwner() && !isEnded(); }
@@ -3127,25 +3148,54 @@
     if (sbEdit === 'room' && !canRenameRoom()) sbEdit = null;
     if (sbEdit === 'game' && !canRenameGame()) sbEdit = null;
     const typing = sbEdit && $('sbEdIn') ? { v: $('sbEdIn').value, f: document.activeElement === $('sbEdIn') } : null;
-    const row = (l, v, kind, can, raw, max) => `<div class="sb-row"><span class="sb-l">${l}</span><span class="sb-v">${sbEdit === kind
-      ? `<span class="sb-ed"><input type="text" id="sbEdIn" maxlength="${max}" value="${esc(raw)}" aria-label="${l} name" autocomplete="off" enterkeyhint="done"><button type="button" class="sb-edb ok" data-sbed="save" aria-label="Save">${I_OK}</button><button type="button" class="sb-edb" data-sbed="cancel" aria-label="Cancel">${I_X}</button></span>`
-      : `${v}${can ? `<button type="button" class="sb-pen" data-sbed="${kind}" title="Rename" aria-label="Rename ${l.toLowerCase()}">${I_PEN}</button>` : ''}`}</span></div>`;
+    // Renaming: the name becomes a text box with ✓ and ✕
+    const editor = (label, raw, max) => `<div class="sb-row sb-editing"><span class="sb-l">${label}</span><span class="sb-ed"><input type="text" id="sbEdIn" maxlength="${max}" value="${esc(raw)}" aria-label="${label} name" autocomplete="off" enterkeyhint="done"><button type="button" class="sb-edb ok" data-sbed="save" aria-label="Save">${I_OK}</button><button type="button" class="sb-edb" data-sbed="cancel" aria-label="Cancel">${I_X}</button></span></div>`;
+    const pen = (kind, what) => `<button type="button" class="sb-pen" data-sbed="${kind}" title="Rename" aria-label="Rename ${what}">${I_PEN}</button>`;
     let html = '';
+    // One strip: 🏠 Room › Game (the default "14-Nov-2026 · Game 1" shows as "Game 1" here)
+    let roomName = '', gameFull = '', gameShort = '', canRoom = false, canGame = canRenameGame();
     if (online) {
       const room = online.room || {};
-      const roomName = online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || 'Room');
-      const title = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
-      if (online.scope !== 'game') html += row('Room', esc(roomName), 'room', canRenameRoom(), roomName, 40);
-      if (title || online.scope === 'game') html += row('Game', esc(online.scope === 'game' ? roomName : title), 'game', canRenameGame(), online.scope === 'game' ? roomName : title, 50);
-    } else if (state.gameName) html += row('Game', esc(state.gameName), 'game', canRenameGame(), state.gameName, 50);
-    const chips = [`<span>${state.players.length} player${state.players.length === 1 ? '' : 's'}</span>`];
-    if (state.rounds.length) chips.push(`<span>${state.rounds.length} round${state.rounds.length === 1 ? '' : 's'}</span>`);
+      if (online.scope === 'game') {
+        const en = myRooms.games[online.roomId + '_' + online.gameId] || {};
+        roomName = en.roomName || '';
+        gameFull = en.name || 'Shared game';
+      } else {
+        roomName = room.name || 'Room';
+        canRoom = canRenameRoom();
+        gameFull = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
+      }
+    } else gameFull = state.gameName || '';
+    const m = /^\d{2}-[A-Za-z]{3}-\d{4} · (.+)$/.exec(gameFull);
+    gameShort = m ? m[1] : gameFull;
+    if (sbEdit === 'room') html += editor('Room', roomName, 40);
+    else if (sbEdit === 'game') html += editor('Game', gameFull, 50);
+    else if (roomName || gameShort) {
+      html += `<div class="sb-strip" title="${esc([roomName, gameFull].filter(Boolean).join(' › '))}">`
+        + (roomName ? `<span class="seg room"><span aria-hidden="true">🏠</span><b>${esc(roomName)}</b>${canRoom ? pen('room', 'room') : ''}</span>` : '')
+        + (roomName && gameShort ? '<span class="sep" aria-hidden="true">›</span>' : '')
+        + (gameShort ? `<span class="seg game"><b>${esc(gameShort)}</b>${canGame ? pen('game', 'game') : ''}</span>` : '')
+        + '</div>';
+    }
+    // Game Setup in one row of small chips (swipe for the rest), with ⚙ Edit
+    const st = state.settings;
+    const canSetup = canEdit() && !isEnded();
+    html += `<div class="sb-setup"><div class="sv" role="list" aria-label="Game Setup">`
+      + `<span role="listitem">Limit <b>${st.limit}</b></span><span role="listitem">Drop <b>${st.drop}</b></span><span role="listitem">Full <b>${st.full}</b></span>`
+      + `<span role="listitem">Buy-in <b>${st.share ? '₹' + st.share.toLocaleString('en-IN') : '–'}</b></span>`
+      + `<span role="listitem">Deals first <b>${st.firstDealer === 'first' ? 'First' : 'Last'}</b></span>`
+      + `<span role="listitem">Dealer OUT <b>${st.dealerOut === 'next' ? 'Next' : 'Previous'}</b></span></div>`
+      + (canSetup ? `<button type="button" class="sb-setup-ed ${rulesEditing ? 'on' : ''}" data-setupedit aria-expanded="${rulesEditing}">${I_GEAR_S} ${rulesEditing ? 'Close' : 'Edit'}</button>` : '')
+      + '</div>';
+    // Chips: only what isn't visible elsewhere – Ended, and a warning when scores aren't reaching the server
+    const chips = [];
     if (isEnded()) chips.push('<span class="ended">Ended</span>');
     if (online) {
-      const st = navigator.onLine === false ? 'offline' : syncState;
-      if (!(isEnded() && st === 'ok')) chips.push(`<span class="sync ${st}">${{ ok: '● Live', saving: 'Saving…', offline: 'Offline', err: 'Not saved' }[st] || '● Live'}</span>`);
+      const stt = navigator.onLine === false ? 'offline' : syncState;
+      if (stt === 'offline') chips.push('<span class="sync offline">Offline – will sync</span>');
+      else if (stt === 'err') chips.push('<span class="sync err">⚠ Not saved – check internet</span>');
     }
-    html += `<div class="sb-chips">${chips.join('')}</div>`;
+    if (chips.length) html += `<div class="sb-chips">${chips.join('')}</div>`;
     el.innerHTML = html;
     if (typing && $('sbEdIn')) { $('sbEdIn').value = typing.v; if (typing.f) $('sbEdIn').focus(); }
     $('btnCloseBoard').hidden = !online && page !== 'rooms';
@@ -3180,25 +3230,23 @@
     const box = $('gameDetails');
     if (rulesEditing) return;
     const s = state.settings;
-    // The Game Rules, as set (same fields as the Game Rules form), then the suits from highest to lowest
+    // The Game Setup, as set (same fields as the Game Setup form), then the suits from highest to lowest
     const row = (l, v) => `<span class="gl">${l}</span><span class="gv">${v}</span>`;
-    let html = '<div class="gd-h">Game Rules</div><div class="gd-grid">';
+    let html = '<div class="gd-h">Game Setup</div><div class="gd-grid">';
     html += row('Total limit', s.limit) + row('Drop count', s.drop) + row('Full count', s.full);
     html += row('Entry or buy-in per player', s.share ? `₹${s.share.toLocaleString('en-IN')}` : 'Not set');
     html += row('Who deals first', s.firstDealer === 'first' ? 'First player' : 'Last player');
     html += row('Next dealer is OUT', s.dealerOut === 'next' ? 'Next player deals' : 'Previous player deals');
     html += row('Suit priority <small class="gd-sm">high → low</small>', `<span class="suit-rank" title="Highest to lowest">${SUIT_RANK_HTML}</span>`);
     html += '</div>';
-    if (canEdit() && !isEnded()) html += '<button type="button" class="btn-outline sm" data-rulesedit>✎ Edit rules</button>';
     box.innerHTML = html;
   }
+  // ⚙ Edit on the Game Setup row: the Game Setup form opens just below it
   function openRulesEdit() {
     if (!canEdit() || isEnded()) return;
-    detailsOpen = true; rulesEditing = true;
-    const box = $('gameDetails'), sb = $('settingsBox');
+    rulesEditing = true;
+    const box = $('setupEdit'), sb = $('settingsBox');
     box.hidden = false;
-    $('legendNote').hidden = true;
-    $('btnLegend').setAttribute('aria-expanded', 'true');
     box.innerHTML = '<div id="gdRules"></div><button type="button" class="btn-outline sm gd-done" data-rulesdone>Done</button>';
     if (!settingsHome.parentNode) sb.parentNode.insertBefore(settingsHome, sb);
     $('gdRules').appendChild(sb);
@@ -3215,14 +3263,13 @@
     sb.open = false;
     document.body.classList.remove('rules-edit');
     setMsg('settingsMsg', '', '');
+    $('setupEdit').hidden = true;
+    $('setupEdit').innerHTML = '';
     renderSettings();
-    renderDetails();
-    $('legendNote').hidden = !detailsOpen;
+    renderSbMeta();
+    if (detailsOpen) renderDetails();
   }
-  $('gameDetails').addEventListener('click', e => {
-    if (e.target.closest('[data-rulesedit]')) openRulesEdit();
-    else if (e.target.closest('[data-rulesdone]')) closeRulesEdit();
-  });
+  $('setupEdit').addEventListener('click', e => { if (e.target.closest('[data-rulesdone]')) closeRulesEdit(); });
   async function saveSbEdit() {
     const kind = sbEdit, f = $('sbEdIn');
     if (!kind || !f) return;
@@ -3245,6 +3292,7 @@
     } catch (err) { onCloudError(err); }
   }
   $('sbMeta').addEventListener('click', e => {
+    if (e.target.closest('[data-setupedit]')) { if (rulesEditing) closeRulesEdit(); else openRulesEdit(); return; }
     const b = e.target.closest('[data-sbed]');
     if (!b) return;
     const a = b.dataset.sbed;
@@ -5994,7 +6042,7 @@
     const box = $('shareBox');
     if (!box.hidden) { box.hidden = true; $('btnShares').setAttribute('aria-expanded', 'false'); return; }
     if (!state.settings.share) {
-      if (!canEdit()) { setMsg('boardMsg', 'The entry amount isn\'t set yet – ask someone with the edit link to set it in the Game Rules.', 'err'); return; }
+      if (!canEdit()) { setMsg('boardMsg', 'The entry amount isn\'t set yet – ask someone with the edit link to set it in the Game Setup.', 'err'); return; }
       openRulesEdit();   // take them to the field
       setMsg('shareMsg', 'Enter the entry or buy-in per player to calculate shares.', 'err');
       $('setShare').classList.add('need');
