@@ -3826,12 +3826,16 @@
   }
 
   /* ---------- Share the scoreboard as an image ---------- */
+  // Same layout as the scoreboard on screen: Player (number, name, drops · pts), Total, then rounds newest first
   function buildShareCanvas() {
     const players = displayGroups().all;
-    const rounds = state.rounds.slice().reverse().slice(0, 8);   // latest 8 rounds
-    const W = { no: 30, name: 150, total: 64, status: 112, round: 46 };
-    const pad = 16, titleH = 64, headH = 30, rowH = 36, footH = 40;
-    const width = pad * 2 + W.no + W.name + W.total + W.status + rounds.length * W.round;
+    const rounds = state.rounds.slice().reverse().slice(0, 10);   // latest 10 rounds
+    const rDur = roundDurations(state.rounds);
+    const view = totalsView();
+    const counted = new Set(state.players.filter(p => rowStatus(p.id) !== 'out').map(p => p.id));
+    const W = { name: 178, total: 70, round: 52 };
+    const pad = 0, titleH = 64, headH = 44, rowH = 50, footH = 40;
+    const width = W.name + W.total + rounds.length * W.round;
     // Result lines under the table: winner(s) and who went OUT in which round
     const winners = players.filter(p => rowStatus(p.id) === 'winner');
     const outs = players.filter(p => rowStatus(p.id) === 'out');
@@ -3839,93 +3843,144 @@
     if (winners.length) resultLines.push(['🏆 Winner' + (winners.length > 1 ? 's' : '') + ': ', winners.map(p => `${p.name} (${totalOf(p.id)})`).join(', '), '#8a6400']);
     if (outs.length) resultLines.push(['OUT: ', outs.map(p => { const n = outRoundOf(p.id); return `${p.name}${n ? ` in R${n}` : ''}`; }).join(', '), '#9b1c1c']);
     const resH = resultLines.length ? 14 + resultLines.length * 22 : 0;
-    const height = titleH + headH + players.length * rowH + resH + footH + pad;
+    const height = titleH + headH + players.length * rowH + resH + footH;
     const scale = 2;
     const c = document.createElement('canvas');
-    c.width = width * scale; c.height = height * scale;
+    c.width = Math.max(width, 300) * scale; c.height = height * scale;
     const x = c.getContext('2d');
     x.scale(scale, scale);
+    const CW = Math.max(width, 300);
     const font = (sz, wt = 400) => `${wt} ${sz}px -apple-system, "Segoe UI", Roboto, Arial, sans-serif`;
+    const fit = (t, w) => { let s = t; while (x.measureText(s).width > w && s.length > 2) s = s.slice(0, -2) + '…'; return s; };
+    const BORDER = '#e6e1d3';
+    // Badge colours, as on screen
+    const BADGE = {
+      lo: ['#16a34a', '#fff'], rhi: ['#e57a00', '#fff'], hi: ['#dc2626', '#fff'], win: ['#b8860b', '#fff'], d1: ['#e57a00', '#fff'],
+      rhi2: ['#fed2a1', '#7a3a00', '#f0a85c'], d2: ['#fed2a1', '#7a3a00', '#f0a85c'], lo2: ['#c6f1d3', '#14532d', '#7fd49a'], zd: ['#fecaca', '#991b1b', '#f59a9a']
+    };
+    const pillAt = (cx, cy, txt, mark, ink, sz, wt) => {
+      x.font = font(sz, wt);
+      const b = BADGE[mark];
+      if (b) {
+        const w = Math.max(30, x.measureText(txt).width + 16), h = 24;
+        x.fillStyle = b[0];
+        x.beginPath(); x.roundRect(cx - w / 2, cy - h / 2, w, h, h / 2); x.fill();
+        if (b[2]) { x.strokeStyle = b[2]; x.lineWidth = 1; x.stroke(); }
+        x.fillStyle = b[1];
+      } else x.fillStyle = ink;
+      x.textAlign = 'center';
+      x.fillText(txt, cx, cy + 1);
+    };
+    const markOf = html => { const m = /class="sc([^"]*)"/.exec(html || ''); return m ? (m[1].trim().split(' ').find(k => BADGE[k]) || '') : ''; };
     // background + title band
-    x.fillStyle = '#ffffff'; x.fillRect(0, 0, width, height);
-    x.fillStyle = '#0e5a3a'; x.fillRect(0, 0, width, titleH);
-    x.fillStyle = '#d6a62c'; x.fillRect(0, titleH - 4, width, 4);
-    x.fillStyle = '#ffffff'; x.font = `800 22px Georgia, serif`; x.textBaseline = 'middle';
-    x.fillText('Rummy', pad, 26);
-    x.fillStyle = '#d6a62c'; x.fillText('Tally', pad + x.measureText('Rummy').width, 26);
+    x.fillStyle = '#ffffff'; x.fillRect(0, 0, CW, height);
+    x.fillStyle = '#0e5a3a'; x.fillRect(0, 0, CW, titleH);
+    x.fillStyle = '#d6a62c'; x.fillRect(0, titleH - 4, CW, 4);
+    x.fillStyle = '#ffffff'; x.font = `800 22px Georgia, serif`; x.textBaseline = 'middle'; x.textAlign = 'left';
+    x.fillText('Rummy', 14, 26);
+    x.fillStyle = '#d6a62c'; x.fillText('Tally', 14 + x.measureText('Rummy').width, 26);
     const res = gameResult();
-    const sub = `${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · ` +
-      `${state.rounds.length} round${state.rounds.length === 1 ? '' : 's'}` +
+    const roomName = online && online.scope === 'room' && online.room ? online.room.name : '';
+    const gTitle = online && online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : state.gameName;
+    const sub = [roomName, gTitle || new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+      `${state.rounds.length} round${state.rounds.length === 1 ? '' : 's'}`].filter(Boolean).join(' · ') +
       (res && res.players.length ? ` · 🏆 ${res.players.map(p => p.name).join(' & ')}` : '');
-    x.fillStyle = 'rgba(255,255,255,.85)'; x.font = font(12); x.fillText(sub, pad, 47);
-    // table header
+    x.fillStyle = 'rgba(255,255,255,.85)'; x.font = font(12); x.fillText(fit(sub, CW - 28), 14, 47);
+    // header: PLAYER | TOTAL | R10 … R1 (with each round's time)
     let y = titleH;
-    const cols = [['#', W.no], ['Player', W.name], ['Total', W.total], ['Status', W.status]]
-      .concat(rounds.map(r => [`R${r.n}`, W.round]));
-    x.fillStyle = '#f3efe2'; x.fillRect(0, y, width, headH);
-    x.fillStyle = '#6b7385'; x.font = font(11, 700);
-    let cx = pad;
-    cols.forEach(([t, w], i) => { x.textAlign = i === 1 ? 'left' : 'center'; x.fillText(t.toUpperCase(), i === 1 ? cx + 4 : cx + w / 2, y + headH / 2); cx += w; });
+    x.fillStyle = '#0e5a3a'; x.fillRect(0, y, width, headH);
+    x.fillStyle = '#d6a62c'; x.fillRect(W.name, y, W.total, headH);
+    x.textAlign = 'center';
+    x.font = font(12, 700); x.fillStyle = '#f6e7b0'; x.fillText('PLAYER', W.name / 2, y + headH / 2);
+    x.fillStyle = '#1d2330'; x.fillText('TOTAL', W.name + W.total / 2, y + headH / 2);
+    let cx = W.name + W.total;
+    rounds.forEach(r => {
+      const t = rDur[r.n - 1];
+      x.fillStyle = '#f6e7b0'; x.font = font(12, 700);
+      x.fillText(`R${r.n}`, cx + W.round / 2, y + (t == null ? headH / 2 : headH / 2 - 7));
+      if (t != null) { x.font = font(10, 600); x.fillStyle = 'rgba(246,231,176,.75)'; x.fillText(fmtShort(t), cx + W.round / 2, y + headH / 2 + 9); }
+      x.fillStyle = 'rgba(255,255,255,.18)'; x.fillRect(cx, y, 1, headH);
+      cx += W.round;
+    });
     y += headH;
     // rows
-    players.forEach((p, i) => {
-      const total = totalOf(p.id), st = rowStatus(p.id);
-      const bg = st === 'out' ? '#fde2e2' : st === 'winner' ? '#fff6db' : (i % 2 ? '#faf8f2' : '#ffffff');
-      x.fillStyle = bg; x.fillRect(0, y, width, rowH);
-      const ink = st === 'out' ? '#9b1c1c' : '#1d2330';
+    players.forEach(p => {
+      const st = rowStatus(p.id), v = view[p.id];
+      const total = v.total;
+      x.fillStyle = st === 'out' ? '#fde2e2' : st === 'winner' ? '#fff6db' : '#ffffff';
+      x.fillRect(0, y, W.name, rowH);
+      if (st === 'winner') x.fillRect(W.name, y, width - W.name, rowH);
+      const ink = st === 'out' ? '#9b1c1c' : st === 'winner' ? '#6b4a00' : '#1d2330';
+      // Player: "1." + name, and the drops line (or the OUT / Winner tag) under it
+      const no = `${state.players.indexOf(p) + 1}.`;
+      x.textAlign = 'right'; x.font = font(12, 700); x.fillStyle = '#6b7385';
+      x.fillText(no, 30, y + 17);
+      x.textAlign = 'left'; x.font = font(15, 600); x.fillStyle = ink;
+      x.fillText(fit(`${st === 'winner' ? '🏆 ' : ''}${p.name}`, W.name - 44), 36, y + 17);
       const dl = st === 'out' || st === 'winner' ? null : dropsLeft(total);
-      const outAt = st === 'out' ? outRoundOf(p.id) : null;
-      const status = st === 'out' ? `OUT${outAt ? ` · R${outAt}` : ''}` : st === 'winner' ? '🏆 Winner'
-        : dropsText(dl);
-      const cells = [
-        [`${state.players.indexOf(p) + 1}`, W.no, '#6b7385', 12, 700],
-        [`${st === 'winner' ? '🏆 ' : ''}${p.name}`, W.name, ink, 14, 600],
-        [String(total), W.total, ink, 15, 800],
-        [status, W.status, st === 'winner' ? '#8a6400' : dl === 1 ? '#e57a00' : dl === 2 ? '#f39c3d' : dl === 0 ? '#f26b6b' : st === 'out' ? '#9b1c1c' : '#6b7385', 12, 700]
-      ].concat(rounds.map(r => [playedIn(r, p.id) ? String(r.points[p.id]) : '–', W.round,
-        st === 'out' && !playedIn(r, p.id) && r.n === outRoundOf(p.id) ? '#dc2626' : st === 'out' ? '#1d2330' : ink,
-        13, st === 'out' && r.n === outRoundOf(p.id) ? 700 : 400]));
-      cx = pad;
-      cells.forEach(([t, w, col, sz, wt], k) => {
-        x.fillStyle = col; x.font = font(sz, wt); x.textAlign = k === 1 ? 'left' : 'center';
-        let txt = t;
-        if (k === 1) { while (x.measureText(txt).width > w - 8 && txt.length > 2) txt = txt.slice(0, -2) + '…'; }
-        const tx = k === 1 ? cx + 4 : cx + w / 2;
-        x.fillText(txt, tx, y + rowH / 2);
-        const outN = st === 'out' ? outRoundOf(p.id) : null;
-        if (st === 'out' && (k === 2 || (k >= 4 && rounds[k - 4].n === outN)) && t !== '–') {   // strike Total + the OUT round
-          const tw = x.measureText(txt).width;
-          x.strokeStyle = col; x.lineWidth = 1.5; x.beginPath();
-          x.moveTo(tx - tw / 2, y + rowH / 2); x.lineTo(tx + tw / 2, y + rowH / 2); x.stroke();
+      let sx = 36;
+      if (st !== 'active') {
+        const lbl = STATUS_LABEL[st] + (st === 'out' && outRoundOf(p.id) ? ` · R${outRoundOf(p.id)}` : '');
+        x.font = font(10, 700);
+        const w = x.measureText(lbl).width + 12;
+        x.fillStyle = st === 'out' ? '#dc2626' : st === 'winner' ? '#b8860b' : '#f59e0b';
+        x.beginPath(); x.roundRect(sx, y + 29, w, 15, 7.5); x.fill();
+        x.fillStyle = '#fff'; x.fillText(lbl, sx + 6, y + 37);
+        sx += w + 6;
+      }
+      if (dl !== null) {
+        x.font = font(11, 700);
+        x.fillStyle = dl === 0 ? '#f26b6b' : dl === 1 ? '#e57a00' : dl === 2 ? '#f39c3d' : '#6b7385';
+        x.fillText(fit(`${dropsText(dl)} · ${pointsLeft(total)} pts`, W.name - sx - 6), sx, y + 37);
+      }
+      // Total
+      const tMark = markOf(v.totalHtml);
+      pillAt(W.name + W.total / 2, y + rowH / 2, String(total), tMark, ink, 15, 800);
+      if (st === 'out') { x.font = font(15, 800); const tw = x.measureText(String(total)).width; x.strokeStyle = ink; x.lineWidth = 2; x.beginPath(); x.moveTo(W.name + W.total / 2 - tw / 2, y + rowH / 2); x.lineTo(W.name + W.total / 2 + tw / 2, y + rowH / 2); x.stroke(); }
+      // Rounds, newest first: lowest green, highest orange, as on screen
+      const outN = st === 'out' ? outRoundOf(p.id) : null;
+      cx = W.name + W.total;
+      rounds.forEach(r => {
+        const mid = cx + W.round / 2, cy = y + rowH / 2;
+        if (!playedIn(r, p.id)) {
+          x.font = font(14, 600); x.fillStyle = outN === r.n ? '#dc2626' : '#b3b9c6'; x.textAlign = 'center'; x.fillText('–', mid, cy);
+        } else {
+          const val = Number(r.points[p.id]);
+          const mark = counted.has(p.id) ? markFor(val, roundExtremes(r, counted), false).trim() : '';
+          pillAt(mid, cy, String(val), mark, outN === r.n ? '#9b1c1c' : '#1d2330', 14, mark ? 700 : 400);
+          if (outN === r.n) { const tw = x.measureText(String(val)).width; x.strokeStyle = '#9b1c1c'; x.lineWidth = 2; x.beginPath(); x.moveTo(mid - tw / 2, cy); x.lineTo(mid + tw / 2, cy); x.stroke(); }
         }
-        cx += w;
+        cx += W.round;
       });
-      x.fillStyle = '#e6e1d3'; x.fillRect(0, y + rowH - 1, width, 1);
+      // grid lines
+      x.fillStyle = BORDER;
+      x.fillRect(0, y + rowH - 1, width, 1);
+      x.fillRect(W.name, y, 1, rowH);
+      for (let k = 0, gx = W.name + W.total; k < rounds.length; k++, gx += W.round) x.fillRect(gx, y, 1, rowH);
       y += rowH;
     });
+    x.fillStyle = BORDER; x.fillRect(0, titleH, 1, y - titleH); x.fillRect(width - 1, titleH, 1, y - titleH);
     // results: winner(s) and OUT players
     if (resultLines.length) {
       y += 10;
       resultLines.forEach(([lbl, txt, col]) => {
         x.textAlign = 'left'; x.font = font(13, 800); x.fillStyle = col;
-        x.fillText(lbl, pad, y + 11);
+        x.fillText(lbl, 14, y + 11);
         const lw = x.measureText(lbl).width;
         x.font = font(13, 600); x.fillStyle = '#1d2330';
-        let t2 = txt;
-        while (x.measureText(t2).width > width - pad * 2 - lw && t2.length > 2) t2 = t2.slice(0, -2) + '…';
-        x.fillText(t2, pad + lw, y + 11);
+        x.fillText(fit(txt, CW - 28 - lw), 14 + lw, y + 11);
         y += 22;
       });
       y += 4;
-      x.fillStyle = '#e6e1d3'; x.fillRect(0, y, width, 1);
+      x.fillStyle = BORDER; x.fillRect(0, y, CW, 1);
     }
     // footer
     const t = state.timer;
     const foot = `Limit ${state.settings.limit} · Drop ${state.settings.drop} · Full ${state.settings.full}` +
       (t.startedAt ? ` · Game time ${fmtDuration(playedMs(t))}` : '') +
-      (state.rounds.length > rounds.length ? ` · showing latest ${rounds.length} rounds` : '');
+      (state.rounds.length > rounds.length ? ` · latest ${rounds.length} rounds` : '');
     x.fillStyle = '#6b7385'; x.font = font(11); x.textAlign = 'left';
-    x.fillText(foot, pad, y + footH / 2 + 4);
+    x.fillText(fit(foot, CW - 28), 14, y + footH / 2 + 4);
     return c;
   }
 
@@ -4694,6 +4749,28 @@
     renderRoomCard();
   }
 
+  // Keeping the scores fresh. The scoreboard is live already; this only wakes the connection up when it may
+  // have gone to sleep: when the phone or tab comes back after 20 s+, when the internet returns, and once a
+  // minute while the page is open if the last update came from the phone's copy instead of the server.
+  // Nothing reloads, so scores being typed are never lost.
+  let snapFromCache = false, hiddenAt = 0, lastKick = 0;
+  async function kickSync() {
+    if (!online || !fb || !fb.disableNetwork || !fb.enableNetwork) return;
+    if (navigator.onLine === false) return;
+    const now = Date.now();
+    if (now - lastKick < 15000) return;
+    lastKick = now;
+    try { await fb.disableNetwork(fb.db); } catch (e) { /* ignore */ }
+    try { await fb.enableNetwork(fb.db); } catch (e) { /* ignore */ }
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') { hiddenAt = Date.now(); return; }
+    if (hiddenAt && Date.now() - hiddenAt > 20000) kickSync();
+    hiddenAt = 0;
+  });
+  window.addEventListener('online', () => { lastKick = 0; kickSync(); });
+  setInterval(() => { if (document.visibilityState === 'visible' && snapFromCache) kickSync(); }, 60000);
+
   function openGame(g, follow) {
     if (!online) return;
     flushPush();
@@ -4746,6 +4823,7 @@
       if (online.room && online.room.currentGameId && online.room.currentGameId !== online.gameId) openGame(online.room.currentGameId, true);
       return;
     }
+    snapFromCache = !!(snap.metadata && snap.metadata.fromCache);
     if (snap.metadata.hasPendingWrites) return;   // our own change on its way to the server
     const d = snap.data();
     online.gameMeta = { seq: d.seq || 1, createdMs: d.createdMs || Date.now(), expireAt: tsMs(d.expireAt), keepDays: d.keepDays,
