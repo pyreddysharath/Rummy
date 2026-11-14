@@ -1399,7 +1399,7 @@
     <div class="topbar">
       <button class="tb-btn" id="btnBack" type="button" aria-label="Back" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <span class="tb-title" id="tbTitle"></span>
-      <div class="tb-brand" id="tbBrand" hidden aria-label="RummyTally"><span class="tbb-name">Rummy<b>Tally</b></span><span class="tbb-suits" id="tbbSuits" aria-hidden="true"></span></div>
+      <div class="tb-brand" id="tbBrand" hidden aria-label="RummyTally"><span class="tbb-name">Rummy<b>Tally</b></span></div>
       <div class="tb-nav" id="tbNav" hidden>
         <button class="nv nv-game" id="btnNewGame" type="button" aria-controls="setupCard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game</button>
         <button class="nv nv-rooms" id="btnRoomsNav" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11 12 4l8.5 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>My Rooms</button>
@@ -3533,7 +3533,6 @@
     const brand = scr === 'game' || page === 'rooms';
     $('tbNav').hidden = home || info || brand;
     $('tbBrand').hidden = !brand;
-    if (brand && !$('tbbSuits').firstChild) $('tbbSuits').innerHTML = document.querySelector('.hero-suits').innerHTML;
     $('btnRoomsNav').hidden = !FB_CFG;
     $('btnRoomsNav').classList.toggle('on', page === 'rooms');
     $('btnNewGame').classList.toggle('on', !!setup);
