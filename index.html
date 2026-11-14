@@ -3567,6 +3567,9 @@
       const room = online.room || {};
       const title = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
       if (online.scope === 'game') return (myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game';
+      // Room or game name not loaded yet: keep the remembered label so the button doesn't jump
+      const cur = myRooms.current;
+      if ((!room.name || !title) && cur && cur.label && cur.roomId === online.roomId) return cur.label;
       return [room.name, title].filter(Boolean).join(' · ') || 'Game';
     }
     return state.gameName || `${state.players.length} player${state.players.length === 1 ? '' : 's'}`;
@@ -4959,7 +4962,9 @@
     stopListening();
     if (!online) saveState();   // keep the offline game safe before switching
     online = { roomId: r, gameId: null, role, scope, room: null, gameMeta: null, follow: scope === 'room' };
+    const keepLabel = myRooms.current && myRooms.current.roomId === r && myRooms.current.scope === scope ? myRooms.current.label : undefined;
     myRooms.current = { roomId: r, gameId: scope === 'game' ? g : null, scope };
+    if (keepLabel) myRooms.current.label = keepLabel;   // same room again (e.g. after a refresh): Continue keeps its name while loading
     saveRooms();
     state = Object.assign(freshState(), { archive: [], gamesSinceBackup: 0 });
     lastSynced = {};
