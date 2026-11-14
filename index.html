@@ -420,13 +420,23 @@
   .sb-editing { background: #fffaf0; border: 1px solid #f0dca0; border-radius: 12px; padding: 6px 8px 6px 12px; }
   /* Game Setup: one row of chips, swipe for the rest */
   .sb-setup { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
-  .sb-setup .sv { display: flex; gap: 5px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .sb-setup .sv { display: flex; gap: 8px; flex: 1; min-width: 0; }
   .sb-setup .sv::-webkit-scrollbar { display: none; }
-  .sb-setup .sv span { white-space: nowrap; font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #f6f4ee; color: var(--muted); }
-  .sb-setup .sv span b { color: var(--text); }
+  /* Limit and Buy-in as two small tiles: label on top, value below */
+  .sb-setup .sv span { display: flex; flex-direction: column; line-height: 1.1; padding: 5px 12px 6px; border-radius: 10px; min-width: 72px; }
+  .sb-setup .sv small { font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .sb-setup .sv b { font-size: 1rem; font-weight: 800; white-space: nowrap; }
+  .sb-setup .sv-limit { background: #eef7f1; border: 1px solid #cfe6d8; }
+  .sb-setup .sv-limit small { color: var(--felt); }
+  .sb-setup .sv-limit b { color: var(--felt); }
+  .sb-setup .sv-buy { background: #fff8e1; border: 1px solid #f0dca0; }
+  .sb-setup .sv-buy small { color: #8a6a10; }
+  .sb-setup .sv-buy b { color: #6b4a00; }
   .sb-setup-ed { flex: 0 0 auto; min-height: 0; padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--gold); background: #fff; color: #8a6a10; font-weight: 800; font-size: .74rem; display: inline-flex; gap: 4px; align-items: center; }
   .sb-setup-ed.on { background: var(--gold); color: #2b1f00; }
-  .setup-edit { margin-top: 10px; }
+  .gd-box.setup-edit { margin-top: 6px; padding: 0 2px; border: 0; background: none; border-radius: 0; }
+  #gdRules .settings-card { margin: 0 !important; padding: 0 !important; border: 0 !important; box-shadow: none !important; background: none !important; }
+  #gdRules .settings-card > summary { display: none; }
   .sb-pen { min-height: 0; width: 26px; height: 26px; padding: 0; border: 0; background: none; color: var(--gold-dark, #a67c12); display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .sb-ed { display: flex; align-items: center; gap: 4px; flex: 1 1 auto; min-width: 0; }
   .sb-ed input { flex: 1 1 auto; min-width: 0; min-height: 0; height: 32px; padding: 4px 8px; font: inherit; font-weight: 700; border: 1.5px solid var(--felt); border-radius: 8px; }
@@ -808,6 +818,21 @@
   .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
   /* Game Settings groups */
+  /* Game Setup form: plain rows – name on the left, field on the right */
+  .gsf { display: flex; flex-direction: column; gap: 2px; padding: 4px 0 2px; }
+  .gs-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #f0ece0; }
+  .gs-row:last-child { border-bottom: 0; }
+  .gs-row > label, .gs-l { font-size: .9rem; font-weight: 600; color: var(--text); }
+  .gs-row input[type=number] { width: 96px; min-height: 0; height: 32px; padding: 4px 10px; font-size: .95rem; text-align: right; border-radius: 8px; flex: 0 0 auto; }
+  .gs-pick { flex-wrap: wrap; }
+  .gs-seg { display: inline-flex; border: 1.5px solid var(--felt); border-radius: 999px; overflow: hidden; flex: 0 0 auto; }
+  .gs-seg label { cursor: pointer; }
+  .gs-seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .gs-seg span { display: block; padding: 4px 11px; font-size: .8rem; font-weight: 700; color: var(--felt); white-space: nowrap; }
+  .gs-seg input:checked + span { background: var(--felt); color: #fff; }
+  .gs-seg input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: -3px; }
+  .gsf + .settings-apply { margin-top: 10px; }
+  .settings-apply .btn-outline { min-height: 0; }
   .opt-group { border: 1px solid #e6c766; border-radius: 10px; padding: 8px 12px 10px; margin: 12px 0 0; background: #fdf0c8; }
   .opt-group.nums { margin-top: 0; padding-top: 4px; }
   .settings-apply { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
@@ -1010,7 +1035,6 @@
   .time-chip.ended { background: var(--red-soft); color: var(--red-text); }
   .tc-ico { font-size: .8rem; }
   .share-row { display: grid; grid-template-columns: 150px; padding-top: 4px; }
-  #shareGroup { margin-top: 22px; }
   .share-row .opt-help { margin: 0 0 6px; }
   #setShare.need { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.18); }
   .calc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #8a6400; border: 1.5px solid var(--gold); }
@@ -1385,45 +1409,20 @@
   <!-- Settings -->
   <details class="card settings-card" id="settingsBox">
     <summary><span class="ttl"><span class="suit">♣</span> Game Setup</span></summary>
-    <fieldset class="opt-group nums">
-      <legend>Points and limits</legend>
-    <div class="settings-row">
-      <div>
-        <label class="field" for="setLimit">Total limit</label>
-        <input type="number" id="setLimit" min="1" step="1" inputmode="numeric">
-      </div>
-      <div>
-        <label class="field" for="setDrop">Drop count</label>
-        <input type="number" id="setDrop" min="1" step="1" inputmode="numeric">
-      </div>
-      <div>
-        <label class="field" for="setFull">Full count</label>
-        <input type="number" id="setFull" min="1" step="1" inputmode="numeric">
-      </div>
-    </div>
-    </fieldset>
-    <fieldset class="opt-group nums" id="shareGroup">
-      <legend>Entry or buy-in per player (₹)</legend>
-      <div class="share-row">
-        <input type="number" id="setShare" min="1" step="1" inputmode="numeric" placeholder="e.g. 100" aria-label="Entry or buy-in per player in rupees">
-      </div>
+    <div class="gsf">
+      <div class="gs-row"><label for="setLimit">Total limit</label><input type="number" id="setLimit" min="1" step="1" inputmode="numeric"></div>
+      <div class="gs-row"><label for="setDrop">Drop count</label><input type="number" id="setDrop" min="1" step="1" inputmode="numeric"></div>
+      <div class="gs-row"><label for="setFull">Full count</label><input type="number" id="setFull" min="1" step="1" inputmode="numeric"></div>
+      <div class="gs-row" id="shareGroup"><label for="setShare">Buy-in per player (₹)</label><input type="number" id="setShare" min="1" step="1" inputmode="numeric" placeholder="e.g. 100" aria-label="Entry or buy-in per player in rupees"></div>
       <div class="msg" id="shareMsg"></div>
-    </fieldset>
-
-    <!-- Dealer rules (saved straight away) -->
-    <fieldset class="opt-group">
-      <legend>Who deals first from the scoreboard?</legend>
-      <label class="opt"><input type="radio" name="firstDealer" value="last"> <span><b>Last player</b></span></label>
-      <label class="opt"><input type="radio" name="firstDealer" value="first"> <span><b>First player</b></span></label>
-      <p class="opt-help">To pick someone else, select them in Edit Players and mark as Dealer.</p>
-    </fieldset>
-    <fieldset class="opt-group">
-      <legend>When the next dealer is OUT</legend>
-      <label class="opt"><input type="radio" name="dealerOut" value="keep"> <span><b>Previous player still in</b> deals again, so the next player doesn't miss their turn to start</span></label>
-      <label class="opt"><input type="radio" name="dealerOut" value="next"> <span><b>Next player still in</b> deals</span></label>
-    </fieldset>
+      <div class="gs-row gs-pick"><span class="gs-l">Who deals first</span>
+        <div class="gs-seg" role="radiogroup" aria-label="Who deals first"><label><input type="radio" name="firstDealer" value="last"><span>Last player</span></label><label><input type="radio" name="firstDealer" value="first"><span>First player</span></label></div></div>
+      <div class="gs-row gs-pick"><span class="gs-l">Next dealer OUT</span>
+        <div class="gs-seg" role="radiogroup" aria-label="If the next dealer is OUT"><label><input type="radio" name="dealerOut" value="keep"><span>Previous deals</span></label><label><input type="radio" name="dealerOut" value="next"><span>Next deals</span></label></div></div>
+    </div>
     <div class="settings-apply">
-      <button class="btn-primary apply" id="btnApplySettings" type="button">Apply</button>
+      <button class="btn-primary apply" id="btnApplySettings" type="button">Save</button>
+      <button class="btn-outline" id="btnCancelSettings" type="button">Cancel</button>
       <div class="msg" id="settingsMsg"></div>
     </div>
   </details>
@@ -3258,10 +3257,8 @@
     const st = state.settings;
     const canSetup = canEdit() && !isEnded();
     html += `<div class="sb-setup"><div class="sv" role="list" aria-label="Game Setup">`
-      + `<span role="listitem">Limit <b>${st.limit}</b></span><span role="listitem">Drop <b>${st.drop}</b></span><span role="listitem">Full <b>${st.full}</b></span>`
-      + `<span role="listitem">Buy-in <b>${st.share ? '₹' + st.share.toLocaleString('en-IN') : '–'}</b></span>`
-      + `<span role="listitem">Deals first <b>${st.firstDealer === 'first' ? 'First' : 'Last'}</b></span>`
-      + `<span role="listitem">Dealer OUT <b>${st.dealerOut === 'next' ? 'Next' : 'Previous'}</b></span></div>`
+      + `<span role="listitem" class="sv-limit"><small>Limit</small><b>${st.limit}</b></span>`
+      + `<span role="listitem" class="sv-buy"><small>Buy-in</small><b>${st.share ? '₹' + st.share.toLocaleString('en-IN') : 'Not set'}</b></span></div>`
       + (canSetup ? `<button type="button" class="sb-setup-ed ${rulesEditing ? 'on' : ''}" data-setupedit aria-expanded="${rulesEditing}">${I_GEAR_S} ${rulesEditing ? 'Close' : 'Edit'}</button>` : '')
       + '</div>';
     // Chips: only what isn't visible elsewhere – Ended, and a warning when scores aren't reaching the server
@@ -3317,7 +3314,7 @@
     rulesEditing = true;
     const box = $('setupEdit'), sb = $('settingsBox');
     box.hidden = false;
-    box.innerHTML = '<div id="gdRules"></div><button type="button" class="btn-outline sm gd-done" data-rulesdone>Done</button>';
+    box.innerHTML = '<div id="gdRules"></div>';
     if (!settingsHome.parentNode) sb.parentNode.insertBefore(settingsHome, sb);
     $('gdRules').appendChild(sb);
     sb.open = true;
@@ -4353,6 +4350,7 @@
     return null;
   }
 
+  // Save: all the Game Setup values at once, then close the form
   function applySettings() {
     if (!canEdit() || isEnded()) return;
     const v = readSettingsInputs();
@@ -4360,17 +4358,20 @@
     if (err) { setMsg('settingsMsg', err, 'err'); return; }
     const raw = String($('setShare').value).trim();
     const share = raw === '' ? null : Number(raw);
-    if (share !== null && (!Number.isInteger(share) || share < 1)) { setMsg('settingsMsg', 'Entry or buy-in must be a whole amount of ₹1 or more.', 'err'); return; }
-    const next = { ...state.settings, limit: parseInt(v.limit, 10), drop: parseInt(v.drop, 10), full: parseInt(v.full, 10), share };
+    if (share !== null && (!Number.isInteger(share) || share < 1)) { setMsg('settingsMsg', 'Buy-in must be a whole amount of ₹1 or more.', 'err'); return; }
+    const pick = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value;
+    const next = { ...state.settings, limit: parseInt(v.limit, 10), drop: parseInt(v.drop, 10), full: parseInt(v.full, 10), share,
+      firstDealer: pick('firstDealer') || state.settings.firstDealer, dealerOut: pick('dealerOut') || state.settings.dealerOut };
     const scoring = next.limit !== state.settings.limit || next.drop !== state.settings.drop || next.full !== state.settings.full;
-    if (!scoring && share === (state.settings.share || null)) { setMsg('settingsMsg', 'Saved – nothing else to change.', 'ok'); return; }
-    if (!scoring) { state.settings = next; saveState(); renderShares(); setMsg('settingsMsg', 'Entry or buy-in saved.', 'ok'); return; }
-    if (state.rounds.length && !confirm('Apply new settings? Player statuses on the scoreboard will be recalculated.')) return;
+    if (JSON.stringify(next) === JSON.stringify(state.settings)) { closeRulesEdit(); return; }
+    if (scoring && state.rounds.length && !confirm('Save the new limits? Player statuses on the scoreboard will be recalculated.')) return;
     state.settings = next;
     saveState();
-    renderSettings();
+    $('setShare').classList.remove('need');
+    closeRulesEdit();
     renderAll();
-    setMsg('settingsMsg', 'Settings applied.', 'ok');
+    renderShares();
+    toast('Game Setup saved');
   }
 
   function previewSettings() {
@@ -4645,11 +4646,12 @@
   $('btnNewGame').addEventListener('click', () => openSetup('game'));
 
   $('btnApplySettings').addEventListener('click', applySettings);
+  $('btnCancelSettings').addEventListener('click', () => { setMsg('settingsMsg', '', ''); setMsg('shareMsg', '', ''); $('setShare').classList.remove('need'); renderSettings(); closeRulesEdit(); });
   ['setLimit', 'setDrop', 'setFull'].forEach(id => $(id).addEventListener('input', previewSettings));
   // Dealer rules save straight away and can change at any point in the game
   document.querySelectorAll('input[name="firstDealer"], input[name="dealerOut"]').forEach(inp => {
     inp.addEventListener('change', () => {
-      if (setup) return;   // setting up a new game: used when the game starts
+      if (setup || rulesEditing) return;   // used when the game starts / saved with Save
       if (!canEdit() || isEnded()) { renderSettings(); return; }
       state.settings = { ...state.settings, [inp.name]: inp.value };
       saveState();
@@ -6207,7 +6209,7 @@
 
   // Share amount: saved as it's typed (whole rupees, 1 or more; empty clears it)
   $('setShare').addEventListener('input', () => {
-    if (setup) { $('setShare').classList.remove('need'); setMsg('shareMsg', '', ''); return; }   // used when the new game starts
+    if (setup || rulesEditing) { $('setShare').classList.remove('need'); setMsg('shareMsg', '', ''); return; }   // used when the game starts / saved with Save
     if (!canEdit() || isEnded()) { renderSettings(); return; }
     const raw = String($('setShare').value).trim();
     $('setShare').classList.remove('need');
