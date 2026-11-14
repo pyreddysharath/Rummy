@@ -113,11 +113,14 @@
   .hero > .rooms-ico[hidden] { display: none; }
   .hero > .rooms-ico svg { width: 19px; height: 19px; }
   .hero > .rooms-ico.on { background: #fff; color: var(--felt); }
-  .rooms-card h2 { margin-bottom: 8px; }
+  .rooms-card h2.mr-title { font-size: 1.05rem; justify-content: flex-start; gap: 4px; margin: -4px 0 6px -8px; }
+  .ico-btn.back { font-size: 1.6rem; line-height: 1; padding-bottom: 3px; }
+  body.rooms-page .wrap > *:not(.hero):not(#roomsCard):not(.app-footer) { display: none !important; }
+  body.rooms-page .hero-actions { display: none; }
   .mr-h { font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; }
-  .mr-room { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; background: #fff; }
-  .mr-room[open] { border-color: var(--felt); }
-  .mr-room > summary { list-style: none; cursor: pointer; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
+  .mr-room { border-bottom: 1px solid var(--border); background: #fff; }
+  .mr-room:first-of-type { border-top: 1px solid var(--border); }
+  .mr-room > summary { list-style: none; cursor: pointer; padding: 8px 2px; display: flex; align-items: center; gap: 8px; }
   .mr-room > summary::-webkit-details-marker { display: none; }
   .mr-room > summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
     transform: rotate(-45deg); transition: transform .15s; flex: 0 0 auto; }
@@ -125,7 +128,7 @@
   .mr-name { font-weight: 800; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mr-meta { font-size: .76rem; color: var(--muted); white-space: nowrap; }
   .mr-now { font-size: .7rem; font-weight: 800; color: #fff; background: var(--felt); border-radius: 999px; padding: 2px 8px; }
-  .mr-body { padding: 0 12px 12px; }
+  .mr-body { padding: 0 2px 12px 17px; }
   .mr-games { list-style: none; margin: 0 0 10px; padding: 0; }
   .mr-games li { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px dashed var(--border); font-size: .86rem; }
   .mr-games li .mg-t { flex: 1 1 auto; min-width: 0; }
@@ -149,7 +152,7 @@
   .mg-name { min-height: 0; padding: 4px 0; border: 0; background: none; text-align: left; font-weight: 700; color: var(--text); flex: 1 1 auto; cursor: pointer; }
   .mg-name:hover { text-decoration: underline; }
   .mg-tag { font-size: .7rem; font-weight: 800; color: var(--red); background: #fde8e6; border-radius: 999px; padding: 2px 8px; }
-  .mr-one { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+  .mr-one { display: flex; align-items: center; gap: 8px; padding: 4px 2px; border-bottom: 1px solid var(--border); }
   .mr-tool { margin: 0 0 12px; padding: 10px; background: #f6f8f4; border-radius: 10px; }
   .mr-foot { margin-top: 8px; }
   .lk-line { display: flex; align-items: center; gap: 6px; padding: 4px 0; }
@@ -157,13 +160,14 @@
   .lk-name { flex: 0 0 38px; font-size: .84rem; }
   .lk-line .lk-url { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, Menlo, monospace;
     font-size: .74rem; color: var(--muted); }
-  .rs-line { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .86rem; }
+  .rs-line { display: grid; grid-template-columns: 136px 1fr; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .86rem; }
   .rs-line label { font-weight: 700; color: var(--muted); }
   .rs-line input[type="text"], .rs-line select { width: 100%; min-height: 0; height: 34px; padding: 5px 8px; }
   .rs-line input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--felt); justify-self: start; }
   body.board-closed .board-card, body.board-closed .settings-card { display: none !important; }
 
   .rooms-card h2, .setup-card h2 { display: flex; align-items: center; justify-content: space-between; }
+  .rooms-card h2.mr-title { justify-content: flex-start; }
   .close-x { min-height: 0; width: 32px; height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 1rem; }
   .su-link2 { display: block; color: var(--muted); }
   .su-add { display: flex; gap: 8px; margin-top: 6px; }
@@ -310,7 +314,10 @@
   .info-note .lg-pill { font-size: .66rem; padding: 1px 6px; margin-right: 4px; }
   .info-note .o { color: var(--orange-text); font-weight: 700; }
   .info-note .r { color: var(--red-text); font-weight: 700; }
-  .info-btn.share-ico { display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; background: var(--felt); border-color: var(--felt); color: #fff; }
+  .board-card h2 .ttl #btnLegend { width: 13px; height: 13px; min-height: 0; font-size: .52rem; margin-left: -3px; vertical-align: 6px; }
+  .info-btn.share-ico { display: inline-flex; align-items: center; justify-content: center; margin-left: 8px; background: var(--felt); border-color: var(--felt); color: #fff;
+    width: 28px; height: 28px; min-height: 0; vertical-align: -2px; }
+  .info-btn.share-ico svg { width: 15px; height: 15px; }
   .info-btn.share-ico[hidden] { display: none; }
   .info-btn {
     min-height: 15px; width: 15px; height: 15px; padding: 0; border-radius: 50%;
@@ -1194,8 +1201,8 @@
         <button class="info-btn" id="btnLegend" type="button" aria-expanded="false" aria-controls="gameDetails" title="Game overview: rules, players and what the colours mean">i</button>
         <button class="info-btn share-ico" id="btnSbShare" type="button" data-sbshare aria-expanded="false" aria-controls="sbLinks" title="Share: scoreboard picture and links" hidden><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="18" cy="5" r="3.4" fill="currentColor"/><circle cx="6" cy="12" r="3.4" fill="currentColor"/><circle cx="18" cy="19" r="3.4" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2.8"/></svg></button></span>
       <span class="h2-btns">
-        <button type="button" class="ico-btn" id="btnCloseBoard" title="Close this game (it stays in its room)" aria-label="Close this game" hidden>✕</button>
         <button class="time-chip idle" id="timeChip" type="button" title="Game clock – tap to go to Play / Pause / End Game"><span class="tc-ico">⏱</span> <span id="timeChipText">00:00:00</span></button>
+        <button type="button" class="ico-btn" id="btnCloseBoard" title="Close this game (it stays in its room)" aria-label="Close this game" hidden>✕</button>
       </span>
     </h2>
     <div class="gd-box" id="gameDetails" hidden></div>
@@ -2612,7 +2619,7 @@
   function openSetup(mode) {
     if (online && !canEdit()) return;
     closeRulesEdit();
-    if (roomsOpen) { roomsOpen = false; renderRooms(); }
+    if (roomsOpen) closeRoomsPage();
     if (setup && setup.mode === mode && !setup.busy) { closeSetup(); return; }
     const rooms = FB_CFG ? setupRooms() : [];
     const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
@@ -2969,14 +2976,8 @@
     const s = state.settings;
     const row = (l, v) => `<span class="gl">${l}</span><span class="gv">${v}</span>`;
     let html = '<div class="gd-grid">';
-    if (online) {
-      const room = online.room || {};
-      html += row('Room', esc(online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || 'Room')));
-      if (online.gameMeta) html += row('Game', esc(gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName)));
-      if (online.gameMeta) html += row('Created', `${fmtDMY(online.gameMeta.createdMs)}, ${fmtTime(online.gameMeta.createdMs)}`);
-    } else if (state.gameName) html += row('Game', esc(state.gameName));
+    if (online && online.gameMeta) html += row('Created', `${fmtDMY(online.gameMeta.createdMs)}, ${fmtTime(online.gameMeta.createdMs)}`);
     if (state.timer.startedAt) html += row('Started', `${fmtDMY(state.timer.startedAt)}, ${fmtTime(state.timer.startedAt)}`);
-    html += row('Players', state.players.length ? esc(state.players.map(p => p.name).join(', ')) : 'None yet');
     html += row('Total limit', s.limit) + row('Drop / full count', `${s.drop} / ${s.full}`);
     html += row('Entry or buy-in', s.share ? `₹${s.share.toLocaleString('en-IN')} per player` : 'Not set');
     html += row('Deals first', s.firstDealer === 'first' ? 'First player on the scoreboard' : 'Last player on the scoreboard');
@@ -3030,12 +3031,24 @@
   const otherRoomGames = {};    // games of each room, fetched when its section is expanded
   const otherRoomDocs = {};     // room documents (name, deletion settings) for rooms that aren't open
   const roomCardHome = document.createComment('room card');
-  function toggleRooms() {
+  // My Rooms is its own page: the rest of the page hides; Back, the house icon or the phone's Back button returns
+  let roomsHistory = false;
+  function toggleRooms() { if (roomsOpen) closeRoomsPage(); else openRoomsPage(); }
+  function openRoomsPage() {
     if (setup) closeSetup();
-    roomsOpen = !roomsOpen;
+    roomsOpen = true;
+    try { history.pushState({ rummyRooms: 1 }, ''); roomsHistory = true; } catch (e) { roomsHistory = false; }
     renderRooms();
-    if (roomsOpen) { try { $('roomsCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ } }
+    window.scrollTo(0, 0);
   }
+  function closeRoomsPage(fromPop) {
+    if (!roomsOpen) return;
+    roomsOpen = false;
+    if (roomsHistory && !fromPop) { roomsHistory = false; try { history.back(); } catch (e) { /* ignore */ } }
+    roomsHistory = false;
+    renderRooms();
+  }
+  window.addEventListener('popstate', () => { if (roomsOpen) closeRoomsPage(true); });
   function parkRoomCard() {
     const rc = $('roomCard');
     if (!roomCardHome.parentNode) rc.parentNode.insertBefore(roomCardHome, rc);
@@ -3052,6 +3065,7 @@
     const card = $('roomsCard');
     $('btnMyRooms').classList.toggle('on', roomsOpen);
     $('btnMyRooms').setAttribute('aria-expanded', String(roomsOpen));
+    document.body.classList.toggle('rooms-page', roomsOpen);
     parkRoomCard();
     if (!roomsOpen) { card.hidden = true; card.innerHTML = ''; return; }
     card.hidden = false;
@@ -3069,8 +3083,7 @@
     const mine = all.filter(([, e]) => e.role === 'owner'), shared = all.filter(([, e]) => e.role !== 'owner');
     const one = games.map(([id, e]) => `<div class="mr-one"><button type="button" class="mg-name" data-mr="opengame" data-id="${id}">${esc(e.name || 'Shared game')}</button>
         <button type="button" class="ico-btn del" data-mr="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">${I_TRASH}</button></div>`).join('');
-    card.innerHTML = `<h2><span class="ttl"><span class="suit">♥</span> My Rooms</span>
-        <button type="button" class="ico-btn" data-mr="close" aria-label="Close My Rooms">✕</button></h2>
+    card.innerHTML = `<h2 class="mr-title"><button type="button" class="ico-btn back" data-mr="close" aria-label="Back">‹</button> My Rooms</h2>
       <div class="mr-h">Created by me</div>${mine.length ? mine.map(sec).join('') : '<p class="mr-empty">None</p>'}
       <div class="mr-h mr-h2">Shared with me</div>${shared.length || one ? shared.map(sec).join('') + one : '<p class="mr-empty">None</p>'}
       <div class="msg" id="mrMsg"></div>`;
@@ -3134,8 +3147,7 @@
     const days = clampDays(room.deleteDays || defaultDays());
     return `<div class="rs" data-rid="${r}">
       <div class="rs-line"><label for="rsName">Name</label><input type="text" id="rsName" maxlength="40" value="${esc(room.name || e.name || '')}"></div>
-      <div class="rs-line"><label for="rsDays">Delete unused games after</label><select id="rsDays">${dayOptions().map(d => `<option value="${d}" ${d === days ? 'selected' : ''}>${daysLabel(d)}</option>`).join('')}</select></div>
-      <div class="rs-line"><label for="rsOnlyEnded">Only ended games</label><input type="checkbox" id="rsOnlyEnded" ${room.onlyEnded ? 'checked' : ''}></div>
+      <div class="rs-line"><label for="rsDays">Delete if unplayed</label><select id="rsDays">${dayOptions().map(d => `<option value="${d}" ${d === days ? 'selected' : ''}>${daysLabel(d)}</option>`).join('')}</select></div>
       <div class="rs-btns"><button type="button" class="btn-primary sm" data-mr="savesettings" data-id="${r}">Save</button>
         ${isGoogle() ? `<button type="button" class="btn-outline sm" data-mr="extendall" data-id="${r}">Keep 1 more year</button>` : ''}</div>
     </div>`;
@@ -3146,7 +3158,7 @@
     const room = roomDoc(r);
     const name = ($('rsName').value || '').trim().replace(/\s+/g, ' ').slice(0, 40) || room.name || e.name;
     const days = clampDays(Number($('rsDays').value));
-    const onlyEnded = $('rsOnlyEnded').checked;
+    const onlyEnded = false;   // one rule for every game, ended or not
     const list = gamesOf(r) || [];
     try {
       await cloudInit();
@@ -3199,7 +3211,7 @@
       boardClosed(false);
       if (!online || online.roomId !== r || online.scope !== 'room') { await enterRoom(r, null, e.role, 'room'); await waitForGame(10000); }
       if (g && online.gameId !== g) openGame(g, online.room ? g === online.room.currentGameId : false);
-      if (roomsOpen) renderRooms();
+      closeRoomsPage();
       setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 300);
     } catch (err) { setMsg('mrMsg', 'Couldn\'t open it. ' + cloudSetupHint(err), 'err'); }
   }
@@ -3216,7 +3228,7 @@
     e.preventDefault();   // an icon in a room's heading shouldn't fold it open or shut by itself
     e.stopPropagation();
     const a = b.dataset.mr, id = b.dataset.id;
-    if (a === 'close') { roomsOpen = false; renderRooms(); }
+    if (a === 'close') closeRoomsPage();
     else if (a === 'links' || a === 'settings') {
       roomTool[id] = roomTool[id] === a ? null : a;
       if (roomTool[id]) roomsExpanded.add(id);
@@ -3233,7 +3245,7 @@
     else if (a === 'opengame') {
       const en = myRooms.games[id]; const [r, g] = id.split('_');
       boardClosed(false);
-      if (en) enterRoom(r, g, en.role, 'game').catch(err => setMsg('mrMsg', cloudSetupHint(err), 'err'));
+      if (en) enterRoom(r, g, en.role, 'game').then(() => closeRoomsPage()).catch(err => setMsg('mrMsg', cloudSetupHint(err), 'err'));
     }
     else if (b.dataset.lk) shareLink(b);
   });
@@ -4155,7 +4167,7 @@
   function isGoogle() { return !!cloudUser && !cloudUser.isAnonymous && (cloudUser.providerData || []).some(p => p.providerId === 'google.com'); }
   function maxDays() { return isGoogle() ? 365 : 90; }
   function dayOptions() { return isGoogle() ? USER_DAYS : GUEST_DAYS; }
-  function defaultDays() { return isGoogle() ? 365 : 30; }
+  function defaultDays() { return 90; }   // 90 days without play, finished or not
   function clampDays(d) {
     const opts = dayOptions();
     if (opts.includes(d)) return d;
