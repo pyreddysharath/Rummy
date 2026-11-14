@@ -78,10 +78,14 @@ service cloud.firestore {
       match /games/{g} {
         allow get: if canViewRoom(r) || gameEdit(r, g) || gameView(r, g);
         allow list: if canViewRoom(r);
-        allow create: if canEditRoom(r) && okExpiry(request.resource.data);
-        // Owners and editors change games – also an ended one, e.g. to reopen it
-        allow update: if okExpiry(request.resource.data) && (isRoomOwner(r) || canEditRoom(r) || gameEdit(r, g));
-        allow delete: if signedIn() && (isRoomOwner(r) || expired(resource.data));
+        // createdBy: who made the game (they may delete it, even in someone else's room)
+        allow create: if canEditRoom(r) && okExpiry(request.resource.data)
+                      && request.resource.data.get('createdBy', uid()) == uid();
+        // Owners and editors change games – also an ended one, e.g. to reopen it; nobody changes who made it
+        allow update: if okExpiry(request.resource.data) && (isRoomOwner(r) || canEditRoom(r) || gameEdit(r, g))
+                      && request.resource.data.get('createdBy', '') == resource.data.get('createdBy', '');
+        allow delete: if signedIn() && (isRoomOwner(r) || expired(resource.data) ||
+                      (resource.data.get('createdBy', '') == uid() && (canEditRoom(r) || gameEdit(r, g))));
       }
     }
 
@@ -103,7 +107,8 @@ service cloud.firestore {
                     && canEditRoom(request.resource.data.roomId)   // owner or anyone with the room's Edit link
                     && okExpiry(request.resource.data);
       allow update: if signedIn() && isRoomOwner(resource.data.roomId) && okExpiry(request.resource.data);
-      allow delete: if signedIn() && isRoomOwner(resource.data.roomId);
+      allow delete: if signedIn() && (isRoomOwner(resource.data.roomId) ||
+                    get(/databases/$(database)/documents/rooms/$(resource.data.roomId)/games/$(resource.data.gameId)).data.get('createdBy', '') == uid());
     }
 
     // ---------- "this user opened a link" records ----------
