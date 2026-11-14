@@ -75,7 +75,10 @@ You need a Google account. Everything below fits in Firebase's free **Spark** pl
 ## How online rooms work
 
 - **Home** shows two big buttons: **New Game** and **My Rooms**. Tapping one moves them into a slim top bar (with Back to Home); the app reopens on the same screen after a refresh. If a game is open, Home also shows **Continue**.
-- **New Game** asks for the room (pick one, or **＋ Create a new room** – name it after the occasion), the game name, players and Game Rules. Each room has an **Edit** link (share with players) and a **View** link (share with watchers), under the share button next to Scoreboard or the link icon in My Rooms.
+- **New Game** asks for the room (pick one, or **＋ Create a new room** – name it after the occasion), the game name, players and Game Rules. Sharing:
+  - **One game** – the share button next to Scoreboard, or the share icon beside a game in My Rooms. The person sees only that game.
+  - **Whole room** – the share icon beside the room in My Rooms. The person sees every game, including new ones.
+  - Each has an **Edit** link (enter scores) and a **View** link (watch only). Anyone with edit access can share; view-only people can't.
 - **My Rooms** lists rooms newest first (*Created by me* / *Shared with me*), each with its games newest first. The bin deletes a room or a game, with a 5-second Undo; deleting a room's last game deletes the room too.
 - **Guests** (no login): rooms are listed on that device. **Sign in with Google** from the menu (top right) to keep your rooms on your account across devices.
 - **Deletion**: the same for everyone – a game is deleted after 90 days without play, and a room once it has no games left.

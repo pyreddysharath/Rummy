@@ -209,6 +209,13 @@
   .mr-room[open] .mr-tg::before, .mr-room[open] .mr-tg::after { background: #fff; }
   .mr-room[open] .mr-tg::after { transform: rotate(0deg); }
   .mr-body { padding-left: 32px !important; }
+  .mr-room .ico-btn.share { color: var(--felt); }
+  .mr-room .ico-btn.share.on { color: #fff; background: var(--felt); border-radius: 50%; }
+  .mr-games li.mg-links { display: block; padding: 0 0 6px; background: none; }
+  .mr-games li.mg-links::before { display: none !important; content: none !important; }
+  .mg-eye { font-size: .9rem; opacity: .75; margin-left: 2px; }
+  .lk-head { margin: 2px 0 4px; font-size: .78rem; font-weight: 800; color: #8a6a10; text-transform: uppercase; letter-spacing: .04em; }
+  .lk-head small { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); }
   .mr-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
   .mr-name { font-weight: 800; color: var(--felt); font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mr-meta { font-size: .74rem; color: var(--muted); white-space: nowrap; }
@@ -3136,18 +3143,15 @@
     const o = online;
     box.innerHTML = img + '<p class="lk-note">Loading links…</p>';
     let html = '';
+    // Links to this game only (people who can only watch can't pass links on)
+    if (o.role === 'view') { box.innerHTML = img; return; }
     try {
-      if (o.scope === 'game') {
-        const e = myRooms.games[o.roomId + '_' + o.gameId] || {};
-        if (e.key) html = linkRowHtml(o.role === 'edit' ? 'Edit' : 'View', gameLink(o.roomId, o.gameId, o.role, e.key), o.role === 'edit' ? 'gedit' : 'gview');
-      } else {
-        const k = await roomKeysFor(o.roomId);
-        if (online !== o) return;
-        if (k.view) html += linkRowHtml('View', roomLink(o.roomId, 'view', k.view), 'view');
-        if (k.edit && o.role !== 'view') html += linkRowHtml('Edit', roomLink(o.roomId, 'edit', k.edit), 'edit');
-      }
+      const g = o.gameId;
+      html = await gameLinksHtml(o.roomId, g);
+      if (online !== o || o.gameId !== g) return;
+      if (html) html = '<p class="lk-head">This game only</p>' + html;
     } catch (e) { html = '<p class="lk-note">The links need an internet connection the first time – try again once you\'re online.</p>'; }
-    box.innerHTML = img + (html || '<p class="lk-note">No links available for your access.</p>');
+    box.innerHTML = img + html;
   }
 
   // Game details: everything chosen when the game was set up; editors can change the rules until the game ends
@@ -3244,6 +3248,7 @@
   let roomsOpen = false;
   const roomsExpanded = new Set();
   const roomTool = {};          // room id -> true when its links are showing
+  const gameTool = {};          // room_game id -> true when that game's links are showing
   const otherRoomGames = {};    // games of each room, fetched when its section is expanded
   const otherRoomDocs = {};     // room documents (name, deletion settings) for rooms that aren't open
   const roomCardHome = document.createComment('room card');
@@ -3403,40 +3408,70 @@
     const all = Object.entries(myRooms.rooms).filter(([id]) => !hiddenIds.has(id)).sort(newest);
     const games = Object.entries(myRooms.games).filter(([id]) => !hiddenIds.has(id)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
     const sec = ([id, e]) => {
-      const own = e.role === 'owner';
+      const own = e.role === 'owner', canShare = own || e.role === 'edit';
       return `<details class="mr-room" data-rid="${id}" ${roomsExpanded.has(id) ? 'open' : ''}>
-        <summary><span class="mr-tg" aria-hidden="true"></span><span class="mr-nm"><span class="mr-name">${esc(e.name || 'Room')}</span><span class="mr-meta">${fmtDMY(e.createdMs || e.at || Date.now())}${!own ? ` · ${ROLE_LABEL[e.role] || ''}` : ''}</span></span>
+        <summary><span class="mr-tg" aria-hidden="true"></span><span class="mr-nm"><span class="mr-name">${esc(e.name || 'Room')}</span><span class="mr-meta">${fmtDMY(e.createdMs || e.at || Date.now())}</span></span>
           <button type="button" class="ico-btn del" data-mr="${own ? 'delroom' : 'forget'}" data-id="${id}" title="${own ? 'Delete room' : 'Remove from this device'}" aria-label="${own ? 'Delete room' : 'Remove from this device'}">${I_TRASH}</button>
-          <button type="button" class="ico-btn ${roomTool[id] ? 'on' : ''}" data-mr="links" data-id="${id}" title="Links" aria-label="Links">${I_LINK}</button></summary>
+          ${canShare ? `<button type="button" class="ico-btn share ${roomTool[id] ? 'on' : ''}" data-mr="links" data-id="${id}" title="Share the whole room" aria-label="Share the whole room">${I_SHARE}</button>` : ''}</summary>
         <div class="mr-body" id="mrb-${id}"></div></details>`;
     };
     const mine = all.filter(([, e]) => e.role === 'owner'), shared = all.filter(([, e]) => e.role !== 'owner');
-    const one = games.map(([id, e]) => `<div class="mr-one"><button type="button" class="mg-name" data-mr="opengame" data-id="${id}">${esc(e.name || 'Shared game')}</button>
-        <button type="button" class="ico-btn del" data-mr="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">${I_TRASH}</button></div>`).join('');
+    // Single games shared with me, grouped under their room
+    const groups = {};
+    games.forEach(([id, e]) => { const r = id.split('_')[0]; (groups[r] = groups[r] || []).push([id, e]); });
+    const one = Object.entries(groups).map(([r, list]) => {
+      const key = 'g:' + r, name = list.map(([, e]) => e.roomName).find(Boolean) || 'Shared room';
+      const rows = list.slice().sort((a, b) => (a[1].createdMs || a[1].at || 0) - (b[1].createdMs || b[1].at || 0)).map(([id, e]) => {
+        const g = id.slice(r.length + 1), here = online && online.scope === 'game' && online.roomId === r && online.gameId === g;
+        return `<li class="${here ? 'here' : ''}"><button type="button" class="mg-name" data-mr="opengame" data-id="${id}">${esc(e.name || 'Game')}</button>
+          ${e.role === 'view' ? '<span class="mg-eye" title="Watch only" aria-label="Watch only">👁</span>' : ''}
+          ${e.role === 'edit' ? `<button type="button" class="ico-btn share ${gameTool[id] ? 'on' : ''}" data-mr="glinks" data-id="${r}" data-g="${g}" title="Share this game" aria-label="Share this game">${I_SHARE}</button>` : ''}
+          <button type="button" class="ico-btn del" data-mr="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">${I_TRASH}</button></li>
+          ${gameTool[id] ? `<li class="mg-links"><div class="mr-tool lk-box" id="mgl-${id}">Loading…</div></li>` : ''}`;
+      }).join('');
+      return `<details class="mr-room" data-grp="${key}" ${roomsExpanded.has(key) ? 'open' : ''}>
+        <summary><span class="mr-tg" aria-hidden="true"></span><span class="mr-nm"><span class="mr-name">${esc(name)}</span><span class="mr-meta">${list.length} game${list.length === 1 ? '' : 's'}</span></span></summary>
+        <div class="mr-body"><div class="mr-sub">Games</div><ul class="mr-games">${rows}</ul></div></details>`;
+    }).join('');
     card.innerHTML = `
       <div class="mr-h">Created by me</div>${mine.length ? mine.map(sec).join('') : '<p class="mr-empty">None</p>'}
       <div class="mr-h mr-h2">Shared with me</div>${shared.length || one ? shared.map(sec).join('') + one : '<p class="mr-empty">None</p>'}
       <div class="msg" id="mrMsg"></div>`;
     if (keep && keep.t) { $('mrMsg').textContent = keep.t; $('mrMsg').className = keep.c; }
-    roomsExpanded.forEach(id => fillRoomSection(id));
+    roomsExpanded.forEach(id => { if (!id.startsWith('g:')) fillRoomSection(id); });
+    Object.keys(gameTool).forEach(id => { if (gameTool[id] && $('mgl-' + id)) fillGameLinks(id); });
+  }
+  // Links to one game, under that game in My Rooms
+  async function fillGameLinks(id) {
+    const box = $('mgl-' + id);
+    if (!box) return;
+    const [r, g] = [id.split('_')[0], id.slice(id.indexOf('_') + 1)];
+    try {
+      await cloudInit();
+      const html = await gameLinksHtml(r, g);
+      if ($('mgl-' + id) === box) box.innerHTML = html ? '<p class="lk-head">This game only</p>' + html : '<p class="mr-empty">None</p>';
+    } catch (err) { box.innerHTML = '<p class="mr-empty">Offline</p>'; }
   }
 
   async function fillRoomSection(id) {
     const body = $('mrb-' + id);
     if (!body) return;
     const e = myRooms.rooms[id] || {};
-    const own = e.role === 'owner';
+    const own = e.role === 'owner', canShare = own || e.role === 'edit';
     const list = gamesOf(id);
     const rows = list ? (list.length ? `<ul class="mr-games">${[...list].sort((a, b) => (a.createdMs || 0) - (b.createdMs || 0)).map(x => {   // oldest first
         const here = online && online.roomId === id && online.gameId === x.id;
         return `<li class="${here ? 'here' : ''}"><button type="button" class="mg-name" data-mr="opengameof" data-id="${id}" data-g="${x.id}">${esc(gameTitle(x.createdMs, x.seq, x.gameName))}</button>
           ${x.status === 'ended' ? '<span class="mg-tag">Ended</span>' : ''}
-          ${own ? `<button type="button" class="ico-btn del" data-mr="delgamein" data-id="${id}" data-g="${x.id}" title="Delete game" aria-label="Delete game">${I_TRASH}</button>` : ''}</li>`;
+          ${canShare ? `<button type="button" class="ico-btn share ${gameTool[id + '_' + x.id] ? 'on' : ''}" data-mr="glinks" data-id="${id}" data-g="${x.id}" title="Share this game" aria-label="Share this game">${I_SHARE}</button>` : ''}
+          ${own ? `<button type="button" class="ico-btn del" data-mr="delgamein" data-id="${id}" data-g="${x.id}" title="Delete game" aria-label="Delete game">${I_TRASH}</button>` : ''}</li>
+          ${gameTool[id + '_' + x.id] ? `<li class="mg-links"><div class="mr-tool lk-box" id="mgl-${id}_${x.id}">Loading…</div></li>` : ''}`;
       }).join('')}</ul>` : '<p class="mr-empty">None</p>')
       : '<p class="mr-empty">Loading…</p>';
     const tool = roomTool[id] ? '<div class="mr-tool lk-box" id="mrLinks-' + id + '">Loading…</div>' : '';
     body.innerHTML = tool + '<div class="mr-sub">Games</div>' + rows;
     if (roomTool[id]) fillRoomLinks(id);
+    body.querySelectorAll('[id^="mgl-"]').forEach(b => fillGameLinks(b.id.slice(4)));
     if (list && (isOpenRoom(id) || otherRoomDocs[id])) return;
     if (isOpenRoom(id)) return;
     try {
@@ -3460,11 +3495,11 @@
     try {
       await cloudInit();
       const k = await roomKeysFor(r);
-      let html = '';
+      let html = '<p class="lk-head">Whole room <small>– every game, including new ones</small></p>';
       if (k.view) html += linkRowHtml('View', roomLink(r, 'view', k.view), 'view', r);
       if (k.edit && e.role !== 'view') html += linkRowHtml('Edit', roomLink(r, 'edit', k.edit), 'edit', r);
       if (e.role === 'owner') html += `<button type="button" class="link-del plain" data-mr="resetlinks" data-id="${r}">↻ New links</button>`;
-      box.innerHTML = html || '<p class="mr-empty">None</p>';
+      box.innerHTML = html;
     } catch (err) { box.innerHTML = '<p class="mr-empty">Offline</p>'; }
   }
 
@@ -3499,11 +3534,15 @@
   $('btnMyRooms').addEventListener('click', toggleRooms);
   $('roomsCard').addEventListener('toggle', e => {
     const d = e.target;
-    if (!d.classList || !d.classList.contains('mr-room') || !d.dataset.rid) return;
+    if (!d.classList || !d.classList.contains('mr-room')) return;
+    if (d.dataset.grp) { if (d.open) roomsExpanded.add(d.dataset.grp); else roomsExpanded.delete(d.dataset.grp); return; }
+    if (!d.dataset.rid) return;
     if (d.open) { roomsExpanded.add(d.dataset.rid); fillRoomSection(d.dataset.rid); }
     else roomsExpanded.delete(d.dataset.rid);
   }, true);
   $('roomsCard').addEventListener('click', e => {
+    const lk = e.target.closest('[data-lk]');
+    if (lk) { shareLink(lk); return; }
     const b = e.target.closest('[data-mr]');
     if (!b) return;
     e.preventDefault();   // an icon in a room's heading shouldn't fold it open or shut by itself
@@ -3513,6 +3552,11 @@
     else if (a === 'links') {
       roomTool[id] = !roomTool[id];
       if (roomTool[id]) roomsExpanded.add(id);
+      renderRooms();
+    }
+    else if (a === 'glinks') {
+      const key = id + '_' + b.dataset.g;
+      gameTool[key] = !gameTool[key];
       renderRooms();
     }
     else if (a === 'resetlinks') resetLinksFor(id);
@@ -4829,7 +4873,7 @@
       maxDays: d.maxDays, onlyEnded: d.onlyEnded, customDays: !!d.customDays, status: d.status };
     if (online.scope === 'game') {
       const e = myRooms.games[online.roomId + '_' + online.gameId];
-      if (e) { e.name = gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName); saveRooms(); }
+      if (e) { e.name = gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, d.gameName); if (d.roomName) e.roomName = d.roomName; e.createdMs = online.gameMeta.createdMs; saveRooms(); }
     }
     applyRemoteGame(d);
     renderRoomCard();
@@ -4993,7 +5037,7 @@
     }));
     await cw(fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner }));
     await cw(fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view }));
-    await cw(fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(game), gameMeta(1, now, days, false))));
+    await cw(fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(game), gameMeta(1, now, days, false), { roomName: name })));
     myRooms.rooms[r] = { name, role: 'owner', keys, savedOwnerLink: isGoogle(), at: now, createdMs: now };
     saveRooms();
     return r;
@@ -5039,7 +5083,7 @@
       if (opts && opts.gameName) fresh.gameName = opts.gameName;
       if (opts && opts.players) { fresh.players = opts.players.map(p => ({ id: p.id, name: p.name })); fresh.nextId = nextIdFor(fresh.players); }
       if (!keepPlayers) { fresh.players = []; fresh.nextId = 1; }
-      await cw(fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded))));
+      await cw(fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded), { roomName: room.name || '' })));
       online.follow = true;
       const want = Math.max(now + Math.min(room.deleteDays || 30, maxDaysOfRoom()) * DAY, room.expireAt || 0);
       await cw(fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) }));
@@ -5067,15 +5111,35 @@
     return e.keys;
   }
 
-  async function gameKeysFor(r, g) {
+  // Links to one game. Made the first time someone who can edit the room shares the game.
+  function roomRoleOf(r) {
+    if (online && online.roomId === r && online.scope === 'room') return online.role;
+    return (myRooms.rooms[r] || {}).role || '';
+  }
+  const gameKeysWait = {};   // one fetch / make at a time per game, so two taps can't make two sets of keys
+  function gameKeysFor(r, g) {
+    const id = r + '_' + g;
+    if (!gameKeysWait[id]) gameKeysWait[id] = gameKeysLoad(r, g).finally(() => { delete gameKeysWait[id]; });
+    return gameKeysWait[id];
+  }
+  async function gameKeysLoad(r, g) {
     try {
       const s = await fb.getDoc(R.gameKeys(r, g));
       if (s.exists()) return s.data();
     } catch (e) { /* not created yet, or no access */ }
-    if (!isOwner()) return null;
+    const role = roomRoleOf(r);
+    if (role !== 'owner' && role !== 'edit') return null;
     const k = { roomId: r, gameId: g, editKey: randKey(24), viewKey: randKey(24) };
-    await fb.setDoc(R.gameKeys(r, g), k);
+    await cw(fb.setDoc(R.gameKeys(r, g), k));
+    // so the people it's shared with can see which room it belongs to
+    const roomName = (online && online.roomId === r && online.room ? online.room.name : '') || (myRooms.rooms[r] || {}).name || '';
+    if (roomName) fb.updateDoc(R.game(r, g), { roomName }).catch(() => {});
     return k;
+  }
+  async function gameLinksHtml(r, g) {
+    const k = await gameKeysFor(r, g);
+    if (!k) return '';
+    return linkRowHtml('View', gameLink(r, g, 'view', k.viewKey), 'gview') + linkRowHtml('Edit', gameLink(r, g, 'edit', k.editKey), 'gedit');
   }
 
   async function resetRoomLinks(which) {
@@ -5515,7 +5579,9 @@
   async function shareLink(btn) {
     const url = btn.dataset.url, kind = btn.dataset.kind, how = btn.dataset.lk;
     const rid = btn.closest('[data-rid]') ? btn.closest('[data-rid]').dataset.rid : null;
-    const name = rid && myRooms.rooms[rid] ? myRooms.rooms[rid].name : online && online.room ? online.room.name : 'Rummy';
+    const gid = btn.closest('[id^="mgl-"]') ? btn.closest('[id^="mgl-"]').id.slice(4) : '';
+    const name = rid && myRooms.rooms[rid] ? myRooms.rooms[rid].name : gid && myRooms.games[gid] && myRooms.games[gid].roomName ? myRooms.games[gid].roomName
+      : online && online.room ? online.room.name : 'Rummy';
     const what = { edit: 'join and enter scores', view: 'watch the scores live', owner: 'manage the room (keep private)',
       gedit: 'enter scores in this game', gview: 'watch this game live' }[kind] || 'open the scoreboard';
     const text = `RummyTally – ${name}: tap to ${what}\n${url}`;

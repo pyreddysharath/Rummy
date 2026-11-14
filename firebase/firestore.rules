@@ -90,10 +90,10 @@ service cloud.firestore {
       allow create: if signedIn() && roomDoc(r).ownerUid == uid() && request.resource.data.roomId == r;
       allow update, delete: if isRoomOwner(r);
     }
-    match /gameKeys/{id} {           // links to one game only
+    match /gameKeys/{id} {           // links to one game only (shared from the Scoreboard or My Rooms)
       allow get: if signedIn() && (canEditRoom(resource.data.roomId) || gameEdit(resource.data.roomId, resource.data.gameId));
       allow create: if signedIn() && id == request.resource.data.roomId + '_' + request.resource.data.gameId
-                    && isRoomOwner(request.resource.data.roomId);
+                    && canEditRoom(request.resource.data.roomId);   // owner or anyone with the room's Edit link
       allow update, delete: if signedIn() && isRoomOwner(resource.data.roomId);
     }
 
