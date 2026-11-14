@@ -8,10 +8,10 @@
 <title>RummyTally – Rummy Scoreboard</title>
 <meta property="og:title" content="RummyTally">
 <meta property="og:description" content="Live Rummy scoreboard on every phone.">
-<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="assets/icons/icon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
-<link rel="manifest" href="assets/manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="assets/icons/icon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png?v=2">
+<link rel="manifest" href="assets/manifest.webmanifest?v=2">
 <meta name="apple-mobile-web-app-title" content="RummyTally">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -393,7 +393,14 @@
   .sb-img small { color: var(--muted); font-weight: 600; }
   .gd-box { margin: 0 0 12px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fffdf6; }
   .gd-box[hidden] { display: none; }
-  .gd-grid { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 5px; font-size: .86rem; margin-bottom: 10px; }
+  .gd-grid { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; row-gap: 7px; font-size: .86rem; margin-bottom: 10px; align-items: center; }
+  .gd-grid .gv { text-align: right; }
+  .gd-h { font-weight: 800; font-size: .74rem; letter-spacing: .05em; text-transform: uppercase; color: #8a6a10; margin: 0 0 6px; }
+  .suit-rank { display: inline-flex; align-items: center; gap: 3px; flex-wrap: nowrap; }
+  .gd-sm { font-weight: 600; font-size: .72rem; color: var(--muted); opacity: .85; }
+  .suit-rank svg { width: 16px; height: 16px; display: block; }
+  .suit-rank b { color: var(--muted); font-weight: 700; margin: 0 1px; }
+  .suit-rank small { color: var(--muted); font-weight: 600; font-size: .72rem; margin-left: 4px; }
   .gd-grid .gl { font-weight: 700; color: var(--muted); }
   .gd-grid .gv { color: var(--text); font-weight: 600; }
   #gdRules .settings-card { margin: 0 0 10px; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
@@ -509,6 +516,10 @@
     background: var(--gold-soft); border: 1px solid #f0dca0; border-radius: 10px; padding: 10px 12px;
   }
   .range-note[hidden] { display: none; }
+  /* The Legend under the Scoreboard's ⓘ: its own light-green panel */
+  .range-note.info-note#legendNote { background: #eef7f1; border-color: #cfe6d8; }
+  .info-note .lg-title { font-weight: 800; font-size: .95rem; color: var(--felt); margin: 0 0 2px; }
+  .info-note .ns-sub small { font-weight: 600; color: var(--muted); font-size: .72rem; margin-left: 4px; }
   .range-note b { color: var(--text); }
   .range-note .o { color: var(--orange-text); font-weight: 700; }
   .range-note .r { color: var(--red-text); font-weight: 700; }
@@ -1264,7 +1275,7 @@
       <span class="wm-big" id="wmBig">Rummy</span>
       <span class="wm-small" id="wmSmall">Tally</span>
     </h1>
-    <div class="hero-suits" aria-hidden="true"><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5C9 5.5 3 9.2 3 13.6a4.6 4.6 0 0 0 7.6 3.5L9.6 22h4.8l-1-4.9A4.6 4.6 0 0 0 21 13.6c0-4.4-6-8.1-9-12.1z"/></svg><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.5C8.5 18 2 13.6 2 8.2A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 10 2.2c0 5.4-6.5 9.8-10 13.3z"/></svg><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a4.8 4.8 0 0 0-3.9 7.6A4.8 4.8 0 1 0 10.7 17L9.6 22h4.8l-1.1-5a4.8 4.8 0 1 0 2.6-7.9A4.8 4.8 0 0 0 12 1.5z"/></svg><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5 20 12l-8 10.5L4 12z"/></svg></div>
+    <div class="hero-suits" aria-hidden="true"><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5C9 5.5 3 9.2 3 13.6a4.6 4.6 0 0 0 7.6 3.5L9.6 22h4.8l-1-4.9A4.6 4.6 0 0 0 21 13.6c0-4.4-6-8.1-9-12.1z"/></svg><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.5C8.5 18 2 13.6 2 8.2A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 10 2.2c0 5.4-6.5 9.8-10 13.3z"/></svg><svg class="rd" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5 20 12l-8 10.5L4 12z"/></svg><svg class="bk" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1.5a4.8 4.8 0 0 0-3.9 7.6A4.8 4.8 0 1 0 10.7 17L9.6 22h4.8l-1.1-5a4.8 4.8 0 1 0 2.6-7.9A4.8 4.8 0 0 0 12 1.5z"/></svg></div>
     <div class="hero-foot">
       <div class="hero-chips" hidden>
         <span class="chip" id="hdrRound">Round 1</span>
@@ -1370,29 +1381,30 @@
     <div class="lk-box sb-links" id="sbLinks" hidden></div>
     <div class="range-note info-note" id="legendNote" hidden>
       <div class="rules" id="rulesNote" hidden></div>
-      <div class="ns-sub">Scores (rounds and Total)</div>
+      <div class="lg-title">Legend</div>
+      <div class="ns-sub">1 · Score colours <small>rounds and Total</small></div>
       <div class="legend">
         <span><i class="dot" style="background:#16a34a;border-radius:50%"></i>Lowest</span>
         <span><i class="dot" style="background:#e57a00;border-radius:50%"></i>Highest</span>
         <span><i class="dot" style="background:#c6f1d3;border-radius:50%;box-shadow:inset 0 0 0 1px #7fd49a"></i>2nd lowest (Total only)</span>
         <span><i class="dot" style="background:#fed2a1;border-radius:50%;box-shadow:inset 0 0 0 1px #f0a85c"></i>2nd highest (Total only)</span>
       </div>
-      <div class="ns-sub">Drops left (Total and text under name)</div>
+      <div class="ns-sub">2 · Drops left <small>Total and the line under each name</small></div>
       <div class="legend">
         <span><i class="dot" style="background:#fed2a1;border-radius:50%;box-shadow:inset 0 0 0 1px #f0a85c"></i>2 drops</span>
         <span><i class="dot" style="background:#e57a00;border-radius:50%"></i>1 drop</span>
         <span><i class="dot" style="background:#fecaca;border-radius:50%;box-shadow:inset 0 0 0 1px #f59a9a"></i>0 drops</span>
       </div>
-      <div class="ns-note">Drops colours take priority over the score colours on the Total.</div>
-      <div class="ns-sub">Players</div>
+      <div class="ns-note">On the Total, drops colours take priority over score colours.</div>
+      <div class="ns-sub">3 · Players</div>
       <div class="legend">
-        <span class="lg-full"><span class="pill out lg-pill">OUT</span> red name, Total and OUT round struck through</span>
+        <span class="lg-full"><span class="pill out lg-pill">OUT</span> red name, Total and OUT round struck through; a red – means no score in that round</span>
         <span class="lg-full"><span class="pill winner lg-pill">Winner</span> 🏆 gold name, scores on a light gold background</span>
         <span><svg class="dicon" width="20" height="24" viewBox="0 0 20 24" aria-hidden="true"><g transform="rotate(10 10 12)"><rect x="3" y="2" width="14" height="20" rx="2.6" fill="#f5c12e" stroke="#0e5a3a" stroke-width="1.4"/><path transform="translate(5.6 7.2) scale(.88)" d="M5 0C5 0 0 4 0 6.3C0 8 1.8 9 3.4 8.2L3 10H7L6.6 8.2C8.2 9 10 8 10 6.3C10 4 5 0 5 0Z" fill="#1d2330"/></g></svg> Dealer <small class="ns-hint">(tap for label)</small></span>
         <span><b class="rj">↺</b> Rejoined</span>
       </div>
-      <div class="ns-note">A red – means no score in the round they went OUT.</div>
-      <div class="ns-note">To end a game, tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the × on a Winner tag in ✎ Player edit.</div>
+      <div class="ns-sub">4 · Ending a game</div>
+      <div class="ns-note">Tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the × on a Winner tag in ✎ Player edit.</div>
     </div>
 
 
@@ -3163,18 +3175,19 @@
   }
 
   // Game details: everything chosen when the game was set up; editors can change the rules until the game ends
+  const SUIT_RANK_HTML = '<svg viewBox="0 0 24 24"><path fill="#111" d="M12 1.5C9 5.5 3 9.2 3 13.6a4.6 4.6 0 0 0 7.6 3.5L9.6 22h4.8l-1-4.9A4.6 4.6 0 0 0 21 13.6c0-4.4-6-8.1-9-12.1z"/></svg><b>›</b><svg viewBox="0 0 24 24"><path fill="#e0282e" d="M12 21.5C8.5 18 2 13.6 2 8.2A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 10 2.2c0 5.4-6.5 9.8-10 13.3z"/></svg><b>›</b><svg viewBox="0 0 24 24"><path fill="#e0282e" d="M12 1.5 20 12l-8 10.5L4 12z"/></svg><b>›</b><svg viewBox="0 0 24 24"><path fill="#111" d="M12 1.5a4.8 4.8 0 0 0-3.9 7.6A4.8 4.8 0 1 0 10.7 17L9.6 22h4.8l-1.1-5a4.8 4.8 0 1 0 2.6-7.9A4.8 4.8 0 0 0 12 1.5z"/></svg>';
   function renderDetails() {
     const box = $('gameDetails');
     if (rulesEditing) return;
     const s = state.settings;
+    // The Game Rules, as set (same fields as the Game Rules form), then the suits from highest to lowest
     const row = (l, v) => `<span class="gl">${l}</span><span class="gv">${v}</span>`;
-    let html = '<div class="gd-grid">';
-    if (online && online.gameMeta) html += row('Created', `${fmtDMY(online.gameMeta.createdMs)}, ${fmtTime(online.gameMeta.createdMs)}`);
-    if (state.timer.startedAt) html += row('Started', `${fmtDMY(state.timer.startedAt)}, ${fmtTime(state.timer.startedAt)}`);
-    html += row('Total limit', s.limit) + row('Drop / full count', `${s.drop} / ${s.full}`);
-    html += row('Entry or buy-in', s.share ? `₹${s.share.toLocaleString('en-IN')} per player` : 'Not set');
-    html += row('Deals first', s.firstDealer === 'first' ? 'First player on the scoreboard' : 'Last player on the scoreboard');
-    html += row('Next dealer OUT', s.dealerOut === 'next' ? 'Next player still in deals' : 'Previous player deals again');
+    let html = '<div class="gd-h">Game Rules</div><div class="gd-grid">';
+    html += row('Total limit', s.limit) + row('Drop count', s.drop) + row('Full count', s.full);
+    html += row('Entry or buy-in per player', s.share ? `₹${s.share.toLocaleString('en-IN')}` : 'Not set');
+    html += row('Who deals first', s.firstDealer === 'first' ? 'First player' : 'Last player');
+    html += row('Next dealer is OUT', s.dealerOut === 'next' ? 'Next player deals' : 'Previous player deals');
+    html += row('Suit priority <small class="gd-sm">high → low</small>', `<span class="suit-rank" title="Highest to lowest">${SUIT_RANK_HTML}</span>`);
     html += '</div>';
     if (canEdit() && !isEnded()) html += '<button type="button" class="btn-outline sm" data-rulesedit>✎ Edit rules</button>';
     box.innerHTML = html;
@@ -4224,9 +4237,13 @@
     const v = readSettingsInputs();
     const err = validateSettings(v);
     if (err) { setMsg('settingsMsg', err, 'err'); return; }
-    const next = { ...state.settings, limit: parseInt(v.limit, 10), drop: parseInt(v.drop, 10), full: parseInt(v.full, 10) };
-    const same = next.limit === state.settings.limit && next.drop === state.settings.drop && next.full === state.settings.full;
-    if (same) { setMsg('settingsMsg', 'No changes to apply.', ''); return; }
+    const raw = String($('setShare').value).trim();
+    const share = raw === '' ? null : Number(raw);
+    if (share !== null && (!Number.isInteger(share) || share < 1)) { setMsg('settingsMsg', 'Entry or buy-in must be a whole amount of ₹1 or more.', 'err'); return; }
+    const next = { ...state.settings, limit: parseInt(v.limit, 10), drop: parseInt(v.drop, 10), full: parseInt(v.full, 10), share };
+    const scoring = next.limit !== state.settings.limit || next.drop !== state.settings.drop || next.full !== state.settings.full;
+    if (!scoring && share === (state.settings.share || null)) { setMsg('settingsMsg', 'Saved – nothing else to change.', 'ok'); return; }
+    if (!scoring) { state.settings = next; saveState(); renderShares(); setMsg('settingsMsg', 'Entry or buy-in saved.', 'ok'); return; }
     if (state.rounds.length && !confirm('Apply new settings? Player statuses on the scoreboard will be recalculated.')) return;
     state.settings = next;
     saveState();
@@ -4583,6 +4600,9 @@
   let cloudUser = null;
   let online = null;          // { roomId, gameId, role, scope: 'room' | 'game', room, gameMeta, follow }
   let lastSynced = {};        // game field -> JSON last seen in / sent to the cloud
+  // Values this phone has sent that the server hasn't confirmed yet. An older value coming back from the
+  // server in the meantime (e.g. "1" while "100" is on its way) must not overwrite what was typed.
+  let inflight = {};
   let roomUnsubs = [];
   let gameUnsub = null;
   let roomGames = [];         // games of the open room, newest first
@@ -4834,6 +4854,7 @@
     if (follow !== undefined) online.follow = follow;
     online.gameMeta = null;
     lastSynced = {};
+    inflight = {};
     resetUiState();
     gameUnsub = fb.onSnapshot(R.game(online.roomId, g), { includeMetadataChanges: true }, onGameSnap, onCloudError);
     renderRoomCard();
@@ -4909,6 +4930,8 @@
       const v = d[f] === undefined ? null : d[f];
       const j = JSON.stringify(v);
       if (j === lastSynced[f]) return;
+      if (inflight[f] !== undefined && j !== inflight[f]) return;   // stale echo of our own earlier change
+      if (pushTimer && JSON.stringify(state[f] === undefined ? null : state[f]) !== lastSynced[f]) return;   // changed here, not sent yet
       lastSynced[f] = j;
       const nv = normField(f, v);
       if (JSON.stringify(state[f] === undefined ? null : state[f]) === JSON.stringify(nv)) return;
@@ -4968,11 +4991,16 @@
     online.gameMeta.expireAt = exp;
     setSync(navigator.onLine === false ? 'offline' : 'saving');
     const r = online.roomId, g = online.gameId;
+    const sent = {};
+    GAME_FIELDS.forEach(f => { if (f in upd || Object.keys(upd).some(k => k.startsWith(f + '.'))) { sent[f] = lastSynced[f]; inflight[f] = lastSynced[f]; } });
+    const done = () => { Object.keys(sent).forEach(f => { if (inflight[f] === sent[f]) delete inflight[f]; }); };
     try {
       await fb.updateDoc(R.game(r, g), upd);
+      done();
       setSync('ok');
       bumpRoomExpiry(exp);
     } catch (e) {
+      done();
       setSync('err');
       onCloudError(e);
     }

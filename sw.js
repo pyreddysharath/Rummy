@@ -1,6 +1,6 @@
 // RummyTally service worker: lets the installed app open without a connection.
 // Always tries the network first, so updates show straight away; the saved copy is only used offline.
-const CACHE = 'rummytally-v3';
+const CACHE = 'rummytally-v4';
 const LIB = 'rummytally-lib-v1';   // Firebase library files: their address includes the version, so they never change
 const CORE = ['/', '/index.html', '/js/firebase-config.js', '/assets/manifest.webmanifest', '/assets/icons/favicon.svg', '/assets/icons/icon-192.png'];
 
