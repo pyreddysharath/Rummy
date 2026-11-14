@@ -268,10 +268,10 @@
   #suSettingsSlot .settings-card { margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: none; }
   #suSettingsSlot .settings-card > summary { justify-content: flex-start; gap: 10px; padding: 8px 0; font-size: 1rem; }
   #suSettingsSlot .settings-card > summary .suit { display: none; }
-  #suSettingsSlot .settings-card > summary::after { display: none; }
-  #suSettingsSlot .settings-card > summary::before { content: ""; width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto; transition: background .15s;
-    background: linear-gradient(var(--felt), var(--felt)) center / 10px 2px no-repeat, linear-gradient(var(--felt), var(--felt)) center / 2px 10px no-repeat, #e3f1e9; }
-  #suSettingsSlot .settings-card[open] > summary::before { background: linear-gradient(#fff, #fff) center / 10px 2px no-repeat, var(--felt); }
+  #suSettingsSlot .settings-card > summary { border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); padding: 10px 0; }
+  #suSettingsSlot .settings-card > summary::after { content: "Show ▾"; margin: 0 0 0 auto; width: auto; height: auto; border: 0; transform: none;
+    font-size: .78rem; font-weight: 800; color: var(--felt); background: #e3f1e9; border-radius: 999px; padding: 4px 12px; }
+  #suSettingsSlot .settings-card[open] > summary::after { content: "Hide ▴"; background: var(--felt); color: #fff; transform: none; margin-bottom: 0; }
   .setup-card .su-step > input { width: 100%; }
   .acct-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; color: rgba(255,255,255,.85); font-size: .82rem; }
   .acct-row[hidden], .foot-actions [hidden] { display: none !important; }
@@ -288,8 +288,8 @@
   .welcome-card .wc-h b { color: var(--felt); font-family: Georgia, serif; font-weight: 800; }
   .welcome-card .wc-h b.g { color: var(--gold-dark, #a67c12); }
   .welcome-card .wc-online, .welcome-card .wc-local { color: var(--muted); font-size: .9rem; margin: 0 0 10px; }
-  .welcome-card .wc-steps { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; margin: 0 0 10px; }
-  .welcome-card .wc-steps span { font-size: .74rem; font-weight: 800; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+  .welcome-card .wc-steps { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; margin: 0 0 10px; }
+  .welcome-card .wc-steps span { font-size: .7rem; font-weight: 800; padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
   .welcome-card .wc-steps .s1 { background: #fdf0c8; color: #7a5a00; }
   .welcome-card .wc-steps .s2 { background: #dff1e6; color: var(--felt); }
   .welcome-card .wc-steps .s3 { background: #fde2e2; color: #9b1c1c; }
@@ -346,7 +346,13 @@
   .sb-names { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; font-size: .95rem; font-weight: 800; margin-bottom: 6px; }
   .sb-row { display: grid; grid-template-columns: 52px 1fr; gap: 8px; font-size: .9rem; margin-bottom: 3px; }
   .sb-l { color: var(--muted); font-weight: 700; }
-  .sb-v { font-weight: 800; color: var(--text); }
+  .sb-v { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .sb-pen { min-height: 0; width: 26px; height: 26px; padding: 0; border: 0; background: none; color: var(--gold-dark, #a67c12); display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .sb-ed { display: flex; align-items: center; gap: 4px; flex: 1 1 auto; min-width: 0; }
+  .sb-ed input { flex: 1 1 auto; min-width: 0; min-height: 0; height: 32px; padding: 4px 8px; font: inherit; font-weight: 700; border: 1.5px solid var(--felt); border-radius: 8px; }
+  .sb-edb { min-height: 0; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: #f1f1ee; color: var(--muted); display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .sb-edb.ok { background: var(--felt); color: #fff; }
+  .sb-edb .x-ico { width: 14px; height: 14px; }
   .sb-row + .sb-chips, .sb-chips { margin-top: 6px; }
   .sb-room { color: var(--felt); }
   .sb-sep { color: var(--muted); }
@@ -385,10 +391,12 @@
   @media (max-width: 480px) {
     .hero-chips { flex-wrap: nowrap; gap: 4px; }
     .chip { font-size: .7rem; padding: 2px 7px; }
-    .wm-big { font-size: 4.2rem; }
-    .wm-small { font-size: 1.3rem; }
+    .wm-big { font-size: 3.3rem; }
+    .wm-small { font-size: 1.05rem; }
     .hb { padding: 0 14px 0 10px; }
   }
+  @media (max-width: 340px) { .wm-big { font-size: 2.8rem; } .wm-small { font-size: .9rem; } }
+
   /* Compact header during a game: cards and divider hidden, smaller wordmark */
   .hero.compact { margin-bottom: 0; }
   .hero.compact .hero-suits { display: none; }
@@ -1262,7 +1270,7 @@
     <p class="wc-h">Welcome to <b>Rummy</b><b class="g">Tally</b></p>
     <p class="wc-online" id="wcOnline" hidden>Live scores on every phone.</p>
     <p class="wc-local" id="wcLocal">Every round's score in one place.</p>
-    <p class="wc-steps"><span class="s1" id="wcStep1">① Name the room</span><span class="s2">② Add players</span><span class="s3">③ Play</span></p>
+    <p class="wc-steps"><span class="s1" id="wcStep1">① Create room &amp; game</span><span class="s2">② Add players</span><span class="s3">③ Play</span></p>
     <p class="wc-back" id="wcSignIn" hidden>Played before? <button type="button" class="su-link" data-acct="signin">Sign in</button> or <button type="button" class="su-link" data-acct="import">import a backup</button></p>
   </section>
 
@@ -2904,7 +2912,6 @@
 
   async function setupStart() {
     boardClosed(false);
-    atHome = false;   // the new game's screen comes next
     const rs = readSetupSettings();
     if (rs.err) {
       setMsg('suMsg', rs.err + ' (Game Rules)', 'err');
@@ -2917,6 +2924,14 @@
     let players = keep ? setup.prevPlayers.map(p => ({ ...p })) : [];
     let id = nextIdFor(players);
     setup.added.forEach(n => { players.push({ id: id++, name: n }); });
+    if (players.length < 2) {
+      setup.addOpen = true;
+      renderSetup();
+      setMsg('suMsg', players.length ? 'Add one more player – a game needs at least 2.' : 'Add at least 2 players to start.', 'err');
+      try { $('suPlayerName').focus(); } catch (e) { /* ignore */ }
+      return;
+    }
+    atHome = false;   // the new game's screen comes next
     const typedName = String(($('suGameName') || {}).value || '').trim().slice(0, 50);
     const named = setup.gameNameEdited && typedName ? typedName : '';
     if (!FB_CFG) {   // no online rooms in this copy: a game on this device
@@ -3060,18 +3075,29 @@
 
   // Room and game name under the Scoreboard title, with players, sync status, Game details and Share
   let sbLinksOpen = false, detailsOpen = false, rulesEditing = false;
+  // ✎ beside Room (owner) and Game (anyone who can edit) while the game is being played
+  let sbEdit = null;   // 'room' | 'game' while renaming
+  const I_PEN = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2.2"/></svg>';
+  const I_OK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function canRenameRoom() { return !!online && online.scope === 'room' && isOwner() && !isEnded(); }
+  function canRenameGame() { return canEdit() && !isEnded() && (!online || online.scope === 'room'); }
   function renderSbMeta() {
     const el = $('sbMeta');
     if (!el) return;
-    const row = (l, v) => `<div class="sb-row"><span class="sb-l">${l}</span><span class="sb-v">${v}</span></div>`;
+    if (sbEdit === 'room' && !canRenameRoom()) sbEdit = null;
+    if (sbEdit === 'game' && !canRenameGame()) sbEdit = null;
+    const typing = sbEdit && $('sbEdIn') ? { v: $('sbEdIn').value, f: document.activeElement === $('sbEdIn') } : null;
+    const row = (l, v, kind, can, raw, max) => `<div class="sb-row"><span class="sb-l">${l}</span><span class="sb-v">${sbEdit === kind
+      ? `<span class="sb-ed"><input type="text" id="sbEdIn" maxlength="${max}" value="${esc(raw)}" aria-label="${l} name" autocomplete="off" enterkeyhint="done"><button type="button" class="sb-edb ok" data-sbed="save" aria-label="Save">${I_OK}</button><button type="button" class="sb-edb" data-sbed="cancel" aria-label="Cancel">${I_X}</button></span>`
+      : `${v}${can ? `<button type="button" class="sb-pen" data-sbed="${kind}" title="Rename" aria-label="Rename ${l.toLowerCase()}">${I_PEN}</button>` : ''}`}</span></div>`;
     let html = '';
     if (online) {
       const room = online.room || {};
       const roomName = online.scope === 'game' ? ((myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game') : (room.name || 'Room');
       const title = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
-      if (online.scope !== 'game') html += row('Room', esc(roomName));
-      if (title || online.scope === 'game') html += row('Game', esc(online.scope === 'game' ? roomName : title));
-    } else if (state.gameName) html += row('Game', esc(state.gameName));
+      if (online.scope !== 'game') html += row('Room', esc(roomName), 'room', canRenameRoom(), roomName, 40);
+      if (title || online.scope === 'game') html += row('Game', esc(online.scope === 'game' ? roomName : title), 'game', canRenameGame(), online.scope === 'game' ? roomName : title, 50);
+    } else if (state.gameName) html += row('Game', esc(state.gameName), 'game', canRenameGame(), state.gameName, 50);
     const chips = [`<span>${state.players.length} player${state.players.length === 1 ? '' : 's'}</span>`];
     if (state.rounds.length) chips.push(`<span>${state.rounds.length} round${state.rounds.length === 1 ? '' : 's'}</span>`);
     if (isEnded()) chips.push('<span class="ended">Ended</span>');
@@ -3081,6 +3107,7 @@
     }
     html += `<div class="sb-chips">${chips.join('')}</div>`;
     el.innerHTML = html;
+    if (typing && $('sbEdIn')) { $('sbEdIn').value = typing.v; if (typing.f) $('sbEdIn').focus(); }
     $('btnCloseBoard').hidden = !online && page !== 'rooms';
     const canShare = !!online || state.rounds.length > 0;
     $('btnSbShare').hidden = !canShare;
@@ -3157,6 +3184,41 @@
   $('gameDetails').addEventListener('click', e => {
     if (e.target.closest('[data-rulesedit]')) openRulesEdit();
     else if (e.target.closest('[data-rulesdone]')) closeRulesEdit();
+  });
+  async function saveSbEdit() {
+    const kind = sbEdit, f = $('sbEdIn');
+    if (!kind || !f) return;
+    const v = f.value.trim().replace(/\s+/g, ' ');
+    sbEdit = null;
+    if (kind === 'game') {
+      if (canRenameGame()) { state.gameName = v.slice(0, 50); saveState(); renderAll(); }
+      else renderSbMeta();
+      return;
+    }
+    renderSbMeta();
+    if (!v || !canRenameRoom()) return;
+    const r = online.roomId, name = v.slice(0, 40);
+    try {
+      await cw(fb.updateDoc(R.room(r), { name, updatedAt: fb.serverTimestamp() }));
+      if (online && online.roomId === r && online.room) online.room.name = name;
+      if (myRooms.rooms[r]) { myRooms.rooms[r].name = name; saveRooms(); }
+      renderSbMeta();
+      renderScreen();
+    } catch (err) { onCloudError(err); }
+  }
+  $('sbMeta').addEventListener('click', e => {
+    const b = e.target.closest('[data-sbed]');
+    if (!b) return;
+    const a = b.dataset.sbed;
+    if (a === 'save') { saveSbEdit(); return; }
+    sbEdit = a === 'cancel' ? null : a;
+    renderSbMeta();
+    if (sbEdit && $('sbEdIn')) { $('sbEdIn').focus(); $('sbEdIn').select(); }
+  });
+  $('sbMeta').addEventListener('keydown', e => {
+    if (e.target.id !== 'sbEdIn') return;
+    if (e.key === 'Enter') { e.preventDefault(); saveSbEdit(); }
+    else if (e.key === 'Escape') { sbEdit = null; renderSbMeta(); }
   });
   $('sbLinks').addEventListener('click', e => {
     const b = e.target.closest('[data-lk]');
