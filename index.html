@@ -156,7 +156,7 @@
   .tiles.one { grid-template-columns: 1fr; max-width: 300px; }
   /* My Rooms: a smaller outlined button under New Game, with the room count in gold */
   .home-rooms { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 18px auto 0; width: max-content; min-height: 0;
-    padding: 9px 18px; border-radius: 999px; border: 0; background: #fff; color: var(--felt); font-weight: 800; font-size: .95rem; box-shadow: 0 3px 10px rgba(0,0,0,.25); }
+    padding: 9px 18px; border-radius: 999px; border: 0; background: #fdf3d6; color: #6b4a00; font-weight: 800; font-size: .95rem; box-shadow: 0 3px 10px rgba(0,0,0,.25); }
   .home-rooms:active { transform: scale(.97); }
   .home-rooms[hidden] { display: none; }
   .home-rooms b { color: #2b1f00; background: var(--gold); border-radius: 999px; min-width: 20px; padding: 1px 7px; font-size: .78rem; margin-left: 2px; }
@@ -170,8 +170,8 @@
   .tile-game { background: linear-gradient(160deg, #f0c24a, var(--gold)); color: #2b1f00; border: 0; }
   .tile-rooms { background: #fff; color: var(--felt); border: 0; }
   .tile-rooms small { color: var(--muted); opacity: 1; }
-  .resume { min-height: 0; margin: 14px auto 0; padding: 9px 16px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,.4); background: rgba(255,255,255,.1);
-    color: #fff; font-weight: 700; font-size: .88rem; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; }
+  .resume { min-height: 0; margin: 14px auto 0; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--gold); background: rgba(214,166,44,.12);
+    color: #f6e7b0; font-weight: 700; font-size: .88rem; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; }
   .resume span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .resume[hidden] { display: none; }
   @media (max-width: 380px) { .tile { height: 140px; font-size: 1.02rem; } .tile svg { width: 40px; height: 40px; } }
@@ -3463,7 +3463,9 @@
   let savedScreen = '';
   try { savedScreen = localStorage.getItem(SCREEN_KEY) || ''; } catch (e) { /* ignore */ }
   function hasOpenGame() {
-    return !boardIsClosed && (!!online || (!!FB_CFG && !!myRooms.current) || state.players.length > 0 || state.rounds.length > 0);
+    if (boardIsClosed) return false;
+    if (online) return !online.gameMeta || state.players.length > 0 || state.rounds.length > 0;   // a loaded game with nobody in it isn't offered
+    return (!!FB_CFG && !!myRooms.current) || state.players.length > 0 || state.rounds.length > 0;
   }
   function curScreen() {
     if (page) return page;
@@ -3550,6 +3552,12 @@
     if (home) fitWordmark();
   }
   function resumeLabel() {
+    // Still loading the room after a refresh: name it from what this phone remembers (never "0 players")
+    if (!online && FB_CFG && myRooms.current) {
+      const c = myRooms.current;
+      const en = c.scope === 'game' ? myRooms.games[c.roomId + '_' + c.gameId] : myRooms.rooms[c.roomId];
+      return (en && (c.scope === 'game' ? [en.roomName, en.name].filter(Boolean).join(' · ') : en.name)) || 'Your game';
+    }
     if (online) {
       const room = online.room || {};
       const title = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
