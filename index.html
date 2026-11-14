@@ -292,13 +292,18 @@
   .welcome-card .wc-h { font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0 0 2px; }
   .welcome-card .wc-h b { color: var(--felt); font-family: Georgia, serif; font-weight: 800; }
   .welcome-card .wc-h b.g { color: var(--gold-dark, #a67c12); }
-  .welcome-card .wc-online, .welcome-card .wc-local { color: var(--muted); font-size: .9rem; margin: 0 0 10px; }
+  .welcome-card .wc-online, .welcome-card .wc-local { color: var(--felt); font-weight: 600; font-size: .9rem; margin: 0 0 10px; }
   .welcome-card .wc-steps { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; margin: 0 0 10px; }
   .welcome-card .wc-steps span { font-size: .7rem; font-weight: 800; padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
   .welcome-card .wc-steps .s1 { background: #fdf0c8; color: #7a5a00; }
   .welcome-card .wc-steps .s2 { background: #dff1e6; color: var(--felt); }
   .welcome-card .wc-steps .s3 { background: #fde2e2; color: #9b1c1c; }
-  .welcome-card .wc-back .su-link { font-size: inherit; }
+  /* "Played before?" – the same look as the menu */
+  .welcome-card .wc-menu { margin: 4px auto 0; max-width: 280px; text-align: left; background: linear-gradient(180deg, #fdf3d6, #fbf7ec); border-top: 4px solid var(--gold);
+    border-radius: 14px; padding: 4px 0; box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+  .welcome-card .wc-menu[hidden] { display: none; }
+  .welcome-card .wc-cap { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #8a6a10; padding: 8px 16px 2px; }
+  .welcome-card .wc-menu .am-item small { color: #8a6a10; }
   .welcome-card .wc-steps span[hidden] { display: none; }
   .welcome-card .wc-back { margin-top: 8px; }
   /* New Room / New Game section */
@@ -1276,7 +1281,12 @@
     <p class="wc-online" id="wcOnline" hidden>Live scores on every phone.</p>
     <p class="wc-local" id="wcLocal">Every round's score in one place.</p>
     <p class="wc-steps"><span class="s1" id="wcStep1">① Create room &amp; game</span><span class="s2">② Add players</span><span class="s3">③ Play</span></p>
-    <p class="wc-back" id="wcSignIn" hidden>Played before? <button type="button" class="su-link" data-acct="signin">Sign in</button> or <button type="button" class="su-link" data-acct="import">import a backup</button></p>
+    <div class="wc-menu" id="wcSignIn" hidden>
+      <div class="wc-cap">Played before?</div>
+      <button type="button" class="am-item" data-acct="signin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.6 10.2H12v3.9h5.5c-.5 2.5-2.7 4.3-5.5 4.3a6.4 6.4 0 1 1 4.1-11.3l2.9-2.8A10.4 10.4 0 1 0 22.4 12c0-.6-.1-1.2-.2-1.8z"/></svg><span>Sign in with Google<small>Bring back your rooms</small></span></button>
+      <div class="am-sep"></div>
+      <button type="button" class="am-item" data-acct="import"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Import data<small>From a backup file</small></span></button>
+    </div>
   </section>
 
 
