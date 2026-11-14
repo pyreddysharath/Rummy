@@ -114,27 +114,28 @@
     display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .tb-btn svg { width: 22px; height: 22px; }
   .tb-btn[hidden] { display: none; }
-  .tb-menu { margin-left: auto; background: var(--gold); color: #2b1f00; box-shadow: 0 2px 6px rgba(0,0,0,.3); transition: transform .1s; }
+  .tb-menu { margin-left: auto; width: 32px; height: 32px; background: var(--gold); color: #2b1f00; box-shadow: 0 2px 6px rgba(0,0,0,.3); transition: transform .1s; }
   .tb-menu:active { transform: scale(.92); }
+  .tb-menu svg { width: 18px; height: 18px; }
   .tb-menu[aria-expanded="true"] { background: #fff; color: var(--felt); }
   .tb-btn, .hb, .tile, .nv { -webkit-tap-highlight-color: transparent; }
   .tb-btn:focus, .tile:focus, .nv:focus { outline: none; }
   .tb-btn:focus-visible, .tile:focus-visible, .nv:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   html { touch-action: manipulation; }
   button { -webkit-tap-highlight-color: transparent; }
-  .tb-menu .ava { width: 30px; height: 30px; border-radius: 50%; background: none; color: inherit; font-weight: 800; font-size: 1.05rem;
+  .tb-menu .ava { width: 32px; height: 32px; border-radius: 50%; background: none; color: inherit; font-weight: 800; font-size: 1.05rem;
     display: inline-flex; align-items: center; justify-content: center; }
     .tb-title { font-weight: 800; font-size: 1.1rem; color: #fff; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero .wordmark { margin-top: -30px; }
-  .app-menu { position: fixed; z-index: 80; top: 56px; right: 10px; width: 260px; max-width: calc(100vw - 20px); background: #fff; color: var(--text);
+  .app-menu { position: fixed; z-index: 80; top: 56px; right: 10px; width: 260px; max-width: calc(100vw - 20px); background: linear-gradient(180deg, #fdf3d6, #fbf7ec); color: var(--text); border-top: 4px solid var(--gold);
     border-radius: 14px; box-shadow: 0 14px 36px rgba(0,0,0,.35); padding: 6px 0; font-size: .92rem; }
   .app-menu[hidden] { display: none; }
   .am-item { width: 100%; min-height: 0; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border: 0; background: none; text-align: left;
     color: var(--text); font-weight: 600; font-size: .92rem; border-radius: 0; }
-  .am-item:hover { background: #f2f8f4; }
+  .am-item:hover { background: rgba(214,166,44,.22); }
   .am-item svg { width: 19px; height: 19px; color: var(--felt); flex: 0 0 auto; }
   .am-item small { display: block; color: var(--muted); font-weight: 500; font-size: .76rem; }
-  .am-sep { height: 1px; background: var(--border); margin: 5px 0; }
+  .am-sep { height: 1px; background: rgba(166,124,18,.25); margin: 5px 0; }
   .am-acct .ava { width: 30px; height: 30px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .am-acct .g { color: var(--gold); }
   /* A page (My Rooms, How it works, Feedback, Privacy & Legal): small header, only that page below */
@@ -263,7 +264,14 @@
   .su-existing { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border: 1px solid var(--felt); background: #f2f8f4; border-radius: 10px; cursor: pointer; font-size: .9rem; }
   .su-existing input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--felt); flex: 0 0 auto; }
   .su-existing small { color: var(--muted); }
-  #suSettingsSlot .settings-card { margin: 0; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
+  /* Game Rules inside New Game: no box, a round + / − like My Rooms, folded by default */
+  #suSettingsSlot .settings-card { margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: none; }
+  #suSettingsSlot .settings-card > summary { justify-content: flex-start; gap: 10px; padding: 8px 0; font-size: 1rem; }
+  #suSettingsSlot .settings-card > summary .suit { display: none; }
+  #suSettingsSlot .settings-card > summary::after { display: none; }
+  #suSettingsSlot .settings-card > summary::before { content: ""; width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto; transition: background .15s;
+    background: linear-gradient(var(--felt), var(--felt)) center / 10px 2px no-repeat, linear-gradient(var(--felt), var(--felt)) center / 2px 10px no-repeat, #e3f1e9; }
+  #suSettingsSlot .settings-card[open] > summary::before { background: linear-gradient(#fff, #fff) center / 10px 2px no-repeat, var(--felt); }
   .setup-card .su-step > input { width: 100%; }
   .acct-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; color: rgba(255,255,255,.85); font-size: .82rem; }
   .acct-row[hidden], .foot-actions [hidden] { display: none !important; }
@@ -272,7 +280,21 @@
   .acct-row .su-link { color: #f6e7b0; }
   .acct-who { display: inline-flex; align-items: center; gap: 8px; }
   .acct-who .ava { width: 22px; height: 22px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; font-size: .75rem; display: inline-flex; align-items: center; justify-content: center; }
-  .welcome-card .wc-h { font-size: 1.05rem; }
+  /* Welcome (first visit only): short, centred, colourful */
+  .card.welcome-card { text-align: center; background: linear-gradient(160deg, #fff8e1 0%, #ffffff 45%, #e3f1e9 100%); border-top: 4px solid var(--gold); padding: 16px 16px 14px; }
+  .welcome-card .wc-suits { display: flex; justify-content: center; gap: 10px; font-size: 1.1rem; margin: 0 0 2px; color: #1d2330; }
+  .welcome-card .wc-suits .r { color: #c62828; }
+  .welcome-card .wc-h { font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0 0 2px; }
+  .welcome-card .wc-h b { color: var(--felt); font-family: Georgia, serif; font-weight: 800; }
+  .welcome-card .wc-h b.g { color: var(--gold-dark, #a67c12); }
+  .welcome-card .wc-online, .welcome-card .wc-local { color: var(--muted); font-size: .9rem; margin: 0 0 10px; }
+  .welcome-card .wc-steps { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; margin: 0 0 10px; }
+  .welcome-card .wc-steps span { font-size: .74rem; font-weight: 800; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+  .welcome-card .wc-steps .s1 { background: #fdf0c8; color: #7a5a00; }
+  .welcome-card .wc-steps .s2 { background: #dff1e6; color: var(--felt); }
+  .welcome-card .wc-steps .s3 { background: #fde2e2; color: #9b1c1c; }
+  .welcome-card .wc-back .su-link { font-size: inherit; }
+  .welcome-card .wc-steps span[hidden] { display: none; }
   .welcome-card .wc-back { margin-top: 8px; }
   /* New Room / New Game section */
   .setup-card h2 { margin-bottom: 10px; }
@@ -1236,10 +1258,12 @@
 
   <!-- Before the first game -->
   <section class="card welcome-card" id="welcomeCard" hidden>
-    <p class="wc-h"><b>Welcome to RummyTally!</b></p>
-    <p class="wc-online" id="wcOnline" hidden>Tap <b>New Game</b> – name the room after the occasion, add the players and play. Everyone with the room's link sees the scores live on their own phone.</p>
-    <p class="wc-local" id="wcLocal">Tap <b>New Game</b> to add the players and set the rules.</p>
-    <p class="wc-back" id="wcSignIn" hidden>Played before? <button type="button" class="su-link" data-acct="signin">Sign in with Google</button> to bring back your rooms, or <button type="button" class="su-link" data-acct="import">import a backup</button>.</p>
+    <p class="wc-suits" aria-hidden="true"><span>♠</span><span class="r">♥</span><span>♣</span><span class="r">♦</span></p>
+    <p class="wc-h">Welcome to <b>Rummy</b><b class="g">Tally</b></p>
+    <p class="wc-online" id="wcOnline" hidden>Live scores on every phone.</p>
+    <p class="wc-local" id="wcLocal">Every round's score in one place.</p>
+    <p class="wc-steps"><span class="s1" id="wcStep1">① Name the room</span><span class="s2">② Add players</span><span class="s3">③ Play</span></p>
+    <p class="wc-back" id="wcSignIn" hidden>Played before? <button type="button" class="su-link" data-acct="signin">Sign in</button> or <button type="button" class="su-link" data-acct="import">import a backup</button></p>
   </section>
 
 
@@ -2669,7 +2693,7 @@
 
   /* ---------- Game actions ---------- */
   // New Game asks first: keep the same players, or start with an empty list
-  function startNewGame(keepPlayers) {
+  function startNewGame(keepPlayers, quiet) {
     if (online) { onlineNewGame(keepPlayers); return; }
     clearUndo();
     if (!keepPlayers) { state.players = []; state.nextId = 1; arrangeMode = false; selectedIds = new Set(); }
@@ -2690,7 +2714,7 @@
     saveState();
     setMsg('boardMsg', '', '');
     renderAll();
-    toast(saved ? `${saved} saved · New game started` : 'New game started – Round 1');
+    if (!quiet) toast(saved ? `${saved} saved · New game started` : 'New game started – Round 1');
     if (!keepPlayers) openAddPlayer();   // straight to typing the first name
   }
 
@@ -2750,7 +2774,7 @@
     renderSettings();
     renderSetup(true);
     $('suSettingsSlot').appendChild(sb);
-    sb.open = newRoom;   // the first game of a new room starts with the settings open; otherwise folded
+    sb.open = false;   // folded; tap + to see the rules
     const card = $('setupCard');
     try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
   }
@@ -2805,7 +2829,9 @@
     const radios = prev.length ? `<label class="su-radio"><input type="radio" name="suPlayers" value="existing" id="suExisting" ${useOld ? 'checked' : ''}>
           <span><b>Existing players</b> <small>(${prev.length}) ${names}</small></span></label>
         <label class="su-radio"><input type="radio" name="suPlayers" value="new" id="suNew" ${useOld ? '' : 'checked'}> <span><b>New players</b></span></label>` : '';
-    const addArea = `<div class="su-add"><input type="text" id="suPlayerName" maxlength="30" placeholder="${useOld ? 'Add another player' : 'Player name'}" autocomplete="off" enterkeyhint="done">
+    const addArea = !setup.addOpen && !setup.added.length
+      ? `<button class="add-open su-addopen" type="button" data-su="openadd"><span class="plus" aria-hidden="true">+</span>${useOld ? 'Add another player' : 'Add players'}</button>`
+      : `<div class="su-add"><input type="text" id="suPlayerName" maxlength="30" placeholder="${useOld ? 'Add another player' : 'Player name'}" autocomplete="off" enterkeyhint="done">
         <button type="button" class="btn-outline" data-su="addplayer">＋ Add</button></div>
       ${setup.added.length ? `<div class="su-chips">${setup.added.map((n, i) => `<span class="su-chip">${esc(n)}<button type="button" data-su="rmplayer" data-i="${i}" aria-label="Remove ${esc(n)}">${I_X}</button></span>`).join('')}</div>` : ''}`;
     const playersStep = line('Players', '', radios + addArea);
@@ -2815,7 +2841,7 @@
     renderRoomList();
     if (keepFocus && $(keepFocus) && keepFocus !== 'suRoomSearch') { const f = $(keepFocus); f.focus(); try { f.setSelectionRange(caret, caret); } catch (e) { /* ignore */ } }
     const ready = !FB_CFG || setup.newRoom || !!sel;
-    $('suFoot').innerHTML = `<button type="button" class="btn-primary" id="suStart" data-su="start" ${ready && !busy ? '' : 'disabled'}>${busy ? 'Starting…' : setup.newRoom && FB_CFG ? '▶ Create &amp; Start' : '▶ Start Game'}</button>
+    $('suFoot').innerHTML = `<button type="button" class="btn-primary" id="suStart" data-su="start" ${ready && !busy ? '' : 'disabled'}>${busy ? 'Starting…' : setup.newRoom && FB_CFG ? '▶ Start' : '▶ Start Game'}</button>
       <button type="button" class="btn-outline" data-su="cancel">Cancel</button>`;
   }
 
@@ -2895,7 +2921,7 @@
     const named = setup.gameNameEdited && typedName ? typedName : '';
     if (!FB_CFG) {   // no online rooms in this copy: a game on this device
       closeSetup();
-      startNewGame(true);
+      startNewGame(true, true);
       state.players = players;
       state.nextId = nextIdFor(players);
       state.dealerId = null;
@@ -2904,7 +2930,7 @@
       saveState();
       renderSettings();
       renderAll();
-      if (!players.length) openAddPlayer();
+      if (!players.length) openAddPlayer();   // device-only copy: the scoreboard needs a player to show
       return;
     }
     setup.busy = true;
@@ -2919,7 +2945,7 @@
       const e = myRooms.rooms[r];
       if (!r || !e) throw new Error('Choose a room first.');
       if (!online || online.roomId !== r || online.scope !== 'room') { await enterRoom(r, null, e.role, 'room'); await waitForGame(10000); }
-      const empty = !state.rounds.length && !state.players.length && !state.timer.startedAt;
+      const empty = created && !state.rounds.length && !state.players.length && !state.timer.startedAt;
       // Default name, now that the room's games are known (a blank game being filled in is already counted)
       const gameName = named || (empty ? `${fmtDMY(Date.now())} · Game ${Math.max(1, gamesTodayIn(r))}` : defaultGameName(r));
       if (empty) {   // a new room's first game, still blank: fill it in
@@ -2931,14 +2957,12 @@
         saveState();
         renderSettings();
         renderAll();
-        if (!players.length) setTimeout(openAddPlayer, 300);
       } else {
-        await onlineNewGame(true, { players, settings: rs.settings, gameName });
+        await onlineNewGame(true, { players, settings: rs.settings, gameName, quiet: true });
       }
       noteGameStarted(r);
       closeSetup();
-      if (created) { roomPanel = 'links'; renderRoomCard(); toast('Room ready – share it with the share button next to Scoreboard'); }
-      else toast(`${gameName} started`);
+      if (created) { roomPanel = 'links'; renderRoomCard(); }
       setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 400);
     } catch (err) {
       console.error(err);
@@ -2968,6 +2992,7 @@
     else if (a === 'start') setupStart();
     else if (a === 'continue') setupContinue();
     else if (a === 'addplayer') addSetupPlayer();
+    else if (a === 'openadd') { setup.addOpen = true; renderSetup(); $('suPlayerName').focus(); }
     else if (a === 'rmplayer') { setup.added.splice(+t.dataset.i, 1); renderSetup(); }
     else if (a === 'existing') { setup.newRoom = false; setup.roomId = (setupRooms()[0] || {}).id || null; if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId); renderSetup(); }
     else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; if (!setup.gameNameEdited) setup.gameName = defaultGameName(null); renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) { f.focus(); f.select(); } }, 50); }
@@ -3016,6 +3041,7 @@
     $('welcomeCard').hidden = !fresh || !!setup;
     $('wcOnline').hidden = !FB_CFG;
     $('wcLocal').hidden = !!FB_CFG;
+    $('wcStep1').hidden = !FB_CFG;
     const rooms = roomCount();
     $('btnMyRooms').hidden = true;
     if (roomsOpen) renderRooms();
@@ -4864,7 +4890,7 @@
       online.follow = true;
       const want = Math.max(now + Math.min(room.deleteDays || 30, maxDaysOfRoom()) * DAY, room.expireAt || 0);
       await cw(fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) }));
-      toast('New game started');
+      if (!(opts && opts.quiet)) toast('New game started');
       if (!keepPlayers) setTimeout(() => { if (online && online.gameId === g) openAddPlayer(); }, 700);
     } catch (e) { onCloudError(e); throw e; }
   }
