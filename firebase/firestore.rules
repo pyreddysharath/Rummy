@@ -45,13 +45,15 @@ service cloud.firestore {
     function gameView(r, g) {
       return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'view' && gm(r, g).key == gKeys(r, g).viewKey && live(gKeys(r, g));
     }
+    // A deleted link has no key (null), so only a real key can ever match
     function validRoomKey(r, role, key) {
-      return (role == 'edit'  && key == roomKeys(r).editKey && live(roomKeys(r))) ||
+      return key is string && key.size() > 0 && (
+             (role == 'edit'  && key == roomKeys(r).editKey && live(roomKeys(r))) ||
              (role == 'view'  && key == roomKeys(r).viewKey && live(roomKeys(r))) ||
-             (role == 'owner' && key == ownerKeys(r).ownerKey);
+             (role == 'owner' && key == ownerKeys(r).ownerKey));
     }
     function validGameKey(r, g, role, key) {
-      return live(gKeys(r, g)) && (
+      return key is string && key.size() > 0 && live(gKeys(r, g)) && (
              (role == 'edit' && key == gKeys(r, g).editKey) ||
              (role == 'view' && key == gKeys(r, g).viewKey));
     }

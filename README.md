@@ -82,6 +82,6 @@ You need a Google account. Everything below fits in Firebase's free **Spark** pl
 - **My Rooms** lists rooms newest first (*Created by me* / *Shared with me*), each with its games newest first. The bin deletes a room or a game, with a 5-second Undo; deleting a room's last game deletes the room too.
 - **Guests** (no login): rooms are listed on that device. **Sign in with Google** from the menu (top right) to keep your rooms on your account across devices.
 - **Deletion**: the same for everyone – a game (finished or not) is deleted 1 year after it was last played or changed, and a room once it has no games left.
-- **Link expiry**: shared View and Edit links work for 1 year from when they were made (shown in the share panel). The owner can make new ones any time with ↻ New links; the owner's own access never expires.
+- **Link expiry**: shared View and Edit links work for 1 year from when they were made (shown in the share panel). The owner can delete either link (View or Edit) with the bin beside it – only that link stops working – and make a new one with ＋ Make … link; the owner's own access never expires.
 - **Export / Import Data** lets you tick exactly what to back up: this device's games and any of your rooms. Imported rooms come back with new links.
 - Scores sync instantly; with a poor signal, changes are kept on the phone and sent when the connection returns.

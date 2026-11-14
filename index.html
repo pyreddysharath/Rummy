@@ -216,6 +216,9 @@
   .mg-eye { font-size: .9rem; opacity: .75; margin-left: 2px; }
   .lk-head { margin: 2px 0 4px; font-size: .78rem; font-weight: 800; color: #8a6a10; text-transform: uppercase; letter-spacing: .04em; }
   .lk-until { margin: 6px 0 0; font-size: .74rem; color: var(--muted); }
+  .lk-line .ico-btn.del { color: #dc2626; }
+  .lk-off { min-height: 36px; }
+  .lk-make { min-height: 0; padding: 5px 12px; border-radius: 999px; border: 1.5px dashed var(--felt); background: #fff; color: var(--felt); font-weight: 700; font-size: .8rem; }
   .lk-head small { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); }
   .mr-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
   .mr-name { font-weight: 800; color: var(--felt); font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1485,12 +1488,12 @@
       <details><summary>3. Share and play together</summary><p>Send the <b>Edit link</b> to people who enter scores and the <b>View link</b> to people who only watch. Scores update on every phone straight away, and nobody needs to log in.<br>
         • <b>One game</b> – the share button next to Scoreboard, or the share icon beside a game in My Rooms. They see only that game.<br>
         • <b>Whole room</b> – the share icon beside a room in My Rooms. They see every game in it, including new ones.<br>
-        • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, reopen an ended game, or make <b>↻ New links</b> for a room or a game – the old links stop working, the room or game stays.<br>
+        • Anyone with edit access can share; people who only watch can't. Only the owner can delete games or the room, rename the room, reopen an ended game, or delete a link with the <b>bin</b> beside it – only that link (View or Edit) stops working, nothing else is deleted – and make a new one with <b>＋ Make … link</b>.<br>
         • Links work for 1 year – the date is shown where you share them.</p></details>
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
       <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games, oldest first. Tap <b>＋</b> to open a room, a game to see its scoreboard below, the share icon for its links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too. Under <b>Shared with me</b>, games shared one by one are grouped by room, 👁 marks watch-only, and the bin only removes them from your list.</p></details>
       <details><summary>6. Keep your rooms</summary><p>As a guest, your rooms are kept in this browser only – clearing its site data or switching phones loses them. <b>Sign in with Google</b> from the menu (top right) and the rooms you created follow you to every device. Links others shared with you stay on the phone where you opened them.</p></details>
-      <details><summary>7. When games are deleted</summary><p>The same for everyone: a game – finished or not – is deleted <b>1 year</b> after it was last played or changed, and a room once it has no games left. Shared links work for <b>1 year</b>; the owner can make new ones any time with <b>↻ New links</b>.</p></details>
+      <details><summary>7. When games are deleted</summary><p>The same for everyone: a game – finished or not – is deleted <b>1 year</b> after it was last played or changed, and a room once it has no games left. Shared links work for <b>1 year</b>; the owner can delete a link and make a new one any time.</p></details>
       <details><summary>8. Backups</summary><p><b>Export data</b> (in the menu) saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
       <details><summary>9. Install as an app</summary><p>Tap <b>Install App</b> in the menu (top right) or the install icon in the browser's address bar. On iPhone or iPad (Safari): Share → <b>Add to Home Screen</b>.</p></details>
     </div>
@@ -3244,9 +3247,9 @@
   });
   $('sbLinks').addEventListener('click', e => {
     const b = e.target.closest('[data-lk]');
-    const gr = e.target.closest('[data-greset]');
+    const gr = e.target.closest('[data-lkdel], [data-lkmake]');
     if (b) shareLink(b);
-    else if (gr) resetGameLinksFor(gr.dataset.greset, gr.dataset.g);
+    else if (gr) linkKeyChange(gr, gr.hasAttribute('data-lkmake'));
     else if (e.target.closest('[data-shareimg]')) shareScoreboard();
   });
 
@@ -3503,10 +3506,10 @@
       await cloudInit();
       const k = await roomKeysFor(r);
       let html = '<p class="lk-head">Whole room <small>– every game, including new ones</small></p>';
-      if (k.view) html += linkRowHtml('View', roomLink(r, 'view', k.view), 'view', r);
-      if (k.edit && e.role !== 'view') html += linkRowHtml('Edit', roomLink(r, 'edit', k.edit), 'edit', r);
-      html += linkUntilHtml(k.until);
-      if (e.role === 'owner') html += `<button type="button" class="link-del plain" data-mr="resetlinks" data-id="${r}">↻ New links</button>`;
+      const own = e.role === 'owner', at = role => `data-scope="room" data-id="${r}" data-role="${role}"`;
+      html += linkSlotHtml('View', k.view ? roomLink(r, 'view', k.view) : '', 'view', own, at('view'));
+      if (e.role !== 'view') html += linkSlotHtml('Edit', k.edit ? roomLink(r, 'edit', k.edit) : '', 'edit', own, at('edit'));
+      if (k.view || k.edit) html += linkUntilHtml(k.until);
       box.innerHTML = html;
     } catch (err) { box.innerHTML = '<p class="mr-empty">Offline</p>'; }
   }
@@ -3551,8 +3554,8 @@
   $('roomsCard').addEventListener('click', e => {
     const lk = e.target.closest('[data-lk]');
     if (lk) { shareLink(lk); return; }
-    const gr = e.target.closest('[data-greset]');
-    if (gr) { e.preventDefault(); resetGameLinksFor(gr.dataset.greset, gr.dataset.g); return; }
+    const gr = e.target.closest('[data-lkdel], [data-lkmake]');
+    if (gr) { e.preventDefault(); linkKeyChange(gr, gr.hasAttribute('data-lkmake')); return; }
     const b = e.target.closest('[data-mr]');
     if (!b) return;
     e.preventDefault();   // an icon in a room's heading shouldn't fold it open or shut by itself
@@ -5111,7 +5114,7 @@
         const s = await fb.getDoc(R.roomKeys(r));
         if (s.exists()) {
           const d = s.data();
-          e.keys.edit = d.editKey; e.keys.view = d.viewKey; e.keys.until = tsMs(d.expireAt) || 0;
+          e.keys.edit = d.editKey || ''; e.keys.view = d.viewKey || ''; e.keys.until = tsMs(d.expireAt) || 0;
           if (!d.expireAt && role === 'owner') {   // older links: their year starts now
             const x = linkExpiry();
             await fb.updateDoc(R.roomKeys(r), { expireAt: x });
@@ -5164,9 +5167,36 @@
   async function gameLinksHtml(r, g) {
     const k = await gameKeysFor(r, g);
     if (!k) return '';
-    return linkRowHtml('View', gameLink(r, g, 'view', k.viewKey), 'gview') + linkRowHtml('Edit', gameLink(r, g, 'edit', k.editKey), 'gedit') + linkUntilHtml(tsMs(k.expireAt))
-      + (roomRoleOf(r) === 'owner' ? `<button type="button" class="link-del plain" data-greset="${r}" data-g="${g}">↻ New links</button>` : '');
+    const own = roomRoleOf(r) === 'owner', at = role => `data-scope="game" data-id="${r}" data-g="${g}" data-role="${role}"`;
+    return linkSlotHtml('View', k.viewKey ? gameLink(r, g, 'view', k.viewKey) : '', 'gview', own, at('view'))
+      + linkSlotHtml('Edit', k.editKey ? gameLink(r, g, 'edit', k.editKey) : '', 'gedit', own, at('edit'))
+      + (k.viewKey || k.editKey ? linkUntilHtml(tsMs(k.expireAt)) : '');
   }
+  // Owner: delete one link (View or Edit) of a room or a game, or make a fresh one in its place
+  async function linkKeyChange(btn, make) {
+    const { scope, id: r, g, role } = btn.dataset;
+    const label = role === 'edit' ? 'Edit' : 'View';
+    if (roomRoleOf(r) !== 'owner') return;
+    if (!make && !confirm(`Delete the ${label} link? Anyone using it loses ${role === 'edit' ? 'edit' : 'view'} access straight away.`)) return;
+    const field = role === 'edit' ? 'editKey' : 'viewKey';
+    const upd = make ? { [field]: randKey(24), expireAt: linkExpiry() } : { [field]: null };
+    try {
+      await cloudInit();
+      if (scope === 'game') {
+        await gameKeysFor(r, g);   // make sure the game has its key set
+        await cw(fb.updateDoc(R.gameKeys(r, g), upd));
+        if ($('mgl-' + r + '_' + g)) fillGameLinks(r + '_' + g);
+        if (online && online.roomId === r && online.gameId === g && !$('sbLinks').hidden) fillSbLinks();
+      } else {
+        await cw(fb.updateDoc(R.roomKeys(r), upd));
+        const e = myRooms.rooms[r];
+        if (e) { e.keys = e.keys || {}; e.keys[role] = make ? upd[field] : ''; if (make) e.keys.until = tsMs(upd.expireAt); saveRooms(); }
+        fillRoomLinks(r);
+      }
+      toast(make ? `New ${label} link made` : `${label} link deleted`);
+    } catch (err) { onCloudError(err); }
+  }
+
   // Owner only: new links for one game – the old ones stop working, the game itself is untouched
   async function resetGameLinksFor(r, g) {
     if (roomRoleOf(r) !== 'owner') return;
@@ -5449,10 +5479,16 @@
   const I_COPY = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
 
   // One line per link: name, the address, copy and share icons
-  function linkRowHtml(label, url, kind) {
+  function linkRowHtml(label, url, kind, del) {
     return `<div class="lk-line"><b class="lk-name">${label.replace(' link', '')}</b><span class="lk-url" title="${esc(url)}">${esc(url)}</span>
       <button type="button" class="ico-btn" data-lk="copy" data-url="${esc(url)}" data-kind="${kind}" title="Copy" aria-label="Copy ${label} link">${I_COPY}</button>
-      <button type="button" class="ico-btn" data-lk="share" data-url="${esc(url)}" data-kind="${kind}" title="Share" aria-label="Share ${label} link">${I_SHARE}</button></div>`;
+      <button type="button" class="ico-btn" data-lk="share" data-url="${esc(url)}" data-kind="${kind}" title="Share" aria-label="Share ${label} link">${I_SHARE}</button>${del ? `
+      <button type="button" class="ico-btn del" ${del} title="Delete this link" aria-label="Delete the ${label} link">${I_TRASH}</button>` : ''}</div>`;
+  }
+  // One View or Edit row: the link (with a bin for the owner), or "＋ Make … link" after the owner deleted it
+  function linkSlotHtml(label, url, kind, owner, attrs) {
+    if (url) return linkRowHtml(label, url, kind, owner ? `data-lkdel ${attrs}` : '');
+    return owner ? `<div class="lk-line lk-off"><b class="lk-name">${label}</b><button type="button" class="lk-make" data-lkmake ${attrs}>＋ Make ${label} link</button></div>` : '';
   }
 
   function accountHtml() {
