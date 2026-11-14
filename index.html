@@ -215,6 +215,7 @@
   .mr-games li.mg-links::before { display: none !important; content: none !important; }
   .mg-eye { font-size: .9rem; opacity: .75; margin-left: 2px; }
   .lk-head { margin: 2px 0 4px; font-size: .78rem; font-weight: 800; color: #8a6a10; text-transform: uppercase; letter-spacing: .04em; }
+  .lk-until { margin: 6px 0 0; font-size: .74rem; color: var(--muted); }
   .lk-head small { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); }
   .mr-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
   .mr-name { font-weight: 800; color: var(--felt); font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1485,7 +1486,7 @@
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
       <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games, oldest first. Tap <b>＋</b> to open a room, a game to see its scoreboard, the link icon for the View and Edit links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too.</p></details>
       <details><summary>6. Keep your rooms</summary><p>As a guest, your rooms are listed on this device only. <b>Sign in with Google</b> from the menu (top right) and your rooms follow you to every device.</p></details>
-      <details><summary>7. When games are deleted</summary><p>The same for everyone: a game is deleted automatically after <b>90 days</b> with no play, and a room once it has no games left.</p></details>
+      <details><summary>7. When games are deleted</summary><p>The same for everyone: a game – finished or not – is deleted <b>1 year</b> after it was last played or changed, and a room once it has no games left. Shared links work for <b>1 year</b>; the owner can make new ones any time with <b>↻ New links</b>.</p></details>
       <details><summary>8. Backups</summary><p><b>Export data</b> (in the menu) saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
       <details><summary>9. Install as an app</summary><p>Tap <b>Install App</b> in the menu (top right) or the install icon in the browser's address bar. On iPhone or iPad (Safari): Share → <b>Add to Home Screen</b>.</p></details>
     </div>
@@ -3498,6 +3499,7 @@
       let html = '<p class="lk-head">Whole room <small>– every game, including new ones</small></p>';
       if (k.view) html += linkRowHtml('View', roomLink(r, 'view', k.view), 'view', r);
       if (k.edit && e.role !== 'view') html += linkRowHtml('Edit', roomLink(r, 'edit', k.edit), 'edit', r);
+      html += linkUntilHtml(k.until);
       if (e.role === 'owner') html += `<button type="button" class="link-del plain" data-mr="resetlinks" data-id="${r}">↻ New links</button>`;
       box.innerHTML = html;
     } catch (err) { box.innerHTML = '<p class="mr-empty">Offline</p>'; }
@@ -3509,9 +3511,9 @@
     if (!confirm('Make new View and Edit links? The old links stop working.')) return;
     try {
       await cloudInit();
-      const k = { roomId: r, editKey: randKey(24), viewKey: randKey(24) };
+      const k = { roomId: r, editKey: randKey(24), viewKey: randKey(24), expireAt: linkExpiry() };
       await cw(fb.setDoc(R.roomKeys(r), k));
-      e.keys = Object.assign(e.keys || {}, { edit: k.editKey, view: k.viewKey });
+      e.keys = Object.assign(e.keys || {}, { edit: k.editKey, view: k.viewKey, until: tsMs(k.expireAt) });
       saveRooms();
       toast('New links made');
       fillRoomLinks(r);
@@ -4602,9 +4604,12 @@
   function canEdit() { return !online || online.role !== 'view'; }
   function isOwner() { return !!online && online.role === 'owner'; }
   function isGoogle() { return !!cloudUser && !cloudUser.isAnonymous && (cloudUser.providerData || []).some(p => p.providerId === 'google.com'); }
-  function maxDays() { return isGoogle() ? 365 : 90; }
+  function maxDays() { return KEEP_DAYS; }
   function dayOptions() { return isGoogle() ? USER_DAYS : GUEST_DAYS; }
-  function defaultDays() { return 90; }   // 90 days without play, finished or not
+  // Games are kept for 1 year after they were last changed – finished or not, guest or Google. Links last 1 year too.
+  const KEEP_DAYS = 365;
+  function defaultDays() { return KEEP_DAYS; }
+  function linkExpiry() { return fb.Timestamp.fromMillis(Date.now() + KEEP_DAYS * DAY); }
   function clampDays(d) {
     const opts = dayOptions();
     if (opts.includes(d)) return d;
@@ -4652,17 +4657,13 @@
 
   /* ---------- Expiry: games and rooms are deleted after a period with no activity ---------- */
   function gameExpiryMs(meta, ended) {
-    const m = meta || {};
-    const keep = m.keepDays || (online && online.room && online.room.deleteDays) || defaultDays();
-    const cap = m.maxDays || maxDays();
-    const onlyEnded = m.onlyEnded !== undefined ? m.onlyEnded : !!(online && online.room && online.room.onlyEnded);
-    return Date.now() + (onlyEnded && !ended ? cap : Math.min(keep, cap)) * DAY;
+    return Date.now() + KEEP_DAYS * DAY;   // same for every game
   }
   function gameMeta(seq, now, days, onlyEnded) {
     return {
       seq, createdMs: now, createdAt: fb.serverTimestamp(), updatedAt: fb.serverTimestamp(), status: 'active',
       keepDays: days, maxDays: maxDays(), onlyEnded: !!onlyEnded, customDays: false,
-      expireAt: fb.Timestamp.fromMillis(now + (onlyEnded ? maxDays() : days) * DAY)
+      expireAt: fb.Timestamp.fromMillis(now + KEEP_DAYS * DAY)
     };
   }
   // "Opened a link" records outlive the longest room by a little, then the database may clear them
@@ -4729,7 +4730,7 @@
     } catch (err) {
       console.error(err);
       renderRoomCard();
-      roomMsg('This link isn\'t valid any more – it may have been reset or the room deleted. Ask for a new link.', 'err');
+      roomMsg('This link isn\'t valid any more – it may have expired (links last 1 year), been reset, or the game deleted. Ask for a new link.', 'err');
     }
   }
 
@@ -4968,7 +4969,7 @@
   // Playing in a room keeps it alive: its deletion date is never earlier than its games'
   function bumpRoomExpiry(gameExp) {
     if (!online || online.scope !== 'room' || !online.room || online.role === 'view') return;
-    const want = Math.max(gameExp, Date.now() + Math.min(online.room.deleteDays || 30, maxDaysOfRoom()) * DAY);
+    const want = Math.max(gameExp, Date.now() + KEEP_DAYS * DAY);
     if ((online.room.expireAt || 0) >= want - DAY) return;   // at most about once a day
     online.room.expireAt = want;
     fb.updateDoc(R.room(online.roomId), { expireAt: fb.Timestamp.fromMillis(want), updatedAt: fb.serverTimestamp() }).catch(() => {});
@@ -5036,7 +5037,7 @@
       expireAt: fb.Timestamp.fromMillis(now + days * DAY)
     }));
     await cw(fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner }));
-    await cw(fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view }));
+    await cw(fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view, expireAt: linkExpiry() }));
     await cw(fb.setDoc(R.game(r, g), Object.assign(gameFieldsFrom(game), gameMeta(1, now, days, false), { roomName: name })));
     myRooms.rooms[r] = { name, role: 'owner', keys, savedOwnerLink: isGoogle(), at: now, createdMs: now };
     saveRooms();
@@ -5083,9 +5084,9 @@
       if (opts && opts.gameName) fresh.gameName = opts.gameName;
       if (opts && opts.players) { fresh.players = opts.players.map(p => ({ id: p.id, name: p.name })); fresh.nextId = nextIdFor(fresh.players); }
       if (!keepPlayers) { fresh.players = []; fresh.nextId = 1; }
-      await cw(fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, room.deleteDays || defaultDays(), room.onlyEnded), { roomName: room.name || '' })));
+      await cw(fb.setDoc(R.game(online.roomId, g), Object.assign(fresh, gameMeta(seq, now, defaultDays(), false), { roomName: room.name || '' })));
       online.follow = true;
-      const want = Math.max(now + Math.min(room.deleteDays || 30, maxDaysOfRoom()) * DAY, room.expireAt || 0);
+      const want = Math.max(now + KEEP_DAYS * DAY, room.expireAt || 0);
       await cw(fb.updateDoc(R.room(online.roomId), { currentGameId: g, updatedAt: fb.serverTimestamp(), expireAt: fb.Timestamp.fromMillis(want) }));
       if (!(opts && opts.quiet)) toast('New game started');
       if (!keepPlayers) setTimeout(() => { if (online && online.gameId === g) openAddPlayer(); }, 700);
@@ -5100,7 +5101,15 @@
     try {
       if (role === 'owner' || role === 'edit') {
         const s = await fb.getDoc(R.roomKeys(r));
-        if (s.exists()) { e.keys.edit = s.data().editKey; e.keys.view = s.data().viewKey; }
+        if (s.exists()) {
+          const d = s.data();
+          e.keys.edit = d.editKey; e.keys.view = d.viewKey; e.keys.until = tsMs(d.expireAt) || 0;
+          if (!d.expireAt && role === 'owner') {   // older links: their year starts now
+            const x = linkExpiry();
+            await fb.updateDoc(R.roomKeys(r), { expireAt: x });
+            e.keys.until = tsMs(x);
+          }
+        }
       }
       if (role === 'owner') {
         const s = await fb.getDoc(R.ownerKeys(r));
@@ -5125,21 +5134,29 @@
   async function gameKeysLoad(r, g) {
     try {
       const s = await fb.getDoc(R.gameKeys(r, g));
-      if (s.exists()) return s.data();
+      if (s.exists()) {
+        const d = s.data();
+        if (!d.expireAt && roomRoleOf(r) === 'owner') {   // older links: their year starts now
+          d.expireAt = linkExpiry();
+          await fb.updateDoc(R.gameKeys(r, g), { expireAt: d.expireAt }).catch(() => {});
+        }
+        return d;
+      }
     } catch (e) { /* not created yet, or no access */ }
     const role = roomRoleOf(r);
     if (role !== 'owner' && role !== 'edit') return null;
-    const k = { roomId: r, gameId: g, editKey: randKey(24), viewKey: randKey(24) };
+    const k = { roomId: r, gameId: g, editKey: randKey(24), viewKey: randKey(24), expireAt: linkExpiry() };
     await cw(fb.setDoc(R.gameKeys(r, g), k));
     // so the people it's shared with can see which room it belongs to
     const roomName = (online && online.roomId === r && online.room ? online.room.name : '') || (myRooms.rooms[r] || {}).name || '';
     if (roomName) fb.updateDoc(R.game(r, g), { roomName }).catch(() => {});
     return k;
   }
+  function linkUntilHtml(ms) { return ms ? `<p class="lk-until">Links work until ${fmtDMY(ms)}</p>` : ''; }
   async function gameLinksHtml(r, g) {
     const k = await gameKeysFor(r, g);
     if (!k) return '';
-    return linkRowHtml('View', gameLink(r, g, 'view', k.viewKey), 'gview') + linkRowHtml('Edit', gameLink(r, g, 'edit', k.editKey), 'gedit');
+    return linkRowHtml('View', gameLink(r, g, 'view', k.viewKey), 'gview') + linkRowHtml('Edit', gameLink(r, g, 'edit', k.editKey), 'gedit') + linkUntilHtml(tsMs(k.expireAt));
   }
 
   async function resetRoomLinks(which) {
@@ -5156,7 +5173,7 @@
         myRooms.rooms[r].keys.owner = key;
         myRooms.rooms[r].savedOwnerLink = isGoogle();
       } else {
-        const k = { roomId: r, editKey: randKey(24), viewKey: randKey(24) };
+        const k = { roomId: r, editKey: randKey(24), viewKey: randKey(24), expireAt: linkExpiry() };
         await fb.setDoc(R.roomKeys(r), k);
         myRooms.rooms[r].keys.edit = k.editKey;
         myRooms.rooms[r].keys.view = k.viewKey;
@@ -5171,7 +5188,7 @@
     if (!isOwner()) return;
     if (!confirm('Make new links for this game? The old game links stop working straight away.')) return;
     try {
-      await fb.setDoc(R.gameKeys(online.roomId, g), { roomId: online.roomId, gameId: g, editKey: randKey(24), viewKey: randKey(24) });
+      await fb.setDoc(R.gameKeys(online.roomId, g), { roomId: online.roomId, gameId: g, editKey: randKey(24), viewKey: randKey(24), expireAt: linkExpiry() });
       toast('New game links made');
       showGameLinks(g);
     } catch (e) { onCloudError(e); }
@@ -5564,7 +5581,7 @@
       <label class="field" for="rsDays">Delete games after no activity for</label>
       <select id="rsDays">${dayOptions().map(d => `<option value="${d}" ${d === days ? 'selected' : ''}>${daysLabel(d)}</option>`).join('')}</select>
       <label class="room-chk"><input type="checkbox" id="rsOnlyEnded" ${room.onlyEnded ? 'checked' : ''}> Only delete games that are marked as ended</label>
-      <p class="lk-note">${isGoogle() ? 'Up to 1 year while signed in.' : 'Guests can keep games for up to 90 days – sign in with Google for up to 1 year.'}
+      <p class="lk-note">Games are kept for 1 year after they were last played.
         ${room.onlyEnded ? `Unfinished games are still deleted after ${daysLabel(maxDays())} without activity.` : ''}
         The room is deleted once no games are left in it. ${room.expireAt ? `Current deletion date: <b>${fmtDay(room.expireAt)}</b>.` : ''}</p>
       <div class="rs-btns">
@@ -5803,7 +5820,7 @@
     await fb.setDoc(R.room(r), { name: name || 'Room', ownerUid: cloudUser.uid, createdAt: fb.serverTimestamp(), createdMs: now, updatedAt: fb.serverTimestamp(),
       deleteDays: days, maxDays: maxDays(), onlyEnded: false, currentGameId: ids[ids.length - 1], expireAt: fb.Timestamp.fromMillis(now + days * DAY) });
     await fb.setDoc(R.ownerKeys(r), { roomId: r, ownerKey: keys.owner });
-    await fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view });
+    await fb.setDoc(R.roomKeys(r), { roomId: r, editKey: keys.edit, viewKey: keys.view, expireAt: linkExpiry() });
     for (let i = 0; i < list.length; i++) {
       const src = list[i];
       const doc = gameFieldsFrom(src);

@@ -22,6 +22,10 @@ service cloud.firestore {
     function gm(r, g)     { return get(gmPath(r, g)).data; }
     function gKeys(r, g)  { return get(/databases/$(database)/documents/gameKeys/$(r + '_' + g)).data; }
 
+    // Shared links last 1 year: a key set with a passed expiry date no longer opens anything.
+    // (Key sets made before expiry dates existed have none; the owner's app gives them one.)
+    function live(k) { return !('expireAt' in k) || k.expireAt > request.time; }
+
     function isRoomOwner(r) {
       return signedIn() && (
         roomDoc(r).ownerUid == uid() ||
@@ -29,28 +33,29 @@ service cloud.firestore {
     }
     function canEditRoom(r) {
       return isRoomOwner(r) ||
-        (signedIn() && exists(rmPath(r)) && rm(r).role == 'edit' && rm(r).key == roomKeys(r).editKey);
+        (signedIn() && exists(rmPath(r)) && rm(r).role == 'edit' && rm(r).key == roomKeys(r).editKey && live(roomKeys(r)));
     }
     function canViewRoom(r) {
       return canEditRoom(r) ||
-        (signedIn() && exists(rmPath(r)) && rm(r).role == 'view' && rm(r).key == roomKeys(r).viewKey);
+        (signedIn() && exists(rmPath(r)) && rm(r).role == 'view' && rm(r).key == roomKeys(r).viewKey && live(roomKeys(r)));
     }
     function gameEdit(r, g) {
-      return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'edit' && gm(r, g).key == gKeys(r, g).editKey;
+      return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'edit' && gm(r, g).key == gKeys(r, g).editKey && live(gKeys(r, g));
     }
     function gameView(r, g) {
-      return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'view' && gm(r, g).key == gKeys(r, g).viewKey;
+      return signedIn() && exists(gmPath(r, g)) && gm(r, g).role == 'view' && gm(r, g).key == gKeys(r, g).viewKey && live(gKeys(r, g));
     }
     function validRoomKey(r, role, key) {
-      return (role == 'edit'  && key == roomKeys(r).editKey) ||
-             (role == 'view'  && key == roomKeys(r).viewKey) ||
+      return (role == 'edit'  && key == roomKeys(r).editKey && live(roomKeys(r))) ||
+             (role == 'view'  && key == roomKeys(r).viewKey && live(roomKeys(r))) ||
              (role == 'owner' && key == ownerKeys(r).ownerKey);
     }
     function validGameKey(r, g, role, key) {
-      return (role == 'edit' && key == gKeys(r, g).editKey) ||
-             (role == 'view' && key == gKeys(r, g).viewKey);
+      return live(gKeys(r, g)) && (
+             (role == 'edit' && key == gKeys(r, g).editKey) ||
+             (role == 'view' && key == gKeys(r, g).viewKey));
     }
-    // Deletion date: at most about a year ahead (guests are limited to 90 days by the app)
+    // Deletion / expiry date: at most about a year ahead (the app uses exactly 1 year)
     function okExpiry(d) {
       return d.expireAt is timestamp && d.expireAt <= request.time + duration.value(367, 'd');
     }
@@ -82,8 +87,9 @@ service cloud.firestore {
     // ---------- secret link keys ----------
     match /roomKeys/{r} {            // edit + view keys: editors may read them to share links
       allow get: if canEditRoom(r);
-      allow create: if signedIn() && roomDoc(r).ownerUid == uid() && request.resource.data.roomId == r;
-      allow update, delete: if isRoomOwner(r);
+      allow create: if signedIn() && roomDoc(r).ownerUid == uid() && request.resource.data.roomId == r && okExpiry(request.resource.data);
+      allow update: if isRoomOwner(r) && okExpiry(request.resource.data);
+      allow delete: if isRoomOwner(r);
     }
     match /roomOwnerKeys/{r} {       // owner key: only owners
       allow get: if isRoomOwner(r);
@@ -93,8 +99,10 @@ service cloud.firestore {
     match /gameKeys/{id} {           // links to one game only (shared from the Scoreboard or My Rooms)
       allow get: if signedIn() && (canEditRoom(resource.data.roomId) || gameEdit(resource.data.roomId, resource.data.gameId));
       allow create: if signedIn() && id == request.resource.data.roomId + '_' + request.resource.data.gameId
-                    && canEditRoom(request.resource.data.roomId);   // owner or anyone with the room's Edit link
-      allow update, delete: if signedIn() && isRoomOwner(resource.data.roomId);
+                    && canEditRoom(request.resource.data.roomId)   // owner or anyone with the room's Edit link
+                    && okExpiry(request.resource.data);
+      allow update: if signedIn() && isRoomOwner(resource.data.roomId) && okExpiry(request.resource.data);
+      allow delete: if signedIn() && isRoomOwner(resource.data.roomId);
     }
 
     // ---------- "this user opened a link" records ----------
