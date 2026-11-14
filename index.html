@@ -85,12 +85,12 @@
   /* Wordmark: big centred "Rummy", "Tally" stretched to the same width underneath */
   .wordmark { display: inline-flex; flex-direction: column; align-items: center; margin: 6px 0 0; line-height: 1; }
   .wm-big {
-    font-family: Georgia, "Times New Roman", serif; font-weight: 800; font-size: 4.6rem;
+    font-family: Georgia, "Times New Roman", serif; font-weight: 800; font-size: 3.3rem;
     letter-spacing: .02em; text-shadow: 0 3px 8px rgba(0,0,0,.35);
   }
   .wm-small {
-    color: var(--gold); font-weight: 800; font-size: 1.45rem; text-transform: uppercase;
-    margin-top: 6px; white-space: nowrap;   /* letter-spacing set in JS to match "Rummy" */
+    color: var(--gold); font-weight: 800; font-size: 1.05rem; text-transform: uppercase;
+    margin-top: 4px; white-space: nowrap;   /* letter-spacing set in JS to match "Rummy" */
   }
   .hero-suits { letter-spacing: .6em; font-size: .8rem; opacity: .7; margin: 6px 0 10px; padding-left: .6em; }
   .hero-suits i { font-style: normal; color: #ff8a8a; }
@@ -114,11 +114,17 @@
     display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .tb-btn svg { width: 22px; height: 22px; }
   .tb-btn[hidden] { display: none; }
-  .tb-menu { margin-left: auto; background: rgba(255,255,255,.12); border: 1.5px solid var(--gold); }
-  .tb-menu .ava { width: 30px; height: 30px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; font-size: .9rem;
+  .tb-menu { margin-left: auto; background: var(--gold); color: #2b1f00; box-shadow: 0 2px 6px rgba(0,0,0,.3); transition: transform .1s; }
+  .tb-menu:active { transform: scale(.92); }
+  .tb-menu[aria-expanded="true"] { background: #fff; color: var(--felt); }
+  .tb-btn, .hb, .tile, .nv { -webkit-tap-highlight-color: transparent; }
+  .tb-btn:focus, .tile:focus, .nv:focus { outline: none; }
+  .tb-btn:focus-visible, .tile:focus-visible, .nv:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  html { touch-action: manipulation; }
+  button { -webkit-tap-highlight-color: transparent; }
+  .tb-menu .ava { width: 30px; height: 30px; border-radius: 50%; background: none; color: inherit; font-weight: 800; font-size: 1.05rem;
     display: inline-flex; align-items: center; justify-content: center; }
-  .tb-menu:has(.ava) { border: 0; background: none; }
-  .tb-title { font-weight: 800; font-size: 1.1rem; color: #fff; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tb-title { font-weight: 800; font-size: 1.1rem; color: #fff; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero .wordmark { margin-top: -30px; }
   .app-menu { position: fixed; z-index: 80; top: 56px; right: 10px; width: 260px; max-width: calc(100vw - 20px); background: #fff; color: var(--text);
     border-radius: 14px; box-shadow: 0 14px 36px rgba(0,0,0,.35); padding: 6px 0; font-size: .92rem; }
@@ -132,13 +138,47 @@
   .am-acct .ava { width: 30px; height: 30px; border-radius: 50%; background: var(--gold); color: #2b1f00; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
   .am-acct .g { color: var(--gold); }
   /* A page (My Rooms, How it works, Feedback, Privacy & Legal): small header, only that page below */
-  body.page-mode .hero .wordmark, body.page-mode .hero-suits, body.page-mode .hero-foot { display: none; }
-  body.page-mode .hero { padding-bottom: 6px; }
-  body.page-mode .hero .topbar { margin-bottom: 0; }
+  body.nav-mode .hero .wordmark, body.nav-mode .hero-suits, body.nav-mode .hero-foot { display: none; }
+  body.nav-mode .hero { padding-bottom: 6px; }
+  body.nav-mode .hero .topbar { margin-bottom: 0; }
+  /* Screens: Home (big buttons), New Game, the game, My Rooms and the info pages */
+  body.scr-home .wrap > *:not(.hero):not(.app-footer):not(.welcome-card) { display: none !important; }
+  body.scr-setup .wrap > *:not(.hero):not(.app-footer):not(.setup-card) { display: none !important; }
+  body.scr-game .wrap > .welcome-card { display: none !important; }
+  /* Home: two big buttons under the title */
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 440px; margin: 30px auto 6px; }
+  .tiles.one { grid-template-columns: 1fr; max-width: 260px; }
+  .tile { min-height: 0; height: 156px; padding: 14px 10px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    font-size: 1.12rem; font-weight: 800; box-shadow: 0 5px 0 rgba(0,0,0,.25), 0 12px 26px rgba(0,0,0,.25); transition: transform .1s, box-shadow .1s; text-align: center; }
+  .tile:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 6px 14px rgba(0,0,0,.2); }
+  .tile svg { width: 46px; height: 46px; }
+  .tile small { display: block; font-size: .74rem; font-weight: 600; opacity: .8; margin-top: -4px; }
+  .tile[hidden] { display: none; }
+  .tile-game { background: linear-gradient(160deg, #f0c24a, var(--gold)); color: #2b1f00; border: 0; }
+  .tile-rooms { background: #fff; color: var(--felt); border: 0; }
+  .tile-rooms small { color: var(--muted); opacity: 1; }
+  .resume { min-height: 0; margin: 14px auto 0; padding: 9px 16px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,.4); background: rgba(255,255,255,.1);
+    color: #fff; font-weight: 700; font-size: .88rem; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; }
+  .resume span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .resume[hidden] { display: none; }
+  @media (max-width: 380px) { .tile { height: 140px; font-size: 1.02rem; } .tile svg { width: 40px; height: 40px; } }
+  /* The same two buttons, small, in the top bar on the other screens */
+  .tb-nav { display: flex; gap: 6px; min-width: 0; }
+  .tb-nav[hidden] { display: none; }
+  .nv { min-height: 0; height: 34px; padding: 0 11px 0 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; font-weight: 800;
+    white-space: nowrap; border: 1.5px solid transparent; }
+  .nv svg { width: 17px; height: 17px; flex: 0 0 auto; }
+  .nv[hidden] { display: none; }
+  .nv-game { background: rgba(214,166,44,.18); color: var(--gold); border-color: rgba(214,166,44,.7); }
+  .nv-rooms { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.45); }
+  .nv-game.on { background: var(--gold); color: #2b1f00; border-color: var(--gold); }
+  .nv-rooms.on { background: #fff; color: var(--felt); border-color: #fff; }
+  @media (max-width: 370px) { .nv { padding: 0 9px 0 7px; font-size: .78rem; gap: 4px; } }
   body.page-mode .wrap > *:not(.hero):not(.app-footer) { display: none !important; }
   body.page-rooms .wrap > #roomsCard { display: block !important; }
   body.page-rooms.show-board .wrap > .board-card { display: block !important; }
   body.page-info .app-footer { background: none; border-top: 0; margin-top: 0; }
+  body.page-info .app-footer::before { display: none; }
   body.page-info .app-footer .ft-row { display: none; }
   body.page-info .ft-sec { margin-top: 0; }
   body:not(.page-info) .ft-sec { display: none !important; }
@@ -156,9 +196,14 @@
   .mr-room:first-of-type { border-top: 1px solid var(--border); }
   .mr-room > summary { list-style: none; cursor: pointer; padding: 8px 2px; display: flex; align-items: center; gap: 8px; }
   .mr-room > summary::-webkit-details-marker { display: none; }
-  .mr-room > summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
-    transform: rotate(-45deg); transition: transform .15s; flex: 0 0 auto; }
-  .mr-room[open] > summary::before { transform: rotate(45deg); }
+  /* Open / close: a round + that turns into − */
+  .mr-tg { position: relative; width: 22px; height: 22px; border-radius: 50%; background: #e3f1e9; flex: 0 0 auto; transition: background .15s; }
+  .mr-tg::before, .mr-tg::after { content: ""; position: absolute; left: 6px; top: 10px; width: 10px; height: 2px; border-radius: 2px; background: var(--felt); transition: transform .2s; }
+  .mr-tg::after { transform: rotate(90deg); }
+  .mr-room[open] .mr-tg { background: var(--felt); }
+  .mr-room[open] .mr-tg::before, .mr-room[open] .mr-tg::after { background: #fff; }
+  .mr-room[open] .mr-tg::after { transform: rotate(0deg); }
+  .mr-body { padding-left: 32px !important; }
   .mr-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
   .mr-name { font-weight: 800; color: var(--felt); font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mr-meta { font-size: .74rem; color: var(--muted); white-space: nowrap; }
@@ -207,7 +252,7 @@
 
   .rooms-card h2, .setup-card h2 { display: flex; align-items: center; justify-content: space-between; }
   .rooms-card h2.mr-title { justify-content: flex-start; }
-  .close-x { min-height: 0; width: 32px; height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 1rem; }
+  .close-x { min-height: 0; width: 32px; height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; }
   .su-link2 { display: block; color: var(--muted); }
   .su-add { display: flex; gap: 8px; margin-top: 6px; }
   .su-add input { flex: 1 1 auto; min-width: 0; }
@@ -726,7 +771,15 @@
   .edit-foot button { min-width: 100px; }
 
   /* Share, backup reminder, stats */
-  .h2-btns { display: inline-flex; gap: 6px; }
+  .h2-btns { display: inline-flex; gap: 6px; margin-left: auto; }
+  #timeChip { display: none !important; }   /* the clock is under the scoreboard */
+  .board-card h2 { flex-wrap: nowrap; }
+  .board-card h2 .ttl { min-width: 0; }
+  #btnCloseBoard { margin: -6px -8px -6px 0; color: var(--muted); }
+  /* One close symbol everywhere: a thin rounded ✕ drawn as an icon */
+  .x-ico { width: 18px; height: 18px; display: block; }
+  .su-chip .x-ico, .pill-x .x-ico { width: 10px; height: 10px; margin: auto; }
+  .hbtn .x-ico, .ricon .x-ico { width: 15px; height: 15px; margin: auto; }
   .backup-note {
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px;
     padding: 10px 12px; border-radius: 12px; background: var(--gold-soft); border: 1px solid var(--gold);
@@ -1093,8 +1146,10 @@
   .undo-bar[hidden] { display: none; }
 
   /* ---------- Footer ---------- */
-  .app-footer { margin: 8px -16px -16px; padding: 12px 16px max(10px, env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,.18); color: #e9f2ec; }
-  .ft-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: nowrap; }
+  .app-footer { margin: 8px -16px -16px; padding: 12px 16px max(12px, env(safe-area-inset-bottom)); color: #e9f2ec; position: relative; }
+  .app-footer::before { content: ""; position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold) 70%, transparent); opacity: .7; }
+  .ft-row { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: nowrap; }
   .ft-copy { white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   .ft-copy { font-size: .78rem; color: var(--gold); }
   .ft-copy b { font-weight: 800; }
@@ -1148,6 +1203,10 @@
     <div class="topbar">
       <button class="tb-btn" id="btnBack" type="button" aria-label="Back" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <span class="tb-title" id="tbTitle"></span>
+      <div class="tb-nav" id="tbNav" hidden>
+        <button class="nv nv-game" id="btnNewGame" type="button" aria-controls="setupCard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game</button>
+        <button class="nv nv-rooms" id="btnRoomsNav" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11 12 4l8.5 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>My Rooms</button>
+      </div>
       <button class="tb-btn tb-menu" id="btnMenu" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="appMenu"></button>
       <button id="btnMyRooms" type="button" hidden aria-hidden="true" tabindex="-1"></button>
     </div>
@@ -1161,9 +1220,11 @@
         <span class="chip" id="hdrRound">Round 1</span>
         <span class="chip" id="hdrPlayers">0 players</span>
       </div>
-      <div class="hero-actions">
-        <button class="hb hb-game" id="btnNewGame" type="button" aria-controls="setupCard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game</button>
+      <div class="tiles" id="tiles">
+        <button class="tile tile-game" id="tileNew" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game<small>Start scoring</small></button>
+        <button class="tile tile-rooms" id="tileRooms" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11 12 4l8.5 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>My Rooms<small id="tileRoomsSub">Your games</small></button>
       </div>
+      <button class="resume" id="btnResume" type="button" hidden><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg><span id="resumeText">Continue game</span></button>
     </div>
   </header>
 
@@ -1245,8 +1306,8 @@
         <button class="info-btn" id="btnLegend" type="button" aria-expanded="false" aria-controls="gameDetails" title="Game overview: rules, players and what the colours mean">i</button>
         <button class="info-btn share-ico" id="btnSbShare" type="button" data-sbshare aria-expanded="false" aria-controls="sbLinks" title="Share: scoreboard picture and links" hidden><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="18" cy="5" r="3.4" fill="currentColor"/><circle cx="6" cy="12" r="3.4" fill="currentColor"/><circle cx="18" cy="19" r="3.4" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2.8"/></svg></button></span>
       <span class="h2-btns">
-        <button class="time-chip idle" id="timeChip" type="button" title="Game clock – tap to go to Play / Pause / End Game"><span class="tc-ico">⏱</span> <span id="timeChipText">00:00:00</span></button>
-        <button type="button" class="ico-btn" id="btnCloseBoard" title="Close this game (it stays in its room)" aria-label="Close this game" hidden>✕</button>
+        <button class="time-chip idle" id="timeChip" type="button" hidden title="Game clock – tap to go to Play / Pause / End Game"><span class="tc-ico">⏱</span> <span id="timeChipText">00:00:00</span></button>
+        <button type="button" class="ico-btn" id="btnCloseBoard" title="Close this game (it stays in its room)" aria-label="Close this game" hidden><svg class="x-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
       </span>
     </h2>
     <div class="gd-box" id="gameDetails" hidden></div>
@@ -1275,7 +1336,7 @@
         <span><b class="rj">↺</b> Rejoined</span>
       </div>
       <div class="ns-note">A red – means no score in the round they went OUT.</div>
-      <div class="ns-note">To end a game, tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the ✕ on a Winner tag in ✎ Player edit.</div>
+      <div class="ns-note">To end a game, tap <b>■ End Game</b> under the scoreboard and tick the winner. To undo it, tap <b>↺ Reopen game</b> there, or the × on a Winner tag in ✎ Player edit.</div>
     </div>
 
 
@@ -1370,10 +1431,11 @@
       <details><summary>2. Enter scores</summary><p>Type each round's points and tap <b>Save</b>. Add someone later with <b>＋ Add player</b> under the list. A player is OUT on reaching the total limit. The <b>i</b> next to Scoreboard explains every colour and icon.</p></details>
       <details><summary>3. Play together on several phones</summary><p>Share the room's <b>Edit link</b> with players who enter scores and the <b>View link</b> with people who only watch. Scores update on every phone straight away. Nobody needs to log in.</p></details>
       <details><summary>4. Calculate shares</summary><p>Set the <b>Entry or buy-in per player</b> in the Game Rules (New Game, or <b>Game details → Edit rules</b>), then tap <b>₹ Calculate Shares</b> under the scoreboard and pick how to split the pot – the <b>i</b> next to each option explains it.</p></details>
-      <details><summary>5. Keep your rooms</summary><p>As a guest, your rooms are listed on this device; keep each room's <b>Owner link</b> to get full control back after clearing the browser or on a new phone. Or <b>Sign in with Google</b> (bottom of the page) and your rooms follow you to every device.</p></details>
-      <details><summary>6. When games are deleted</summary><p>Games are deleted after a period with no activity – up to 90 days for guests, up to 1 year when signed in – and a room once it has no games left. The owner sets this in <b>Room Settings</b>.</p></details>
-      <details><summary>7. Backups</summary><p><b>Export Data</b> saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
-      <details><summary>8. Install as an app</summary><p>Tap <b>Install App</b> at the bottom of the page or the install icon in the browser's address bar. On iPhone or iPad (Safari): Share → <b>Add to Home Screen</b>.</p></details>
+      <details><summary>5. My Rooms</summary><p>Tap <b>My Rooms</b> to see every room – newest first – with its games. Tap <b>＋</b> to open a room, a game to see its scoreboard, the link icon for the View and Edit links, and the bin to delete a room or a game (you have 5 seconds to <b>Undo</b>). Deleting a room's last game deletes the room too.</p></details>
+      <details><summary>6. Keep your rooms</summary><p>As a guest, your rooms are listed on this device only. <b>Sign in with Google</b> from the menu (top right) and your rooms follow you to every device.</p></details>
+      <details><summary>7. When games are deleted</summary><p>The same for everyone: a game is deleted automatically after <b>90 days</b> with no play, and a room once it has no games left.</p></details>
+      <details><summary>8. Backups</summary><p><b>Export data</b> (in the menu) saves a file with your rooms and games. <b>Import Data</b> brings them back – rooms come back with new links.</p></details>
+      <details><summary>9. Install as an app</summary><p>Tap <b>Install App</b> in the menu (top right) or the install icon in the browser's address bar. On iPhone or iPad (Safari): Share → <b>Add to Home Screen</b>.</p></details>
     </div>
 
     <div class="ft-sec" id="ft-feedback" hidden>
@@ -1445,6 +1507,7 @@
 <script>
 (function () {
   'use strict';
+  const I_X = '<svg class="x-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';   // the one close symbol
 
   /* ---------- Background suit pattern ---------- */
   (function setSuitPattern() {
@@ -1783,6 +1846,7 @@
   // Stretch "Tally" with letter-spacing so it is exactly as wide as "Rummy"
   function fitWordmark() {
     const big = $('wmBig'), small = $('wmSmall');
+    if (!big.offsetParent) return;   // hidden (not on Home): fit it when Home shows
     small.style.letterSpacing = '0px';
     small.style.marginRight = '0px';
     const target = big.getBoundingClientRect().width;
@@ -1931,7 +1995,7 @@
         : `<span class="drops${dl === 0 ? ' none' : dl === 1 ? ' last' : dl === 2 ? ' two' : ''}">${dropsText(dl)} · ${pointsLeft(v.total)} pts</span>`;
       // In Edit Players, a declared winner's tag gets an ✕ to remove the win
       const unwin = arrangeMode && v.st === 'winner' && state.declared.includes(p.id)
-        ? `<button class="pill-x" type="button" data-unwin="${p.id}" title="Remove win" aria-label="Remove win for ${esc(p.name)}">✕</button>` : '';
+        ? `<button class="pill-x" type="button" data-unwin="${p.id}" title="Remove win" aria-label="Remove win for ${esc(p.name)}">${I_X}</button>` : '';
       const pill = v.st === 'active' ? '' : `<span class="pill ${v.st}">${STATUS_LABEL[v.st]}${unwin}</span>`;   // no tag for Active
       v.statusHtml = `${pill}${dropsHtml}`;
     });
@@ -1999,7 +2063,7 @@
       if (editing === r.n) {
         head += `<th class="editing">R${r.n}
           <button class="hbtn ok" type="button" data-editsave aria-label="Save changes to round ${r.n}">✓</button>
-          <button class="hbtn" type="button" data-editcancel aria-label="Cancel editing">✕</button>
+          <button class="hbtn" type="button" data-editcancel aria-label="Cancel editing">${I_X}</button>
           <button class="hbtn del" type="button" data-delround="${r.n}" title="Delete Round ${r.n}" aria-label="Delete round ${r.n}">🗑</button></th>`;
       } else {
         head += `<th>R${r.n}<button class="hbtn" type="button" data-edit="${r.n}" ${editing !== null ? 'disabled' : ''} title="Edit Round ${r.n}" aria-label="Edit round ${r.n}">✎</button>${roundTimeTag(rDur[r.n - 1])}</th>`;
@@ -2634,6 +2698,9 @@
   // setup = { mode: 'room' | 'game', roomId, newRoom, roomName, listOpen, search, gameName, gameNameEdited,
   //           useExisting, prevPlayers, added: [names], busy }
   let setup = null;
+  let boardIsClosed = false;
+  try { boardIsClosed = localStorage.getItem('rummy-board-closed') === '1'; } catch (e) { /* ignore */ }
+  document.body.classList.toggle('board-closed', boardIsClosed);
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function fmtDMY(ms) { const d = new Date(ms); return `${String(d.getDate()).padStart(2, '0')}-${MONTHS[d.getMonth()]}-${d.getFullYear()}`; }
   function nextIdFor(players) { return players.reduce((m, p) => Math.max(m, p.id), 0) + 1; }
@@ -2664,8 +2731,9 @@
   function openSetup(mode) {
     if (online && !canEdit()) return;
     closeRulesEdit();
-    if (roomsOpen) closeRoomsPage();
-    if (setup && setup.mode === mode && !setup.busy) { closeSetup(); return; }
+    if (setup) return;   // already here
+    leaveHome();
+    if (page) closeRoomsPage();
     const rooms = FB_CFG ? setupRooms() : [];
     const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
     const newRoom = !!FB_CFG && !rooms.length;   // no room yet: this game starts one
@@ -2711,7 +2779,7 @@
         <div class="msg" id="suMsg"></div><div class="su-actions" id="suFoot"></div>`;
     }
     const busy = setup.busy;
-    $('suTitle').innerHTML = '<span class="ttl"><span class="suit">♣</span> New Game</span><button type="button" class="close-x" data-su="cancel" aria-label="Close New Game">✕</button>';
+    $('suTitle').innerHTML = `<span class="ttl"><span class="suit">♣</span> New Game</span><button type="button" class="close-x" data-su="cancel" aria-label="Close New Game">${I_X}</button>`;
     const rooms = FB_CFG ? setupRooms() : [];
     const sel = rooms.find(x => x.id === setup.roomId);
     // Each field: name on the left, the box on the right
@@ -2739,7 +2807,7 @@
         <label class="su-radio"><input type="radio" name="suPlayers" value="new" id="suNew" ${useOld ? '' : 'checked'}> <span><b>New players</b></span></label>` : '';
     const addArea = `<div class="su-add"><input type="text" id="suPlayerName" maxlength="30" placeholder="${useOld ? 'Add another player' : 'Player name'}" autocomplete="off" enterkeyhint="done">
         <button type="button" class="btn-outline" data-su="addplayer">＋ Add</button></div>
-      ${setup.added.length ? `<div class="su-chips">${setup.added.map((n, i) => `<span class="su-chip">${esc(n)}<button type="button" data-su="rmplayer" data-i="${i}" aria-label="Remove ${esc(n)}">✕</button></span>`).join('')}</div>` : ''}`;
+      ${setup.added.length ? `<div class="su-chips">${setup.added.map((n, i) => `<span class="su-chip">${esc(n)}<button type="button" data-su="rmplayer" data-i="${i}" aria-label="Remove ${esc(n)}">${I_X}</button></span>`).join('')}</div>` : ''}`;
     const playersStep = line('Players', '', radios + addArea);
     const keepFocus = document.activeElement && document.activeElement.id;
     const caret = keepFocus && document.activeElement.selectionStart;
@@ -2810,6 +2878,7 @@
 
   async function setupStart() {
     boardClosed(false);
+    atHome = false;   // the new game's screen comes next
     const rs = readSetupSettings();
     if (rs.err) {
       setMsg('suMsg', rs.err + ' (Game Rules)', 'err');
@@ -2868,7 +2937,7 @@
       }
       noteGameStarted(r);
       closeSetup();
-      if (created) { roomPanel = 'links'; renderRoomCard(); toast('Room ready – its share links are under the scoreboard'); }
+      if (created) { roomPanel = 'links'; renderRoomCard(); toast('Room ready – share it with the share button next to Scoreboard'); }
       else toast(`${gameName} started`);
       setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 400);
     } catch (err) {
@@ -2895,7 +2964,7 @@
     const t = e.target.closest('[data-su]');
     if (!t || !setup) return;
     const a = t.dataset.su;
-    if (a === 'cancel') closeSetup();
+    if (a === 'cancel') { closeSetup(); if (curScreen() === 'home') goHome(); }
     else if (a === 'start') setupStart();
     else if (a === 'continue') setupContinue();
     else if (a === 'addplayer') addSetupPlayer();
@@ -2958,6 +3027,7 @@
     $('backupLbl').hidden = $('btnExportData').hidden && $('btnImportData').hidden;
     document.body.classList.toggle('locked', isEnded());
     if (isEnded() && rulesEditing) closeRulesEdit();
+    renderScreen();
     renderAccount();
     renderSbMeta();
   }
@@ -3069,20 +3139,45 @@
   });
 
   /* ---------- My Rooms ---------- */
-  // Each room: name, date, 🔗 links and ⚙ settings in its heading; inside, its games. Tapping a game shows it on the scoreboard.
+  // Each room: name, date, 🗑 delete and 🔗 links in its heading; inside, its games. Tapping a game shows it on the scoreboard.
   let roomsOpen = false;
   const roomsExpanded = new Set();
-  const roomTool = {};          // room id -> 'links' | 'settings' (the open tool under its heading)
+  const roomTool = {};          // room id -> true when its links are showing
   const otherRoomGames = {};    // games of each room, fetched when its section is expanded
   const otherRoomDocs = {};     // room documents (name, deletion settings) for rooms that aren't open
   const roomCardHome = document.createComment('room card');
-  // Pages: My Rooms, How it works, Feedback, Privacy & Legal. The header shrinks to Back + title + menu.
-  let page = null, pageHistory = false;
+  // Screens: Home (two big buttons), New Game, the game, My Rooms, and the info pages.
+  // Away from Home the header shrinks to Back + the two buttons (or the page title) + menu. The screen is remembered.
+  let page = null, navHistory = false;
+  let atHome = true;
   const PAGE_TITLE = { rooms: 'My Rooms', help: 'How it works', feedback: 'Feedback', legal: 'Privacy & Legal' };
+  const SCREEN_KEY = 'rummy-screen';
+  let savedScreen = '';
+  try { savedScreen = localStorage.getItem(SCREEN_KEY) || ''; } catch (e) { /* ignore */ }
+  function hasOpenGame() {
+    return !boardIsClosed && (!!online || (!!FB_CFG && !!myRooms.current) || state.players.length > 0 || state.rounds.length > 0);
+  }
+  function curScreen() {
+    if (page) return page;
+    if (setup) return 'setup';
+    return atHome || !hasOpenGame() ? 'home' : 'game';
+  }
+  // Leaving Home adds one step to the browser history, so the phone's Back comes home
+  function leaveHome() {
+    if (navHistory) return;
+    try { history.pushState({ rummyPage: 1 }, ''); navHistory = true; } catch (e) { navHistory = false; }
+  }
+  function hidePage() {
+    if (!page) return;
+    page = null;
+    roomsOpen = false;
+    document.body.classList.remove('show-board');
+    document.querySelectorAll('.ft-sec').forEach(sec => { sec.hidden = true; });
+  }
   function openPage(name) {
     closeMenu();
     if (setup) closeSetup();
-    if (!page) { try { history.pushState({ rummyPage: 1 }, ''); pageHistory = true; } catch (e) { pageHistory = false; } }
+    leaveHome();
     page = name;
     roomsOpen = name === 'rooms';
     if (name !== 'rooms') { document.body.classList.remove('show-board'); showFooterPage(name); }
@@ -3090,29 +3185,99 @@
     renderRooms();
     window.scrollTo(0, 0);
   }
-  function closePage(fromPop) {
-    if (!page) return;
-    page = null;
-    roomsOpen = false;
-    document.body.classList.remove('show-board');
-    if (pageHistory && !fromPop) { pageHistory = false; try { history.back(); } catch (e) { /* ignore */ } }
-    pageHistory = false;
-    document.querySelectorAll('.ft-sec').forEach(sec => { sec.hidden = true; });
+  function goHome(fromPop) {
+    closeMenu();
+    hidePage();
+    if (setup) closeSetup();
+    atHome = true;
+    if (navHistory && !fromPop) { navHistory = false; try { history.back(); } catch (e) { /* ignore */ } }
+    navHistory = false;
     renderPage();
     renderRooms();
+    window.scrollTo(0, 0);
   }
+  function showGame() {   // from Home: back to the open game
+    leaveHome();
+    hidePage();
+    atHome = false;
+    renderPage();
+    renderRooms();
+    window.scrollTo(0, 0);
+  }
+  const closePage = fromPop => goHome(fromPop);
   function renderPage() {
     document.body.classList.toggle('page-mode', !!page);
     document.body.classList.toggle('page-rooms', page === 'rooms');
     document.body.classList.toggle('page-info', !!page && page !== 'rooms');
-    $('btnBack').hidden = !page;
-    $('tbTitle').textContent = page ? PAGE_TITLE[page] : '';
+    renderScreen();
   }
-  function toggleRooms() { if (page === 'rooms') closePage(); else openPage('rooms'); }
+  function renderScreen() {
+    const scr = curScreen(), home = scr === 'home';
+    const b = document.body.classList;
+    b.toggle('scr-home', home);
+    b.toggle('scr-setup', scr === 'setup');
+    b.toggle('scr-game', scr === 'game');
+    b.toggle('nav-mode', !home);
+    const info = !!page && page !== 'rooms';
+    $('btnBack').hidden = home;
+    $('tbTitle').textContent = info ? PAGE_TITLE[page] : '';
+    $('tbTitle').hidden = !info;
+    $('tbNav').hidden = home || info;
+    $('btnRoomsNav').hidden = !FB_CFG;
+    $('btnRoomsNav').classList.toggle('on', page === 'rooms');
+    $('btnNewGame').classList.toggle('on', !!setup);
+    // Home: the big buttons, and a way back into the open game
+    $('tileRooms').hidden = !FB_CFG;
+    $('tileNew').hidden = document.body.classList.contains('readonly') && !!online;
+    $('tiles').classList.toggle('one', $('tileRooms').hidden || $('tileNew').hidden);
+    const n = roomCount() + Object.keys(myRooms.games).length;
+    $('tileRoomsSub').textContent = n ? `${n} room${n === 1 ? '' : 's'}` : 'Your games';
+    const open = hasOpenGame();
+    $('btnResume').hidden = !open;
+    if (open) $('resumeText').textContent = 'Continue · ' + resumeLabel();
+    try { localStorage.setItem(SCREEN_KEY, scr); } catch (e) { /* ignore */ }
+    if (home) fitWordmark();
+  }
+  function resumeLabel() {
+    if (online) {
+      const room = online.room || {};
+      const title = online.gameMeta ? gameTitle(online.gameMeta.createdMs, online.gameMeta.seq, state.gameName) : '';
+      if (online.scope === 'game') return (myRooms.games[online.roomId + '_' + online.gameId] || {}).name || 'Shared game';
+      return [room.name, title].filter(Boolean).join(' · ') || 'Game';
+    }
+    return state.gameName || `${state.players.length} player${state.players.length === 1 ? '' : 's'}`;
+  }
+  // The big buttons fly up into the top bar
+  function flyTiles(fn) {
+    const pairs = [['tileNew', 'btnNewGame'], ['tileRooms', 'btnRoomsNav']];
+    const from = pairs.map(([t]) => { const el = $(t); return el && el.offsetParent ? el.getBoundingClientRect() : null; });
+    fn();
+    window.scrollTo(0, 0);
+    let still = false;
+    try { still = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* ignore */ }
+    if (still || !Element.prototype.animate) return;
+    pairs.forEach(([, id], i) => {
+      const a = from[i], el = $(id);
+      if (!a || !el || !el.offsetParent) return;
+      const z = el.getBoundingClientRect();
+      if (!z.width || !z.height) return;
+      el.animate([
+        { transform: `translate(${a.left - z.left}px, ${a.top - z.top}px) scale(${a.width / z.width}, ${a.height / z.height})`, transformOrigin: '0 0', opacity: .6 },
+        { transform: 'none', transformOrigin: '0 0', opacity: 1 }
+      ], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
+    const card = [...document.querySelectorAll('.wrap > .card')].find(c => c.offsetParent);
+    if (card) card.animate([{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: 120, easing: 'ease-out', fill: 'backwards' });
+  }
+  function toggleRooms() { if (page === 'rooms') goHome(); else openPage('rooms'); }
   const openRoomsPage = () => openPage('rooms');
-  const closeRoomsPage = fromPop => closePage(fromPop);
-  window.addEventListener('popstate', () => { if (page) closePage(true); });
-  $('btnBack').addEventListener('click', () => closePage());
+  const closeRoomsPage = () => { hidePage(); renderPage(); renderRooms(); };
+  window.addEventListener('popstate', () => { navHistory = false; if (curScreen() !== 'home') goHome(true); });
+  $('btnBack').addEventListener('click', () => goHome());
+  $('tileNew').addEventListener('click', () => flyTiles(() => openSetup('game')));
+  $('tileRooms').addEventListener('click', () => flyTiles(() => openPage('rooms')));
+  $('btnRoomsNav').addEventListener('click', () => { if (page !== 'rooms') openPage('rooms'); });
+  $('btnResume').addEventListener('click', showGame);
   function parkRoomCard() {
     const rc = $('roomCard');
     if (!roomCardHome.parentNode) rc.parentNode.insertBefore(roomCardHome, rc);
@@ -3133,14 +3298,15 @@
     if (!roomsOpen) { card.hidden = true; card.innerHTML = ''; return; }
     card.hidden = false;
     const keep = $('mrMsg') ? { t: $('mrMsg').textContent, c: $('mrMsg').className } : null;
-    const all = Object.entries(myRooms.rooms).filter(([id]) => !hiddenIds.has(id)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
-    const games = Object.entries(myRooms.games).filter(([id]) => !hiddenIds.has(id));
+    const newest = (a, b) => (b[1].createdMs || b[1].at || 0) - (a[1].createdMs || a[1].at || 0);   // latest first
+    const all = Object.entries(myRooms.rooms).filter(([id]) => !hiddenIds.has(id)).sort(newest);
+    const games = Object.entries(myRooms.games).filter(([id]) => !hiddenIds.has(id)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
     const sec = ([id, e]) => {
-      const tool = roomTool[id];
+      const own = e.role === 'owner';
       return `<details class="mr-room" data-rid="${id}" ${roomsExpanded.has(id) ? 'open' : ''}>
-        <summary><span class="mr-nm"><span class="mr-name">${esc(e.name || 'Room')}</span><span class="mr-meta">${fmtDMY(e.createdMs || e.at || Date.now())}${e.role !== 'owner' ? ` · ${ROLE_LABEL[e.role] || ''}` : ''}</span></span>
-          <button type="button" class="ico-btn ${tool === 'links' ? 'on' : ''}" data-mr="links" data-id="${id}" title="Links" aria-label="Links">${I_LINK}</button>
-          ${e.role === 'owner' ? `<button type="button" class="ico-btn ${tool === 'settings' ? 'on' : ''}" data-mr="settings" data-id="${id}" title="Room settings" aria-label="Room settings">${I_GEAR}</button>` : ''}</summary>
+        <summary><span class="mr-tg" aria-hidden="true"></span><span class="mr-nm"><span class="mr-name">${esc(e.name || 'Room')}</span><span class="mr-meta">${fmtDMY(e.createdMs || e.at || Date.now())}${!own ? ` · ${ROLE_LABEL[e.role] || ''}` : ''}</span></span>
+          <button type="button" class="ico-btn del" data-mr="${own ? 'delroom' : 'forget'}" data-id="${id}" title="${own ? 'Delete room' : 'Remove from this device'}" aria-label="${own ? 'Delete room' : 'Remove from this device'}">${I_TRASH}</button>
+          <button type="button" class="ico-btn ${roomTool[id] ? 'on' : ''}" data-mr="links" data-id="${id}" title="Links" aria-label="Links">${I_LINK}</button></summary>
         <div class="mr-body" id="mrb-${id}"></div></details>`;
     };
     const mine = all.filter(([, e]) => e.role === 'owner'), shared = all.filter(([, e]) => e.role !== 'owner');
@@ -3160,20 +3326,16 @@
     const e = myRooms.rooms[id] || {};
     const own = e.role === 'owner';
     const list = gamesOf(id);
-    const cur = roomDoc(id).currentGameId;
-    const rows = list ? (list.length ? `<ul class="mr-games">${list.map(x => {
+    const rows = list ? (list.length ? `<ul class="mr-games">${[...list].sort((a, b) => (b.createdMs || 0) - (a.createdMs || 0)).map(x => {
         const here = online && online.roomId === id && online.gameId === x.id;
         return `<li class="${here ? 'here' : ''}"><button type="button" class="mg-name" data-mr="opengameof" data-id="${id}" data-g="${x.id}">${esc(gameTitle(x.createdMs, x.seq, x.gameName))}</button>
           ${x.status === 'ended' ? '<span class="mg-tag">Ended</span>' : ''}
-          ${own && x.id !== cur ? `<button type="button" class="ico-btn del" data-mr="delgamein" data-id="${id}" data-g="${x.id}" title="Delete game" aria-label="Delete game">${I_TRASH}</button>` : ''}</li>`;
+          ${own ? `<button type="button" class="ico-btn del" data-mr="delgamein" data-id="${id}" data-g="${x.id}" title="Delete game" aria-label="Delete game">${I_TRASH}</button>` : ''}</li>`;
       }).join('')}</ul>` : '<p class="mr-empty">None</p>')
       : '<p class="mr-empty">Loading…</p>';
-    const tool = roomTool[id] === 'links' ? '<div class="mr-tool lk-box" id="mrLinks-' + id + '">Loading…</div>'
-      : roomTool[id] === 'settings' && own ? `<div class="mr-tool">${roomSettingsHtml(id)}</div>` : '';
-    body.innerHTML = tool + '<div class="mr-sub">Games</div>' + rows
-      + `<div class="mr-foot">${own ? `<button type="button" class="link-del" data-mr="delroom" data-id="${id}">${I_TRASH} Delete room</button>`
-        : `<button type="button" class="link-del" data-mr="forget" data-id="${id}">${I_TRASH} Remove from this device</button>`}</div>`;
-    if (roomTool[id] === 'links') fillRoomLinks(id);
+    const tool = roomTool[id] ? '<div class="mr-tool lk-box" id="mrLinks-' + id + '">Loading…</div>' : '';
+    body.innerHTML = tool + '<div class="mr-sub">Games</div>' + rows;
+    if (roomTool[id]) fillRoomLinks(id);
     if (list && (isOpenRoom(id) || otherRoomDocs[id])) return;
     if (isOpenRoom(id)) return;
     try {
@@ -3185,6 +3347,7 @@
       if (!otherRoomGames[id]) { body.querySelector('.mr-empty') && (body.querySelector('.mr-empty').textContent = navigator.onLine === false ? 'Offline' : 'Couldn\'t load'); }
       return;
     }
+    if (own && !otherRoomGames[id].length && !undoBox) { deleteRoom(id, `Empty room "${e.name || 'Room'}"`); return; }
     if ($('mrb-' + id) === body) fillRoomSection(id);
   }
 
@@ -3204,53 +3367,6 @@
     } catch (err) { box.innerHTML = '<p class="mr-empty">Offline</p>'; }
   }
 
-  // Room settings: name on the left, the box on the right
-  function roomSettingsHtml(r) {
-    const room = roomDoc(r), e = myRooms.rooms[r] || {};
-    const days = clampDays(room.deleteDays || defaultDays());
-    return `<div class="rs" data-rid="${r}">
-      <div class="rs-line"><label for="rsName">Name</label><input type="text" id="rsName" maxlength="40" value="${esc(room.name || e.name || '')}"></div>
-      <div class="rs-line"><label for="rsDays">Delete if unplayed</label><select id="rsDays">${dayOptions().map(d => `<option value="${d}" ${d === days ? 'selected' : ''}>${daysLabel(d)}</option>`).join('')}</select></div>
-      <div class="rs-btns"><button type="button" class="btn-primary sm" data-mr="savesettings" data-id="${r}">Save</button>
-        ${isGoogle() ? `<button type="button" class="btn-outline sm" data-mr="extendall" data-id="${r}">Keep 1 more year</button>` : ''}</div>
-    </div>`;
-  }
-  async function saveRoomSettingsFor(r) {
-    const e = myRooms.rooms[r];
-    if (!e || e.role !== 'owner') return;
-    const room = roomDoc(r);
-    const name = ($('rsName').value || '').trim().replace(/\s+/g, ' ').slice(0, 40) || room.name || e.name;
-    const days = clampDays(Number($('rsDays').value));
-    const onlyEnded = false;   // one rule for every game, ended or not
-    const list = gamesOf(r) || [];
-    try {
-      await cloudInit();
-      const want = Math.max(Date.now() + days * DAY, ...list.map(x => tsMs(x.expireAt) || 0).filter(ms => ms <= Date.now() + days * DAY + DAY));
-      await cw(fb.updateDoc(R.room(r), { name, deleteDays: days, onlyEnded, maxDays: maxDays(), updatedAt: fb.serverTimestamp(),
-        expireAt: fb.Timestamp.fromMillis(Math.min(want, Date.now() + maxDays() * DAY)) }));
-      await Promise.all(list.filter(x => !x.customDays).map(x => {
-        const ms = Date.now() + (onlyEnded && x.status !== 'ended' ? maxDays() : days) * DAY;
-        return cw(fb.updateDoc(R.game(r, x.id), { keepDays: days, onlyEnded, maxDays: maxDays(), expireAt: fb.Timestamp.fromMillis(ms) }));
-      }));
-      e.name = name;
-      saveRooms();
-      if (otherRoomDocs[r]) Object.assign(otherRoomDocs[r], { name, deleteDays: days, onlyEnded });
-      if (isOpenRoom(r) && online.gameMeta && !online.gameMeta.customDays) Object.assign(online.gameMeta, { keepDays: days, onlyEnded, maxDays: maxDays() });
-      roomTool[r] = null;
-      renderRooms();
-      renderSbMeta();
-      toast('Saved');
-    } catch (err) { onCloudError(err); }
-  }
-  async function extendRoomYear(r) {
-    if (!isGoogle()) return;
-    const ms = Date.now() + 365 * DAY;
-    try {
-      await Promise.all((gamesOf(r) || []).map(x => cw(fb.updateDoc(R.game(r, x.id), { expireAt: fb.Timestamp.fromMillis(ms) }))));
-      await cw(fb.updateDoc(R.room(r), { expireAt: fb.Timestamp.fromMillis(ms), updatedAt: fb.serverTimestamp() }));
-      toast(`Kept until ${fmtDay(ms)}`);
-    } catch (err) { onCloudError(err); }
-  }
   async function resetLinksFor(r) {
     const e = myRooms.rooms[r];
     if (!e || e.role !== 'owner') return;
@@ -3293,13 +3409,11 @@
     e.stopPropagation();
     const a = b.dataset.mr, id = b.dataset.id;
     if (a === 'close') closeRoomsPage();
-    else if (a === 'links' || a === 'settings') {
-      roomTool[id] = roomTool[id] === a ? null : a;
+    else if (a === 'links') {
+      roomTool[id] = !roomTool[id];
       if (roomTool[id]) roomsExpanded.add(id);
       renderRooms();
     }
-    else if (a === 'savesettings') saveRoomSettingsFor(id);
-    else if (a === 'extendall') extendRoomYear(id);
     else if (a === 'resetlinks') resetLinksFor(id);
     else if (a === 'delroom') deleteRoom(id);
     else if (a === 'delgamein') deleteGameIn(id, b.dataset.g);
@@ -3315,9 +3429,6 @@
   });
 
   // ✕ on the scoreboard: put the game away (it stays in its room)
-  let boardIsClosed = false;
-  try { boardIsClosed = localStorage.getItem('rummy-board-closed') === '1'; } catch (e) { /* ignore */ }
-  document.body.classList.toggle('board-closed', boardIsClosed);
   function boardClosed(v) {
     boardIsClosed = v;
     try { localStorage.setItem('rummy-board-closed', v ? '1' : '0'); } catch (e) { /* ignore */ }
@@ -3328,6 +3439,7 @@
     if (online) leaveRoom();
     boardClosed(true);
     renderAll();
+    goHome();
   });
 
   /* ---------- Menu (top right): ☰, or your initial once signed in with Google ---------- */
@@ -3349,9 +3461,7 @@
   }
   function renderMenu() {
     const it = (act, icon, label, sub) => `<button type="button" class="am-item" role="menuitem" data-menu="${act}">${icon}<span>${label}${sub ? `<small>${sub}</small>` : ''}</span></button>`;
-    const n = roomCount() + Object.keys(myRooms.games).length;
     let html = '';
-    if (FB_CFG) html += it('rooms', MI.rooms, 'My Rooms', n ? `${n} room${n === 1 ? '' : 's'}` : 'None yet') + '<div class="am-sep"></div>';
     html += it('help', MI.help, 'How it works') + it('feedback', MI.feedback, 'Feedback') + it('legal', MI.legal, 'Privacy &amp; Legal');
     const tools = [];
     if (typeof installPrompt !== 'undefined' && installPrompt) tools.push(it('install', MI.install, 'Install App'));
@@ -4900,27 +5010,15 @@
     undoBar(label, () => { hideIds.forEach(id => hiddenIds.delete(id)); renderRoomCard(); renderRooms(); }, doIt);
   }
 
-  function deleteGame(g) {
-    if (!isOwner()) return;
-    const gm = roomGames.find(x => x.id === g);
-    if (!gm || (online.room && online.room.currentGameId === g)) return;
-    const r = online.roomId;
-    withUndo(gameTitle(gm.createdMs, gm.seq, gm.gameName), [g], async () => {
-      try {
-        await fb.deleteDoc(R.game(r, g));
-        fb.deleteDoc(R.gameKeys(r, g)).catch(() => {});
-        if (online && online.gameId === g && online.room) openGame(online.room.currentGameId, true);
-      } catch (e) { hiddenIds.delete(g); onCloudError(e); }
-    });
-  }
+  function deleteGame(g) { if (online) deleteGameIn(online.roomId, g); }
 
   // Any room this device owns (the open one or one in My Rooms)
-  function deleteRoom(rid) {
+  function deleteRoom(rid, label) {
     const r = rid || (online && online.roomId);
     const e = myRooms.rooms[r];
     if (!r || !e || e.role !== 'owner') return;
     const name = (online && online.roomId === r && online.room && online.room.name) || e.name || 'Room';
-    withUndo(`Room "${name}"`, [r], async () => {
+    withUndo(label || `Room "${name}"`, [r], async () => {
       try {
         await cloudInit();
         const gs = await fb.getDocs(R.games(r));
@@ -4937,18 +5035,27 @@
     });
   }
 
-  // A game in a room that isn't open (from My Rooms)
+  // A game from My Rooms (or the open room). The room's last game takes the room with it.
   function deleteGameIn(r, g) {
-    if (online && online.roomId === r && online.scope === 'room') { deleteGame(g); return; }
-    const e = myRooms.rooms[r], list = otherRoomGames[r] || [];
+    const e = myRooms.rooms[r];
+    if (!e || e.role !== 'owner') return;
+    const list = gamesOf(r) || [];
     const gm = list.find(x => x.id === g);
-    if (!e || e.role !== 'owner' || !gm) return;
-    withUndo(gameTitle(gm.createdMs, gm.seq, gm.gameName), [g], async () => {
+    if (!gm) return;
+    const title = gameTitle(gm.createdMs, gm.seq, gm.gameName);
+    const rest = list.filter(x => x.id !== g).sort((a, b) => (b.createdMs || 0) - (a.createdMs || 0));
+    if (!rest.length) { deleteRoom(r, `"${title}" and room "${e.name || 'Room'}"`); return; }
+    withUndo(`"${title}"`, [g], async () => {
       try {
+        await cloudInit();
+        if (roomDoc(r).currentGameId === g) {   // the room moves on to its latest other game
+          await cw(fb.updateDoc(R.room(r), { currentGameId: rest[0].id, updatedAt: fb.serverTimestamp() }));
+          if (otherRoomDocs[r]) otherRoomDocs[r].currentGameId = rest[0].id;
+        }
+        if (online && online.roomId === r && online.gameId === g) openGame(rest[0].id, online.scope === 'room');
         await fb.deleteDoc(R.game(r, g));
         fb.deleteDoc(R.gameKeys(r, g)).catch(() => {});
-        otherRoomGames[r] = list.filter(x => x.id !== g);
-        hiddenIds.delete(g);
+        if (otherRoomGames[r]) otherRoomGames[r] = otherRoomGames[r].filter(x => x.id !== g);
         renderRooms();
       } catch (err) { hiddenIds.delete(g); onCloudError(err); renderRooms(); }
     });
@@ -5057,7 +5164,6 @@
   const I_WA = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>';
   const I_TRASH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const I_LINK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
-  const I_GEAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5c.1.2.4.3.6.2l2.5-1c.5.4 1.1.7 1.7 1l.4 2.6c0 .2.2.4.5.4h4c.3 0 .5-.2.5-.4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1c.2.1.5 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>';
   const I_COPY = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
 
   // One line per link: name, the address, copy and share icons
@@ -5093,13 +5199,13 @@
 
   function offlineCardHtml() {
     const rooms = Object.entries(myRooms.rooms).filter(([id]) => !hiddenIds.has(id)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
-    const games = Object.entries(myRooms.games).filter(([id]) => !hiddenIds.has(id));
+    const games = Object.entries(myRooms.games).filter(([id]) => !hiddenIds.has(id)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
     const list = rooms.map(([id, e]) => `<li><span class="rl-name">${esc(e.name || 'Room')}</span><span class="role-chip ${e.role}">${ROLE_LABEL[e.role] || ''}</span>
         <span class="rl-btns"><button type="button" class="btn-primary" data-room="open" data-id="${id}">Open</button>
-        <button type="button" class="ricon del" data-room="forget" data-id="${id}" title="Remove from this device" aria-label="Remove ${esc(e.name || 'room')} from this device">✕</button></span></li>`)
+        <button type="button" class="ricon del" data-room="forget" data-id="${id}" title="Remove from this device" aria-label="Remove ${esc(e.name || 'room')} from this device">${I_X}</button></span></li>`)
       .concat(games.map(([id, e]) => `<li><span class="rl-name">${esc(e.name || 'Shared game')} <small>(one game)</small></span><span class="role-chip ${e.role}">${ROLE_LABEL[e.role] || ''}</span>
         <span class="rl-btns"><button type="button" class="btn-primary" data-room="opengame" data-id="${id}">Open</button>
-        <button type="button" class="ricon del" data-room="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">✕</button></span></li>`)).join('');
+        <button type="button" class="ricon del" data-room="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">${I_X}</button></span></li>`)).join('');
     const open = myRooms.uiOpen !== false;
     return `<details class="room-box" id="roomBox" ${open ? 'open' : ''}>
       <summary><span class="ttl"><span class="suit">♥</span> Play</span></summary>
@@ -5292,7 +5398,7 @@
     renderRoomCard();
     if (!FB_CFG) return;
     const L = parseLink();
-    if (L) { await joinFromLink(L); return; }
+    if (L) { atHome = false; leaveHome(); await joinFromLink(L); renderScreen(); return; }
     const c = myRooms.current;
     if (c) {
       const en = c.scope === 'game' ? myRooms.games[c.roomId + '_' + c.gameId] : myRooms.rooms[c.roomId];
@@ -5768,6 +5874,15 @@
   $('setAwake').checked = keepAwake;
   renderSettings();
   renderAll();
+  // Open the screen that was showing last time (a room link always opens its game)
+  (function restoreScreen() {
+    let sc = savedScreen;
+    if (parseLink()) sc = 'game';
+    if (sc === 'game' && hasOpenGame()) { atHome = false; leaveHome(); renderScreen(); }
+    else if (PAGE_TITLE[sc] && (sc !== 'rooms' || FB_CFG)) openPage(sc);
+    else if (sc === 'setup') openSetup('game');
+    else renderScreen();
+  })();
   cloudStartup();
 })();
 </script>

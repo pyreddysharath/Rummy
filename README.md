@@ -74,9 +74,10 @@ You need a Google account. Everything below fits in Firebase's free **Spark** pl
 
 ## How online rooms work
 
-- **＋ New Room** at the top makes a room, then sets up its first game; **＋ New Game** starts a game in a room you pick from a searchable list. Each room has three links: **Edit** (share with players), **View** (share with watchers) and **Owner** (keep to yourself – it brings back full control on any device).
-- A room holds all your games; room links open every game, including future ones. The owner can also make **Game links** that open one game only.
-- **Guests** (no login): rooms are listed on that device; save the Owner link to get them back after clearing the browser. **Sign in** (top right) with Google to keep your rooms on your account across devices.
-- **Deletion**: games are deleted after a period without activity – 7/30/90 days for guests, up to 1 year when signed in – and a room once it has no games left. Owners can choose *Only delete games marked as ended*, set a period per game, and (signed in) *Keep 1 more year*. Every delete has a 5-second Undo.
+- **Home** shows two big buttons: **New Game** and **My Rooms**. Tapping one moves them into a slim top bar (with Back to Home); the app reopens on the same screen after a refresh. If a game is open, Home also shows **Continue**.
+- **New Game** asks for the room (pick one, or **＋ Create a new room** – name it after the occasion), the game name, players and Game Rules. Each room has an **Edit** link (share with players) and a **View** link (share with watchers), under the share button next to Scoreboard or the link icon in My Rooms.
+- **My Rooms** lists rooms newest first (*Created by me* / *Shared with me*), each with its games newest first. The bin deletes a room or a game, with a 5-second Undo; deleting a room's last game deletes the room too.
+- **Guests** (no login): rooms are listed on that device. **Sign in with Google** from the menu (top right) to keep your rooms on your account across devices.
+- **Deletion**: the same for everyone – a game is deleted after 90 days without play, and a room once it has no games left.
 - **Export / Import Data** lets you tick exactly what to back up: this device's games and any of your rooms. Imported rooms come back with new links.
 - Scores sync instantly; with a poor signal, changes are kept on the phone and sent when the connection returns.
