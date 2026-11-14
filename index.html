@@ -875,7 +875,7 @@
   .pa.act { background: var(--primary-soft); color: var(--primary-dark); }
   .pa.out { background: var(--red-soft); color: var(--red-text); }
   .pa { padding: 5px 7px; font-size: .74rem; }
-  .pa.win { grid-column: 1 / -1; background: #b8860b; color: #fff; border-color: #b8860b; }
+  .pa.win { grid-column: 1 / -1; background: #b8860b; color: #fff; border-color: #b8860b; display: flex; width: 100%; margin-top: 8px; padding: 7px; font-size: .8rem; }
   #btnSetDealer { background: #fff; color: var(--text); border-color: #c4dccd; }
   .pa:disabled { opacity: .45; }
   .ph-sep { height: 1px; background: rgba(255,255,255,.35); margin: 8px 0; }
@@ -1527,7 +1527,7 @@
       </div>
       <div class="gu-sec">
         <div class="gu-h">Ending a game</div>
-        <p class="gu-note">The game ends by itself as soon as there is a winner – when only one player is left, through the scores or by marking the others OUT. To end it earlier, tap <b>■ End Game</b>, tick the winner(s) and tap <b>🏆 End Game</b>. The owner can undo it with <b>↺ Reopen game</b>.</p>
+        <p class="gu-note">The game ends by itself as soon as there is a winner – when only one player is left, through the scores or by marking the others OUT. To end it earlier, tap <b>■ End Game</b>, tick the winner(s) and tap <b>🏆 End Game</b> – or tap <b>✎</b> on Player, tick the winner(s) and tap <b>🏆 Make winner &amp; end game</b>. The owner can undo it with <b>↺ Reopen game</b>.</p>
       </div>
     </div>
     <div class="sb-headrow">
@@ -2254,6 +2254,7 @@
           `<button class="pa dl" type="button" id="btnSetDealer" data-bulk="dealer" title="Make the ticked player deal this round">${DEALER_ICON} Dealer</button>` +
           `<button class="pa rj" type="button" id="btnRejoin" data-bulk="rejoin" title="Bring a ticked OUT player back in at the highest score of the players still in">↺ Rejoin</button>` +
           `</div>` +
+          (isEnded() ? '' : `<button class="pa win" type="button" id="btnMakeWinner" data-bulk="winner" title="Make the ticked player(s) the winner and end the game">🏆 Make winner &amp; end game</button>`) +
           `<div class="edit-done">` +
           `<button class="btn-primary" type="button" id="btnEditDone" data-editdone>Done</button>` +
           `<button class="btn-outline" type="button" id="btnEditCancel" data-editcancelp>Cancel</button></div>` +
@@ -2571,7 +2572,20 @@
     renderAll();
   }
 
-  function finishEditPlayers() {
+  // Edit Players: 🏆 Make winner & end game – the ticked players win and the game ends straight away
+  function makeWinnerFromSelection() {
+    const ids = [...selectedIds].filter(id => playerById(id));
+    if (isEnded()) { setMsg('boardMsg', 'This game has already ended.', 'err'); return; }
+    if (!ids.length) { setMsg('boardMsg', 'Tick the winner first, then tap 🏆 Make winner & end game.', 'err'); return; }
+    const out = ids.filter(id => playerStatus(id) === 'out').map(id => playerById(id).name);
+    if (out.length) { setMsg('boardMsg', `${joinNames(out)} ${out.length > 1 ? 'are' : 'is'} OUT and can't win. Untick ${out.length > 1 ? 'them' : 'that player'} or use ↺ Rejoin first.`, 'err'); return; }
+    finishEditPlayers(true);
+    finishGame(ids);
+    const names = ids.map(id => playerById(id).name);
+    toast(`🏆 ${joinNames(names)} ${names.length > 1 ? 'win' : 'wins'}! · Game ended`);
+  }
+
+  function finishEditPlayers(quiet) {
     // commit a name still being typed
     const focused = document.activeElement;
     if (focused && focused.matches && focused.matches('.nm-edit')) renameInline(Number(focused.dataset.rename), focused);
@@ -2580,7 +2594,7 @@
     editSnapshot = null;
     selectedIds = new Set();
     renderAll();
-    toast('Players updated');
+    if (!quiet) toast('Players updated');
   }
 
   function cancelEditPlayers() {
@@ -4662,7 +4676,7 @@
     if (t.hasAttribute('data-editcancelp')) { cancelEditPlayers(); return; }
     if (t.dataset.bulk) {
       ({ active: () => bulkSetStatus('active'), out: () => bulkSetStatus('out'),
-         rejoin: bulkRejoin, dealer: setDealerFromSelection })[t.dataset.bulk]();
+         rejoin: bulkRejoin, dealer: setDealerFromSelection, winner: makeWinnerFromSelection })[t.dataset.bulk]();
       return;
     }
     if (t.hasAttribute('data-addplayer')) { addPlayer(); return; }
