@@ -107,7 +107,12 @@
   .hb[hidden] { display: none; }
   .hb-game { background: var(--gold); color: #2b1f00; border: 2px solid var(--gold); }
   .hb.on { outline: 3px solid rgba(255,255,255,.55); outline-offset: 2px; }
-  .hb-rooms { background: #fff; color: var(--felt); border: 2px solid #fff; }
+  /* My Rooms: round icon, top right of the header */
+  .hero > .rooms-ico { position: absolute; top: 10px; right: 10px; z-index: 3; min-height: 0; width: 38px; height: 38px; padding: 0; border-radius: 50%;
+    background: rgba(255,255,255,.14); border: 1.5px solid var(--gold); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+  .hero > .rooms-ico[hidden] { display: none; }
+  .hero > .rooms-ico svg { width: 19px; height: 19px; }
+  .hero > .rooms-ico.on { background: #fff; color: var(--felt); }
   .rooms-card h2 { margin-bottom: 8px; }
   .mr-h { font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; }
   .mr-room { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; background: #fff; }
@@ -128,11 +133,38 @@
   .mr-acts { display: flex; flex-wrap: wrap; gap: 8px; }
   .mr-empty { color: var(--muted); font-size: .86rem; margin: 0 0 6px; }
   .mr-h2 { margin-top: 22px; }
-  .mr-del { min-height: 0; width: 30px; height: 30px; padding: 0; flex: 0 0 auto; border-radius: 8px; border: 1px solid var(--border);
-    background: #fff; color: var(--red); display: inline-flex; align-items: center; justify-content: center; font-size: .8rem; }
-  .mr-del svg { width: 15px; height: 15px; }
+  .ico-btn { min-height: 0; width: 32px; height: 32px; padding: 0; flex: 0 0 auto; border: 0; background: none; color: var(--felt);
+    display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; font-size: .95rem; cursor: pointer; }
+  .ico-btn svg { width: 18px; height: 18px; }
+  .ico-btn:hover, .ico-btn.on { background: #eef6f1; }
+  .ico-btn.del { color: var(--red); }
+  .ico-btn[hidden] { display: none; }
+  .link-del { min-height: 0; padding: 4px 0; border: 0; background: none; color: var(--red); font-size: .84rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px; }
+  .link-del svg { width: 15px; height: 15px; }
+  .link-del.plain { color: var(--felt); }
+  .mr-sub { font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 4px 0 4px; }
+  .mr-games li.here .mg-name { color: var(--felt); }
+  .mr-games li.here .mg-name::after { content: " ●"; font-size: .7rem; }
+  .mg-name { min-height: 0; padding: 4px 0; border: 0; background: none; text-align: left; font-weight: 700; color: var(--text); flex: 1 1 auto; cursor: pointer; }
+  .mg-name:hover { text-decoration: underline; }
+  .mg-tag { font-size: .7rem; font-weight: 800; color: var(--red); background: #fde8e6; border-radius: 999px; padding: 2px 8px; }
+  .mr-one { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+  .mr-tool { margin: 0 0 12px; padding: 10px; background: #f6f8f4; border-radius: 10px; }
+  .mr-foot { margin-top: 8px; }
+  .lk-line { display: flex; align-items: center; gap: 6px; padding: 4px 0; }
+  .lk-line + .lk-line { border-top: 1px dashed var(--border); }
+  .lk-name { flex: 0 0 38px; font-size: .84rem; }
+  .lk-line .lk-url { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, Menlo, monospace;
+    font-size: .74rem; color: var(--muted); }
+  .rs-line { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .86rem; }
+  .rs-line label { font-weight: 700; color: var(--muted); }
+  .rs-line input[type="text"], .rs-line select { width: 100%; min-height: 0; height: 34px; padding: 5px 8px; }
+  .rs-line input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--felt); justify-self: start; }
+  body.board-closed .board-card, body.board-closed .settings-card { display: none !important; }
+
   .rooms-card h2, .setup-card h2 { display: flex; align-items: center; justify-content: space-between; }
-  .close-x { min-height: 0; width: 32px; height: 32px; padding: 0; border-radius: 50%; border: 1px solid var(--border); background: #fff; color: var(--muted); font-size: .9rem; }
+  .close-x { min-height: 0; width: 32px; height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 1rem; }
   .su-link2 { display: block; color: var(--muted); }
   .su-add { display: flex; gap: 8px; margin-top: 6px; }
   .su-add input { flex: 1 1 auto; min-width: 0; }
@@ -1071,6 +1103,7 @@
       <span class="wm-big" id="wmBig">Rummy</span>
       <span class="wm-small" id="wmSmall">Tally</span>
     </h1>
+    <button class="rooms-ico" id="btnMyRooms" type="button" aria-controls="roomsCard" aria-expanded="false" title="My Rooms" aria-label="My Rooms" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V10l8-6 8 6v11h-5v-6H9v6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></button>
     <div class="hero-suits" aria-hidden="true">♠ <i>♥</i> ♣ <i>♦</i></div>
     <div class="hero-foot">
       <div class="hero-chips" hidden>
@@ -1079,7 +1112,6 @@
       </div>
       <div class="hero-actions">
         <button class="hb hb-game" id="btnNewGame" type="button" aria-controls="setupCard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-10 8.5 12.5)" fill="none" stroke="currentColor" stroke-width="2"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15.5 11.5)" fill="currentColor" opacity=".9"/></svg>New Game</button>
-        <button class="hb hb-rooms" id="btnMyRooms" type="button" aria-controls="roomsCard" aria-expanded="false" title="My Rooms" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V10l8-6 8 6v11h-5v-6H9v6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>My Rooms</button>
       </div>
     </div>
   </header>
@@ -1162,6 +1194,7 @@
         <button class="info-btn" id="btnLegend" type="button" aria-expanded="false" aria-controls="gameDetails" title="Game overview: rules, players and what the colours mean">i</button>
         <button class="info-btn share-ico" id="btnSbShare" type="button" data-sbshare aria-expanded="false" aria-controls="sbLinks" title="Share: scoreboard picture and links" hidden><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="18" cy="5" r="3.4" fill="currentColor"/><circle cx="6" cy="12" r="3.4" fill="currentColor"/><circle cx="18" cy="19" r="3.4" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2.8"/></svg></button></span>
       <span class="h2-btns">
+        <button type="button" class="ico-btn" id="btnCloseBoard" title="Close this game (it stays in its room)" aria-label="Close this game" hidden>✕</button>
         <button class="time-chip idle" id="timeChip" type="button" title="Game clock – tap to go to Play / Pause / End Game"><span class="tc-ico">⏱</span> <span id="timeChipText">00:00:00</span></button>
       </span>
     </h2>
@@ -2724,6 +2757,7 @@
   }
 
   async function setupStart() {
+    boardClosed(false);
     const rs = readSetupSettings();
     if (rs.err) {
       setMsg('suMsg', rs.err + ' (Game Rules)', 'err');
@@ -2899,6 +2933,7 @@
     }
     html += `<div class="sb-chips">${chips.join('')}</div>`;
     el.innerHTML = html;
+    $('btnCloseBoard').hidden = !online;
     const canShare = !!online || state.rounds.length > 0;
     $('btnSbShare').hidden = !canShare;
     if (!canShare && sbLinksOpen) { sbLinksOpen = false; $('sbLinks').hidden = true; $('btnSbShare').setAttribute('aria-expanded', 'false'); }
@@ -2908,7 +2943,7 @@
   // Share: the scoreboard picture, plus the room's links when playing online
   async function fillSbLinks() {
     const box = $('sbLinks');
-    const img = `<button type="button" class="btn-outline sb-img" data-shareimg ${state.rounds.length ? '' : 'disabled'}>${I_SHARE} Share scoreboard picture${state.rounds.length ? '' : ' <small>(after Round 1)</small>'}</button>`;
+    const img = state.rounds.length ? `<button type="button" class="btn-outline sb-img" data-shareimg>${I_SHARE} Scoreboard picture</button>` : '';
     if (!online) { box.innerHTML = img; return; }
     const o = online;
     box.innerHTML = img + '<p class="lk-note">Loading links…</p>';
@@ -2916,12 +2951,12 @@
     try {
       if (o.scope === 'game') {
         const e = myRooms.games[o.roomId + '_' + o.gameId] || {};
-        if (e.key) html = linkRowHtml(o.role === 'edit' ? 'Edit link' : 'View link', o.role === 'edit' ? 'can enter scores in this game' : 'watch only', gameLink(o.roomId, o.gameId, o.role, e.key), o.role === 'edit' ? 'gedit' : 'gview');
+        if (e.key) html = linkRowHtml(o.role === 'edit' ? 'Edit' : 'View', gameLink(o.roomId, o.gameId, o.role, e.key), o.role === 'edit' ? 'gedit' : 'gview');
       } else {
         const k = await roomKeysFor(o.roomId);
         if (online !== o) return;
-        if (k.view) html += linkRowHtml('View link', 'watch only', roomLink(o.roomId, 'view', k.view), 'view');
-        if (k.edit && o.role !== 'view') html += linkRowHtml('Edit link', 'players can enter scores', roomLink(o.roomId, 'edit', k.edit), 'edit');
+        if (k.view) html += linkRowHtml('View', roomLink(o.roomId, 'view', k.view), 'view');
+        if (k.edit && o.role !== 'view') html += linkRowHtml('Edit', roomLink(o.roomId, 'edit', k.edit), 'edit');
       }
     } catch (e) { html = '<p class="lk-note">The links need an internet connection the first time – try again once you\'re online.</p>'; }
     box.innerHTML = img + (html || '<p class="lk-note">No links available for your access.</p>');
@@ -2988,14 +3023,16 @@
   });
 
   /* ---------- My Rooms ---------- */
+  // Each room: name, date, 🔗 links and ⚙ settings in its heading; inside, its games. Tapping a game shows it on the scoreboard.
   let roomsOpen = false;
   const roomsExpanded = new Set();
-  const otherRoomGames = {};   // games of rooms that aren't open, fetched when their section is expanded
+  const roomTool = {};          // room id -> 'links' | 'settings' (the open tool under its heading)
+  const otherRoomGames = {};    // games of each room, fetched when its section is expanded
+  const otherRoomDocs = {};     // room documents (name, deletion settings) for rooms that aren't open
   const roomCardHome = document.createComment('room card');
   function toggleRooms() {
     if (setup) closeSetup();
     roomsOpen = !roomsOpen;
-    if (roomsOpen && online && online.scope === 'room') { roomsExpanded.add(online.roomId); if (!roomPanel) roomPanel = 'games'; }
     renderRooms();
     if (roomsOpen) { try { $('roomsCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ } }
   }
@@ -3004,6 +3041,13 @@
     if (!roomCardHome.parentNode) rc.parentNode.insertBefore(roomCardHome, rc);
     else if (rc.previousSibling !== roomCardHome) roomCardHome.parentNode.insertBefore(rc, roomCardHome.nextSibling);
   }
+  const isOpenRoom = r => !!online && online.roomId === r && online.scope === 'room';
+  function gamesOf(r) {
+    const list = isOpenRoom(r) ? roomGames : otherRoomGames[r];
+    return list ? list.filter(x => !hiddenIds.has(x.id)) : null;
+  }
+  function roomDoc(r) { return isOpenRoom(r) ? (online.room || {}) : (otherRoomDocs[r] || {}); }
+
   function renderRooms() {
     const card = $('roomsCard');
     $('btnMyRooms').classList.toggle('on', roomsOpen);
@@ -3011,65 +3055,153 @@
     parkRoomCard();
     if (!roomsOpen) { card.hidden = true; card.innerHTML = ''; return; }
     card.hidden = false;
+    const keep = $('mrMsg') ? { t: $('mrMsg').textContent, c: $('mrMsg').className } : null;
     const all = Object.entries(myRooms.rooms).filter(([id]) => !hiddenIds.has(id)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
     const games = Object.entries(myRooms.games).filter(([id]) => !hiddenIds.has(id));
     const sec = ([id, e]) => {
-      const now = online && online.roomId === id && online.scope === 'room';
-      const del = e.role === 'owner'
-        ? `<button type="button" class="mr-del" data-mr="delroom" data-id="${id}" title="Delete room" aria-label="Delete ${esc(e.name || 'room')}">${I_TRASH}</button>`
-        : `<button type="button" class="mr-del" data-mr="forget" data-id="${id}" title="Remove from this device" aria-label="Remove ${esc(e.name || 'room')} from this device">✕</button>`;
+      const tool = roomTool[id];
       return `<details class="mr-room" data-rid="${id}" ${roomsExpanded.has(id) ? 'open' : ''}>
-        <summary><span class="mr-name">${esc(e.name || 'Room')}</span>${now ? '<span class="mr-now">Open</span>' : ''}
-          <span class="mr-meta">${fmtDMY(e.createdMs || e.at || Date.now())}${e.role !== 'owner' ? ` · ${ROLE_LABEL[e.role] || ''}` : ''}</span>${del}</summary>
+        <summary><span class="mr-name">${esc(e.name || 'Room')}</span><span class="mr-meta">${fmtDMY(e.createdMs || e.at || Date.now())}</span>
+          <button type="button" class="ico-btn ${tool === 'links' ? 'on' : ''}" data-mr="links" data-id="${id}" title="Links" aria-label="Links">${I_LINK}</button>
+          ${e.role === 'owner' ? `<button type="button" class="ico-btn ${tool === 'settings' ? 'on' : ''}" data-mr="settings" data-id="${id}" title="Room settings" aria-label="Room settings">${I_GEAR}</button>` : ''}</summary>
         <div class="mr-body" id="mrb-${id}"></div></details>`;
     };
     const mine = all.filter(([, e]) => e.role === 'owner'), shared = all.filter(([, e]) => e.role !== 'owner');
-    const one = games.map(([id, e]) => `<details class="mr-room" data-gkey="${id}"><summary><span class="mr-name">${esc(e.name || 'Shared game')}</span>
-        <span class="mr-meta">One game · ${ROLE_LABEL[e.role] || ''}</span>
-        <button type="button" class="mr-del" data-mr="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">✕</button></summary>
-        <div class="mr-body"><div class="mr-acts"><button type="button" class="btn-primary sm" data-mr="opengame" data-id="${id}">Open</button></div></div></details>`).join('');
+    const one = games.map(([id, e]) => `<div class="mr-one"><button type="button" class="mg-name" data-mr="opengame" data-id="${id}">${esc(e.name || 'Shared game')}</button>
+        <button type="button" class="ico-btn del" data-mr="forgetgame" data-id="${id}" title="Remove from this device" aria-label="Remove from this device">${I_TRASH}</button></div>`).join('');
     card.innerHTML = `<h2><span class="ttl"><span class="suit">♥</span> My Rooms</span>
-        <button type="button" class="close-x" data-mr="close" aria-label="Close My Rooms">✕</button></h2>
+        <button type="button" class="ico-btn" data-mr="close" aria-label="Close My Rooms">✕</button></h2>
       <div class="mr-h">Created by me</div>${mine.length ? mine.map(sec).join('') : '<p class="mr-empty">None</p>'}
       <div class="mr-h mr-h2">Shared with me</div>${shared.length || one ? shared.map(sec).join('') + one : '<p class="mr-empty">None</p>'}
       <div class="msg" id="mrMsg"></div>`;
+    if (keep && keep.t) { $('mrMsg').textContent = keep.t; $('mrMsg').className = keep.c; }
     roomsExpanded.forEach(id => fillRoomSection(id));
   }
+
   async function fillRoomSection(id) {
     const body = $('mrb-' + id);
     if (!body) return;
-    if (online && online.roomId === id && online.scope === 'room') {   // the open room: links, games and room settings
-      body.appendChild($('roomCard'));
-      return;
-    }
     const e = myRooms.rooms[id] || {};
-    const acts = `<div class="mr-acts"><button type="button" class="btn-primary sm" data-mr="openroom" data-id="${id}">Open room</button></div>`;
-    const list = otherRoomGames[id] && otherRoomGames[id].filter(x => !hiddenIds.has(x.id));
     const own = e.role === 'owner';
-    const rows = list ? (list.length ? `<ul class="mr-games">${list.map(x => `<li><span class="mg-t"><b>${esc(gameTitle(x.createdMs, x.seq, x.gameName))}</b>
-        <small>${x.status === 'ended' ? 'Ended' : 'Playing'} · ${(x.rounds || []).length} rounds · ${(x.players || []).length} players</small></span>
-        <button type="button" class="btn-outline sm" data-mr="opengameof" data-id="${id}" data-g="${x.id}">Open</button>
-        ${own && list.length > 1 ? `<button type="button" class="mr-del" data-mr="delgamein" data-id="${id}" data-g="${x.id}" title="Delete game" aria-label="Delete game">${I_TRASH}</button>` : ''}</li>`).join('')}</ul>` : '<p class="mr-empty">No games</p>')
+    const list = gamesOf(id);
+    const cur = roomDoc(id).currentGameId;
+    const rows = list ? (list.length ? `<ul class="mr-games">${list.map(x => {
+        const here = online && online.roomId === id && online.gameId === x.id;
+        return `<li class="${here ? 'here' : ''}"><button type="button" class="mg-name" data-mr="opengameof" data-id="${id}" data-g="${x.id}">${esc(gameTitle(x.createdMs, x.seq, x.gameName))}</button>
+          ${x.status === 'ended' ? '<span class="mg-tag">Ended</span>' : ''}
+          ${own && x.id !== cur ? `<button type="button" class="ico-btn del" data-mr="delgamein" data-id="${id}" data-g="${x.id}" title="Delete game" aria-label="Delete game">${I_TRASH}</button>` : ''}</li>`;
+      }).join('')}</ul>` : '<p class="mr-empty">None</p>')
       : '<p class="mr-empty">Loading…</p>';
-    body.innerHTML = rows + acts;
-    if (otherRoomGames[id]) return;
+    const tool = roomTool[id] === 'links' ? '<div class="mr-tool lk-box" id="mrLinks-' + id + '">Loading…</div>'
+      : roomTool[id] === 'settings' && own ? `<div class="mr-tool">${roomSettingsHtml(id)}</div>` : '';
+    body.innerHTML = tool + '<div class="mr-sub">Games</div>' + rows
+      + `<div class="mr-foot">${own ? `<button type="button" class="link-del" data-mr="delroom" data-id="${id}">${I_TRASH} Delete room</button>`
+        : `<button type="button" class="link-del" data-mr="forget" data-id="${id}">${I_TRASH} Remove from this device</button>`}</div>`;
+    if (roomTool[id] === 'links') fillRoomLinks(id);
+    if (list && (isOpenRoom(id) || otherRoomDocs[id])) return;
+    if (isOpenRoom(id)) return;
     try {
       await cloudInit();
-      const qs = await fb.getDocs(fb.query(R.games(id), fb.orderBy('createdMs', 'desc')));
+      const [qs, rd] = await Promise.all([fb.getDocs(fb.query(R.games(id), fb.orderBy('createdMs', 'desc'))), fb.getDoc(R.room(id))]);
       otherRoomGames[id] = qs.docs.map(d => ({ id: d.id, ...d.data() }));
-    } catch (err) { otherRoomGames[id] = null; body.innerHTML = `<p class="mr-empty">Couldn't load the games – ${navigator.onLine === false ? 'you are offline' : 'open the room to see them'}.</p>` + acts; return; }
+      otherRoomDocs[id] = rd.exists() ? rd.data() : {};
+    } catch (err) {
+      if (!otherRoomGames[id]) { body.querySelector('.mr-empty') && (body.querySelector('.mr-empty').textContent = navigator.onLine === false ? 'Offline' : 'Couldn\'t load'); }
+      return;
+    }
     if ($('mrb-' + id) === body) fillRoomSection(id);
   }
+
+  // Links: View and Edit (anyone with edit access may pass on both; view-only people only the View link)
+  async function fillRoomLinks(r) {
+    const box = $('mrLinks-' + r);
+    if (!box) return;
+    const e = myRooms.rooms[r] || {};
+    try {
+      await cloudInit();
+      const k = await roomKeysFor(r);
+      let html = '';
+      if (k.view) html += linkRowHtml('View', roomLink(r, 'view', k.view), 'view', r);
+      if (k.edit && e.role !== 'view') html += linkRowHtml('Edit', roomLink(r, 'edit', k.edit), 'edit', r);
+      if (e.role === 'owner') html += `<button type="button" class="link-del plain" data-mr="resetlinks" data-id="${r}">↻ New links</button>`;
+      box.innerHTML = html || '<p class="mr-empty">None</p>';
+    } catch (err) { box.innerHTML = '<p class="mr-empty">Offline</p>'; }
+  }
+
+  // Room settings: name on the left, the box on the right
+  function roomSettingsHtml(r) {
+    const room = roomDoc(r), e = myRooms.rooms[r] || {};
+    const days = clampDays(room.deleteDays || defaultDays());
+    return `<div class="rs" data-rid="${r}">
+      <div class="rs-line"><label for="rsName">Name</label><input type="text" id="rsName" maxlength="40" value="${esc(room.name || e.name || '')}"></div>
+      <div class="rs-line"><label for="rsDays">Delete unused games after</label><select id="rsDays">${dayOptions().map(d => `<option value="${d}" ${d === days ? 'selected' : ''}>${daysLabel(d)}</option>`).join('')}</select></div>
+      <div class="rs-line"><label for="rsOnlyEnded">Only ended games</label><input type="checkbox" id="rsOnlyEnded" ${room.onlyEnded ? 'checked' : ''}></div>
+      <div class="rs-btns"><button type="button" class="btn-primary sm" data-mr="savesettings" data-id="${r}">Save</button>
+        ${isGoogle() ? `<button type="button" class="btn-outline sm" data-mr="extendall" data-id="${r}">Keep 1 more year</button>` : ''}</div>
+    </div>`;
+  }
+  async function saveRoomSettingsFor(r) {
+    const e = myRooms.rooms[r];
+    if (!e || e.role !== 'owner') return;
+    const room = roomDoc(r);
+    const name = ($('rsName').value || '').trim().replace(/\s+/g, ' ').slice(0, 40) || room.name || e.name;
+    const days = clampDays(Number($('rsDays').value));
+    const onlyEnded = $('rsOnlyEnded').checked;
+    const list = gamesOf(r) || [];
+    try {
+      await cloudInit();
+      const want = Math.max(Date.now() + days * DAY, ...list.map(x => tsMs(x.expireAt) || 0).filter(ms => ms <= Date.now() + days * DAY + DAY));
+      await cw(fb.updateDoc(R.room(r), { name, deleteDays: days, onlyEnded, maxDays: maxDays(), updatedAt: fb.serverTimestamp(),
+        expireAt: fb.Timestamp.fromMillis(Math.min(want, Date.now() + maxDays() * DAY)) }));
+      await Promise.all(list.filter(x => !x.customDays).map(x => {
+        const ms = Date.now() + (onlyEnded && x.status !== 'ended' ? maxDays() : days) * DAY;
+        return cw(fb.updateDoc(R.game(r, x.id), { keepDays: days, onlyEnded, maxDays: maxDays(), expireAt: fb.Timestamp.fromMillis(ms) }));
+      }));
+      e.name = name;
+      saveRooms();
+      if (otherRoomDocs[r]) Object.assign(otherRoomDocs[r], { name, deleteDays: days, onlyEnded });
+      if (isOpenRoom(r) && online.gameMeta && !online.gameMeta.customDays) Object.assign(online.gameMeta, { keepDays: days, onlyEnded, maxDays: maxDays() });
+      roomTool[r] = null;
+      renderRooms();
+      renderSbMeta();
+      toast('Saved');
+    } catch (err) { onCloudError(err); }
+  }
+  async function extendRoomYear(r) {
+    if (!isGoogle()) return;
+    const ms = Date.now() + 365 * DAY;
+    try {
+      await Promise.all((gamesOf(r) || []).map(x => cw(fb.updateDoc(R.game(r, x.id), { expireAt: fb.Timestamp.fromMillis(ms) }))));
+      await cw(fb.updateDoc(R.room(r), { expireAt: fb.Timestamp.fromMillis(ms), updatedAt: fb.serverTimestamp() }));
+      toast(`Kept until ${fmtDay(ms)}`);
+    } catch (err) { onCloudError(err); }
+  }
+  async function resetLinksFor(r) {
+    const e = myRooms.rooms[r];
+    if (!e || e.role !== 'owner') return;
+    if (!confirm('Make new View and Edit links? The old links stop working.')) return;
+    try {
+      await cloudInit();
+      const k = { roomId: r, editKey: randKey(24), viewKey: randKey(24) };
+      await cw(fb.setDoc(R.roomKeys(r), k));
+      e.keys = Object.assign(e.keys || {}, { edit: k.editKey, view: k.viewKey });
+      saveRooms();
+      toast('New links made');
+      fillRoomLinks(r);
+    } catch (err) { onCloudError(err); }
+  }
+
+  // A game from the list goes onto the scoreboard below
   async function openRoomFromList(r, g) {
     const e = myRooms.rooms[r];
     if (!e) return;
     try {
+      boardClosed(false);
       if (!online || online.roomId !== r || online.scope !== 'room') { await enterRoom(r, null, e.role, 'room'); await waitForGame(10000); }
       if (g && online.gameId !== g) openGame(g, online.room ? g === online.room.currentGameId : false);
-      roomsOpen = false;
-      renderRooms();
+      if (roomsOpen) renderRooms();
       setTimeout(() => { try { document.querySelector('.board-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ } }, 300);
-    } catch (err) { setMsg('mrMsg', 'The room couldn\'t be opened. ' + cloudSetupHint(err), 'err'); }
+    } catch (err) { setMsg('mrMsg', 'Couldn\'t open it. ' + cloudSetupHint(err), 'err'); }
   }
   $('btnMyRooms').addEventListener('click', toggleRooms);
   $('roomsCard').addEventListener('toggle', e => {
@@ -3081,20 +3213,44 @@
   $('roomsCard').addEventListener('click', e => {
     const b = e.target.closest('[data-mr]');
     if (!b) return;
-    e.preventDefault();   // a button in a room's heading shouldn't fold it open or shut
+    e.preventDefault();   // an icon in a room's heading shouldn't fold it open or shut by itself
     e.stopPropagation();
     const a = b.dataset.mr, id = b.dataset.id;
     if (a === 'close') { roomsOpen = false; renderRooms(); }
+    else if (a === 'links' || a === 'settings') {
+      roomTool[id] = roomTool[id] === a ? null : a;
+      if (roomTool[id]) roomsExpanded.add(id);
+      renderRooms();
+    }
+    else if (a === 'savesettings') saveRoomSettingsFor(id);
+    else if (a === 'extendall') extendRoomYear(id);
+    else if (a === 'resetlinks') resetLinksFor(id);
     else if (a === 'delroom') deleteRoom(id);
     else if (a === 'delgamein') deleteGameIn(id, b.dataset.g);
-    else if (a === 'openroom') openRoomFromList(id, null);
     else if (a === 'opengameof') openRoomFromList(id, b.dataset.g);
     else if (a === 'forget') forgetRoom(id, false);
     else if (a === 'forgetgame') forgetRoom(id, true);
     else if (a === 'opengame') {
       const en = myRooms.games[id]; const [r, g] = id.split('_');
-      if (en) enterRoom(r, g, en.role, 'game').then(() => { roomsOpen = false; renderRooms(); }).catch(err => setMsg('mrMsg', cloudSetupHint(err), 'err'));
+      boardClosed(false);
+      if (en) enterRoom(r, g, en.role, 'game').catch(err => setMsg('mrMsg', cloudSetupHint(err), 'err'));
     }
+    else if (b.dataset.lk) shareLink(b);
+  });
+
+  // ✕ on the scoreboard: put the game away (it stays in its room)
+  let boardIsClosed = false;
+  try { boardIsClosed = localStorage.getItem('rummy-board-closed') === '1'; } catch (e) { /* ignore */ }
+  document.body.classList.toggle('board-closed', boardIsClosed);
+  function boardClosed(v) {
+    boardIsClosed = v;
+    try { localStorage.setItem('rummy-board-closed', v ? '1' : '0'); } catch (e) { /* ignore */ }
+    document.body.classList.toggle('board-closed', v);
+  }
+  $('btnCloseBoard').addEventListener('click', () => {
+    if (online) leaveRoom();
+    boardClosed(true);
+    renderAll();
   });
 
   /* ---------- Google account (bottom of the page, and in the welcome) ---------- */
@@ -4129,6 +4285,7 @@
   }
 
   async function enterRoom(r, g, role, scope) {
+    boardClosed(false);
     await cloudInit();
     flushPush();
     stopListening();
@@ -4348,6 +4505,7 @@
 
   function setSync(s) {
     syncState = s;
+    renderSbMeta();
     const el = $('roomSync');
     if (!el) return;
     el.className = 'room-sync ' + s;
@@ -4759,17 +4917,15 @@
   const I_SHARE = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="M8.6 10.6l6.8-4M8.6 13.4l6.8 4" stroke="currentColor" stroke-width="2"/></svg>';
   const I_WA = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>';
   const I_TRASH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const I_LINK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  const I_GEAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
   const I_COPY = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
 
-  function linkRowHtml(label, hint, url, kind, extraCls) {
-    return `<div class="lk-row ${extraCls || ''}">
-      <div class="lk-top"><b>${label}</b><span class="lk-hint">${hint}</span></div>
-      <div class="lk-url" title="${esc(url)}">${esc(url)}</div>
-      <div class="lk-btns">
-        <button type="button" class="btn-outline" data-lk="copy" data-url="${esc(url)}" data-kind="${kind}">${I_COPY} Copy</button>
-        <button type="button" class="btn-wa" data-lk="wa" data-url="${esc(url)}" data-kind="${kind}">${I_WA} WhatsApp</button>
-        <button type="button" class="btn-outline" data-lk="share" data-url="${esc(url)}" data-kind="${kind}">${I_SHARE} Share</button>
-      </div></div>`;
+  // One line per link: name, the address, copy and share icons
+  function linkRowHtml(label, url, kind) {
+    return `<div class="lk-line"><b class="lk-name">${label.replace(' link', '')}</b><span class="lk-url" title="${esc(url)}">${esc(url)}</span>
+      <button type="button" class="ico-btn" data-lk="copy" data-url="${esc(url)}" data-kind="${kind}" title="Copy" aria-label="Copy ${label} link">${I_COPY}</button>
+      <button type="button" class="ico-btn" data-lk="share" data-url="${esc(url)}" data-kind="${kind}" title="Share" aria-label="Share ${label} link">${I_SHARE}</button></div>`;
   }
 
   function accountHtml() {
@@ -4787,8 +4943,8 @@
     const card = $('roomCard');
     if (!card) return;
     renderGameVisibility();
-    if (!FB_CFG || !online) { card.hidden = true; return; }
-    card.hidden = false;
+    card.hidden = true;   // everything about rooms now lives in My Rooms and by the scoreboard
+    if (card) return;
     const keepMsg = $('roomMsg') ? { t: $('roomMsg').textContent, c: $('roomMsg').className } : null;
     card.innerHTML = online ? onlineCardHtml() : offlineCardHtml();
     if (keepMsg && keepMsg.t) { $('roomMsg').textContent = keepMsg.t; $('roomMsg').className = keepMsg.c; }
@@ -4934,7 +5090,8 @@
 
   async function shareLink(btn) {
     const url = btn.dataset.url, kind = btn.dataset.kind, how = btn.dataset.lk;
-    const name = online && online.room ? online.room.name : 'Rummy';
+    const rid = btn.closest('[data-rid]') ? btn.closest('[data-rid]').dataset.rid : null;
+    const name = rid && myRooms.rooms[rid] ? myRooms.rooms[rid].name : online && online.room ? online.room.name : 'Rummy';
     const what = { edit: 'join and enter scores', view: 'watch the scores live', owner: 'manage the room (keep private)',
       gedit: 'enter scores in this game', gview: 'watch this game live' }[kind] || 'open the scoreboard';
     const text = `RummyTally – ${name}: tap to ${what}\n${url}`;
