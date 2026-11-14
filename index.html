@@ -832,6 +832,12 @@
   .gs-row > label, .gs-l { font-size: .9rem; font-weight: 600; color: var(--text); }
   .gs-row input[type=number] { width: 96px; min-height: 0; height: 32px; padding: 4px 10px; font-size: .95rem; text-align: right; border-radius: 8px; flex: 0 0 auto; }
   .gs-pick { flex-wrap: wrap; }
+  .su-scope { display: flex; background: #dfe9f5; border-radius: 10px; padding: 3px; gap: 3px; margin: 0 0 12px; }
+  .su-scope label { flex: 1; cursor: pointer; }
+  .su-scope input { position: absolute; opacity: 0; pointer-events: none; }
+  .su-scope span { display: block; text-align: center; padding: 7px 4px; border-radius: 8px; font-weight: 700; font-size: .86rem; color: #3b5573; }
+  .su-scope input:checked + span { background: #fff; color: var(--felt); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+  .su-scope input:focus-visible + span { outline: 2px solid var(--felt); outline-offset: 1px; }
   .gs-seg { display: inline-flex; border: 1.5px solid var(--felt); border-radius: 999px; overflow: hidden; flex: 0 0 auto; }
   .gs-seg label { cursor: pointer; }
   .gs-seg input { position: absolute; opacity: 0; pointer-events: none; }
@@ -2937,8 +2943,10 @@
   function nextIdFor(players) { return players.reduce((m, p) => Math.max(m, p.id), 0) + 1; }
   const roomCount = () => Object.keys(myRooms.rooms).filter(id => !hiddenIds.has(id)).length;
   // Rooms this device can start games in (not view-only), most recently used first
-  function setupRooms() {
-    return Object.entries(myRooms.rooms).filter(([id, e]) => !hiddenIds.has(id) && e.role !== 'view')
+  // New Game's room list: my own rooms (Mine) or rooms shared with me with edit access (Shared)
+  function setupRooms(scope) {
+    const want = scope || (setup && setup.scope) || 'mine';
+    return Object.entries(myRooms.rooms).filter(([id, e]) => !hiddenIds.has(id) && (want === 'mine' ? e.role === 'owner' : e.role === 'edit'))
       .map(([id, e]) => ({ id, name: e.name || 'Room', ms: e.createdMs || e.at || Date.now(), at: e.at || 0 }))
       .sort((a, b) => b.at - a.at);
   }
@@ -2980,12 +2988,15 @@
     if (setup) return;   // already here
     leaveHome();
     if (page) closeRoomsPage();
-    const rooms = FB_CFG ? setupRooms() : [];
+    // Inside a shared room, the next game goes there too; otherwise one of my own rooms
+    const hereRole = online && online.scope === 'room' && myRooms.rooms[online.roomId] ? myRooms.rooms[online.roomId].role : null;
+    const scope = hereRole === 'edit' ? 'shared' : 'mine';
+    const rooms = FB_CFG ? setupRooms(scope) : [];
     const here = online && online.scope === 'room' && rooms.some(x => x.id === online.roomId) ? online.roomId : null;
-    const newRoom = !!FB_CFG && !rooms.length;   // no room yet: this game starts one
+    const newRoom = !!FB_CFG && scope === 'mine' && !rooms.length;   // no room of my own yet: this game starts one
     const roomId = newRoom ? null : (here || (rooms[0] || {}).id || null);
     setup = {
-      mode, roomId, newRoom, roomName: defaultRoomName(), listOpen: false, search: '',
+      mode, scope, roomId, newRoom, roomName: defaultRoomName(), listOpen: false, search: '',
       gameName: defaultGameName(roomId), gameNameEdited: false,
       useExisting: state.players.length > 0, prevPlayers: state.players.map(p => ({ id: p.id, name: p.name })),
       added: [], busy: false
@@ -3032,11 +3043,20 @@
     // Each field: name on the left, the box on the right
     const line = (label, forId, body) => `<div class="su-line"><label class="su-lbl" ${forId ? `for="${forId}"` : ''}>${label}</label><div class="su-field">${body}</div></div>`;
     let roomStep = '';
+    // Mine / Shared: only when some room is shared with me with edit access
+    const scopeSeg = FB_CFG && setupRooms('shared').length ? `<div class="su-scope" role="radiogroup" aria-label="Which rooms">${[['mine', 'Mine'], ['shared', 'Shared']].map(([v, l]) =>
+      `<label><input type="radio" name="suScope" value="${v}" data-su="scope" ${setup.scope === v ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div>` : '';
     if (FB_CFG) {
       if (setup.newRoom) {
         roomStep = line('Room', 'suRoomName', `<input type="text" id="suRoomName" maxlength="40" value="${esc(setup.roomName)}" placeholder="e.g. Diwali at Ravi's" autocomplete="off">
           <p class="su-note">Name it after the occasion.</p>
           ${rooms.length ? '<button type="button" class="su-link" data-su="existing">Choose an existing room instead</button>' : ''}`);
+      } else if (setup.scope === 'shared') {
+        roomStep = line('Room', 'suRoomSearch', `<div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
+            placeholder="Search rooms" value="${setup.listOpen ? esc(setup.search) : sel ? esc(sel.name) : ''}"><span class="cb-chev"></span></div>
+          <ul class="combo-list" id="suRoomList" role="listbox" ${setup.listOpen ? '' : 'hidden'}></ul>
+          <p class="su-note">Shared by its owner – the game will be theirs; you can edit, share and reopen it.</p>
+          ${sel && !(online && online.roomId === sel.id) ? '<button type="button" class="su-link su-link2" data-su="continue">Continue this room\'s last game</button>' : ''}`);
       } else {
         roomStep = line('Room', 'suRoomSearch', `<div class="combo"><input type="text" id="suRoomSearch" autocomplete="off" role="combobox" aria-expanded="${setup.listOpen}" aria-controls="suRoomList"
             placeholder="Search rooms" value="${setup.listOpen ? esc(setup.search) : sel ? esc(sel.name) : ''}"><span class="cb-chev"></span></div>
@@ -3062,7 +3082,7 @@
     const playersStep = `<div class="su-sec su-players"><div class="su-sh">Players</div>${radios}${addArea}</div>`;
     const keepFocus = document.activeElement && document.activeElement.id;
     const caret = keepFocus && document.activeElement.selectionStart;
-    $('suBody').innerHTML = `<div class="su-sec su-where">${roomStep}${gameStep}</div>` + playersStep;
+    $('suBody').innerHTML = `<div class="su-sec su-where">${scopeSeg}${roomStep}${gameStep}</div>` + playersStep;
     renderRoomList();
     if (keepFocus && $(keepFocus) && keepFocus !== 'suRoomSearch') { const f = $(keepFocus); f.focus(); try { f.setSelectionRange(caret, caret); } catch (e) { /* ignore */ } }
     const ready = !FB_CFG || setup.newRoom || !!sel;
@@ -3230,6 +3250,16 @@
     else if (a === 'showprev') { setup.showPrev = !setup.showPrev; renderSetup(); }
     else if (a === 'openadd') { setup.addOpen = true; renderSetup(); $('suPlayerName').focus(); }
     else if (a === 'rmplayer') { setup.added.splice(+t.dataset.i, 1); renderSetup(); }
+    else if (a === 'scope') {
+      if (setup.scope === t.value) return;
+      setup.scope = t.value; setup.listOpen = false; setup.search = '';
+      const list = setupRooms();
+      setup.newRoom = setup.scope === 'mine' && !list.length;
+      setup.roomId = setup.newRoom ? null : (list[0] || {}).id || null;
+      if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId);
+      renderSetup();
+      prefetchRoomGames(setup.roomId);
+    }
     else if (a === 'existing') { setup.newRoom = false; setup.roomId = (setupRooms()[0] || {}).id || null; if (!setup.gameNameEdited) setup.gameName = defaultGameName(setup.roomId); renderSetup(); }
     else if (a === 'newroom') { setup.newRoom = true; setup.listOpen = false; if (!setup.gameNameEdited) setup.gameName = defaultGameName(null); renderSetup(); setTimeout(() => { const f = $('suRoomName'); if (f) { f.focus(); f.select(); } }, 50); }
     else if (a === 'pickroom') {
