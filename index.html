@@ -3547,7 +3547,12 @@
     $('tileRoomsSub').hidden = !n;
     const open = hasOpenGame();
     $('btnResume').hidden = !open;
-    if (open) $('resumeText').textContent = 'Continue · ' + resumeLabel();
+    if (open) {
+      const lbl = resumeLabel();
+      $('resumeText').textContent = 'Continue · ' + lbl;
+      // Remember the full label so it shows straight away after a refresh
+      if (online && online.gameMeta && myRooms.current && myRooms.current.label !== lbl) { myRooms.current.label = lbl; saveRooms(); }
+    }
     try { localStorage.setItem(SCREEN_KEY, scr); } catch (e) { /* ignore */ }
     if (home) fitWordmark();
   }
@@ -3555,6 +3560,7 @@
     // Still loading the room after a refresh: name it from what this phone remembers (never "0 players")
     if (!online && FB_CFG && myRooms.current) {
       const c = myRooms.current;
+      if (c.label) return c.label;   // the full "Room · Game" remembered from last time
       const en = c.scope === 'game' ? myRooms.games[c.roomId + '_' + c.gameId] : myRooms.rooms[c.roomId];
       return (en && (c.scope === 'game' ? [en.roomName, en.name].filter(Boolean).join(' · ') : en.name)) || 'Your game';
     }
